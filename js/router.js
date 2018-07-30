@@ -8,8 +8,6 @@ import Shelf from './screens/Shelf';
 import Profile from './screens/Profile';
 import EditCellarItem from './screens/EditCellarItem';
 
-// let screen = Dimensions.get('window');
-
 export const Tabs = createBottomTabNavigator(
   {
     Activity,
@@ -29,8 +27,6 @@ export const Tabs = createBottomTabNavigator(
         } else if (routeName === 'Profile') {
           iconName = `ios-person${focused ? '' : '-outline'}`;
         }
-        // You can return any component that you like here! We usually use an
-        // icon component from react-native-vector-icons
         return <Ionicons name={iconName} size={25} color={tintColor} />;
       };
 
