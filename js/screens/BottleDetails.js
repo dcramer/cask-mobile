@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'react-native-elements';
-import { StyleSheet, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { StyleSheet, ScrollView } from 'react-native';
 
 import Bottle from '../components/Bottle';
 
@@ -12,30 +11,32 @@ export default class BottleDetails extends Component {
   };
 
   static navigationOptions = ({ navigation }) => {
-    let { item } = navigation.state.params;
+    let { bottle } = navigation.state.params;
     return {
-      title: BottleDetails.getBottleName(item),
+      title: Bottle.getBottleName(bottle),
     };
   };
 
-  static getBottleName(item) {
-    if (!!item.name) return item.name;
-    return `${item.distillery} ${item.statedAge || ''}`;
-  }
+  _onCheckIn = () => {
+    let { navigation } = this.props;
+    let { bottle } = navigation.state.params;
+    navigation.navigate('CheckIn', { id: bottle.id, bottle });
+  };
 
   render() {
-    let { item } = this.props.navigation.state.params;
+    let { navigation } = this.props;
+    let { bottle } = navigation.state.params;
 
     return (
-      <View style={styles.container}>
-        <Bottle navigation={this.props.navigation} item={item} />
+      <ScrollView contentContainerStyle={styles.container}>
+        <Bottle navigation={navigation} bottle={bottle} />
         <Button
           title="Check-in"
-          onPress={this.checkIn}
+          onPress={this._onCheckIn}
           containerViewStyle={styles.buttonContainer}
           buttonStyle={styles.button}
         />
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -47,10 +48,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   buttonContainer: {
-    flexDirection: 'row',
+    alignSelf: 'stretch',
     padding: 10,
   },
   button: {
-    flexDirection: 'row',
+    alignSelf: 'stretch',
   },
 });

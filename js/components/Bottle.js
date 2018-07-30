@@ -6,29 +6,29 @@ import AgedPropTypes from '../propTypes';
 
 export default class Bottle extends Component {
   static propTypes = {
-    item: AgedPropTypes.Bottle.isRequired,
+    bottle: AgedPropTypes.Bottle.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 
-  static getBottleName = item => {
-    if (!!item.name) return item.name;
-    return `${item.distillery} ${item.statedAge || ''}`;
+  static getBottleName = bottle => {
+    if (!!bottle.name) return bottle.name;
+    return `${bottle.distillery} ${bottle.statedAge || ''}`;
   };
 
   render() {
-    let { item } = this.props;
+    let { bottle } = this.props;
     return (
       <View style={styles.rowContainer}>
-        <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} resizeMode="contain" />
+        <Image source={{ uri: bottle.thumbnail }} style={styles.thumbnail} resizeMode="contain" />
         <View style={styles.rowText}>
           <Text style={styles.name} numberOfLines={2} ellipsizeMode={'tail'}>
-            {Bottle.getBottleName(item)} {!!item.series && item.series}
+            {Bottle.getBottleName(bottle)} {!!bottle.series && bottle.series}
           </Text>
           <Text style={styles.distillery} numberOfLines={1} ellipsizeMode={'tail'}>
-            {item.distillery}
+            {bottle.distillery}
           </Text>
           <Text style={styles.category} numberOfLines={1} ellipsizeMode={'tail'}>
-            {item.category} {!!item.statedAge && `${item.statedAge} yo`}
+            {bottle.category} {!!bottle.statedAge && `${bottle.statedAge} yo`}
           </Text>
         </View>
       </View>

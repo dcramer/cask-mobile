@@ -4,8 +4,9 @@ import { createBottomTabNavigator, createStackNavigator } from 'react-navigation
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Activity from './screens/Activity';
+import CheckIn from './screens/CheckIn';
 import Notifications from './screens/Notifications';
-import Shelf from './screens/Shelf';
+import Home from './screens/Home';
 import Profile from './screens/Profile';
 import BottleDetails from './screens/BottleDetails';
 
@@ -34,10 +35,11 @@ const commonOptions = {
   },
 };
 
-const ShelfStack = createStackNavigator(
+const HomeStack = createStackNavigator(
   {
-    Shelf,
+    Home,
     BottleDetails,
+    CheckIn,
   },
   {
     navigationOptions: { ...commonOptions },
@@ -47,18 +49,18 @@ const ShelfStack = createStackNavigator(
 export const createRootNavigator = () => {
   return createBottomTabNavigator(
     {
-      ShelfStack,
+      HomeStack,
       Activity,
       Notifications,
       Profile,
     },
     {
-      initialRouteName: 'ShelfStack',
+      initialRouteName: 'HomeStack',
       navigationOptions: ({ navigation }) => {
         const TabBarIcon = ({ focused, tintColor }) => {
           const { routeName } = navigation.state;
           let iconName;
-          if (routeName === 'ShelfStack') {
+          if (routeName === 'HomeStack') {
             iconName = `ios-home`;
           } else if (routeName === 'Activity') {
             iconName = `ios-map`;

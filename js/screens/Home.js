@@ -64,18 +64,18 @@ const whiskyDatabase = [
 
 class BottleEntry extends Component {
   static propTypes = {
-    item: AgedPropTypes.Bottle.isRequired,
+    bottle: AgedPropTypes.Bottle.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 
-  _onEditItem = () => {
-    let { item, navigation } = this.props;
-    navigation.navigate('BottleDetails', { id: item.id, item });
+  _onPress = () => {
+    let { bottle, navigation } = this.props;
+    navigation.navigate('BottleDetails', { id: bottle.id, bottle });
   };
 
   render() {
     return (
-      <TouchableOpacity onPress={this._onEditItem}>
+      <TouchableOpacity onPress={this._onPress}>
         <Bottle {...this.props} />
       </TouchableOpacity>
     );
@@ -90,7 +90,7 @@ class RecentActivity extends Component {
     };
   }
 
-  _renderItem = ({ item }) => <BottleEntry item={item} navigation={this.props.navigation} />;
+  _renderItem = ({ item }) => <BottleEntry bottle={item} navigation={this.props.navigation} />;
 
   _keyExtractor = item => item.id;
 
@@ -108,7 +108,7 @@ class RecentActivity extends Component {
 }
 
 class SearchResults extends Component {
-  _renderItem = ({ item }) => <BottleEntry item={item} navigation={this.props.navigation} />;
+  _renderItem = ({ item }) => <BottleEntry bottle={item} navigation={this.props.navigation} />;
 
   _keyExtractor = item => item.id;
 
@@ -131,7 +131,7 @@ class SearchResults extends Component {
   }
 }
 
-export default class Shelf extends Component {
+export default class Home extends Component {
   static navigationOptions = {
     header: null,
   };
