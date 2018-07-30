@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Button } from 'react-native-elements';
+import { StyleSheet, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+import Bottle from '../components/Bottle';
 
 export default class BottleDetails extends Component {
   static propTypes = {
     navigation: PropTypes.object.isRequired,
   };
 
-  getBottleName(item) {
+  static navigationOptions = ({ navigation }) => {
+    let { item } = navigation.state.params;
+    return {
+      title: BottleDetails.getBottleName(item),
+    };
+  };
+
+  static getBottleName(item) {
     if (!!item.name) return item.name;
     return `${item.distillery} ${item.statedAge || ''}`;
   }
@@ -17,20 +28,13 @@ export default class BottleDetails extends Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.rowContainer}>
-          <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} resizeMode="contain" />
-          <View style={styles.rowText}>
-            <Text style={styles.name} numberOfLines={2} ellipsizeMode={'tail'}>
-              {this.getBottleName(item)} {!!item.series && item.series}
-            </Text>
-            <Text style={styles.distillery} numberOfLines={1} ellipsizeMode={'tail'}>
-              {item.distillery}
-            </Text>
-            <Text style={styles.category} numberOfLines={1} ellipsizeMode={'tail'}>
-              {item.category}
-            </Text>
-          </View>
-        </View>
+        <Bottle navigation={this.props.navigation} item={item} />
+        <Button
+          title="Check-in"
+          onPress={this.checkIn}
+          containerViewStyle={styles.buttonContainer}
+          buttonStyle={styles.button}
+        />
       </View>
     );
   }
@@ -42,46 +46,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  rowContainer: {
+  buttonContainer: {
     flexDirection: 'row',
-    backgroundColor: '#FFF',
-    height: 100,
     padding: 10,
-    marginRight: 10,
-    marginLeft: 10,
-    marginTop: 10,
-    borderRadius: 4,
-    shadowOffset: { width: 1, height: 1 },
-    shadowColor: '#CCC',
-    shadowOpacity: 1.0,
-    shadowRadius: 1,
   },
-  rowText: {
-    flex: 4,
-    flexDirection: 'column',
-  },
-  name: {
-    paddingLeft: 10,
-    paddingTop: 5,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#777',
-  },
-  distillery: {
-    paddingLeft: 10,
-    marginTop: 5,
-    fontSize: 14,
-    color: '#777',
-  },
-  category: {
-    paddingLeft: 10,
-    marginTop: 5,
-    fontSize: 14,
-    color: '#777',
-  },
-  thumbnail: {
-    flex: 1,
-    height: undefined,
-    width: undefined,
+  button: {
+    flexDirection: 'row',
   },
 });

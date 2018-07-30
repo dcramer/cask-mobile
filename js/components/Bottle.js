@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, TouchableOpacity, Text, Image, View } from 'react-native';
+import { StyleSheet, Text, Image, View } from 'react-native';
 
 import AgedPropTypes from '../propTypes';
 
@@ -10,35 +10,28 @@ export default class Bottle extends Component {
     navigation: PropTypes.object.isRequired,
   };
 
-  _onEditItem = () => {
-    let { item, navigation } = this.props;
-    navigation.navigate('BottleDetails', { id: item.id, item });
-  };
-
-  getBottleName(item) {
+  static getBottleName = item => {
     if (!!item.name) return item.name;
     return `${item.distillery} ${item.statedAge || ''}`;
-  }
+  };
 
   render() {
     let { item } = this.props;
     return (
-      <TouchableOpacity onPress={this._onEditItem}>
-        <View style={styles.rowContainer}>
-          <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} resizeMode="contain" />
-          <View style={styles.rowText}>
-            <Text style={styles.name} numberOfLines={2} ellipsizeMode={'tail'}>
-              {this.getBottleName(item)} {!!item.series && item.series}
-            </Text>
-            <Text style={styles.distillery} numberOfLines={1} ellipsizeMode={'tail'}>
-              {item.distillery}
-            </Text>
-            <Text style={styles.category} numberOfLines={1} ellipsizeMode={'tail'}>
-              {item.category}
-            </Text>
-          </View>
+      <View style={styles.rowContainer}>
+        <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} resizeMode="contain" />
+        <View style={styles.rowText}>
+          <Text style={styles.name} numberOfLines={2} ellipsizeMode={'tail'}>
+            {Bottle.getBottleName(item)} {!!item.series && item.series}
+          </Text>
+          <Text style={styles.distillery} numberOfLines={1} ellipsizeMode={'tail'}>
+            {item.distillery}
+          </Text>
+          <Text style={styles.category} numberOfLines={1} ellipsizeMode={'tail'}>
+            {item.category} {!!item.statedAge && `${item.statedAge} yo`}
+          </Text>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   }
 }
