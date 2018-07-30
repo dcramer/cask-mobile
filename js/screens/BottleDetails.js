@@ -1,39 +1,47 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity, Text, Image, View } from 'react-native';
+import PropTypes from 'prop-types';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
-import AgedPropTypes from '../propTypes';
-
-export default class CellarItem extends Component {
+export default class BottleDetails extends Component {
   static propTypes = {
-    item: AgedPropTypes.CellarItem.isRequired,
+    navigation: PropTypes.object.isRequired,
   };
 
-  _onEditItem = () => {
-    let id = this.props.item.id;
-    this.props.navigation.navigate('EditCellarItem', { id: id });
-  };
+  getBottleName(item) {
+    if (!!item.name) return item.name;
+    return `${item.distillery} ${item.statedAge || ''}`;
+  }
 
   render() {
-    let { item } = this.props;
+    let { item } = this.props.navigation.state.params;
+
     return (
-      <TouchableOpacity onPress={this._onEditItem}>
+      <View style={styles.container}>
         <View style={styles.rowContainer}>
           <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} resizeMode="contain" />
           <View style={styles.rowText}>
             <Text style={styles.name} numberOfLines={2} ellipsizeMode={'tail'}>
-              {item.name}
+              {this.getBottleName(item)} {!!item.series && item.series}
             </Text>
             <Text style={styles.distillery} numberOfLines={1} ellipsizeMode={'tail'}>
               {item.distillery}
             </Text>
+            <Text style={styles.category} numberOfLines={1} ellipsizeMode={'tail'}>
+              {item.category}
+            </Text>
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
   rowContainer: {
     flexDirection: 'row',
     backgroundColor: '#FFF',
@@ -48,6 +56,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 1.0,
     shadowRadius: 1,
   },
+  rowText: {
+    flex: 4,
+    flexDirection: 'column',
+  },
   name: {
     paddingLeft: 10,
     paddingTop: 5,
@@ -61,13 +73,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#777',
   },
+  category: {
+    paddingLeft: 10,
+    marginTop: 5,
+    fontSize: 14,
+    color: '#777',
+  },
   thumbnail: {
     flex: 1,
     height: undefined,
     width: undefined,
-  },
-  rowText: {
-    flex: 4,
-    flexDirection: 'column',
   },
 });

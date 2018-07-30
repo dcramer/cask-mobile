@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-export const CellarItem = PropTypes.shape({
+export const Bottle = PropTypes.shape({
   id: PropTypes.string,
   name: PropTypes.string.isRequired,
   distillery: PropTypes.string.isRequired,
@@ -13,5 +13,5 @@ export const CellarItem = PropTypes.shape({
 });
 
 export default {
-  CellarItem,
+  Bottle,
 };

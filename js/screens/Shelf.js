@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
-import { StatusBar, StyleSheet, FlatList, Text, View } from 'react-native';
+import { StatusBar, StyleSheet, FlatList, TextInput, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import CellarItem from '../components/CellarItem';
+import Bottle from '../components/Bottle';
+
+class CheckinHeader extends React.Component {
+  render() {
+    return <TextInput />;
+  }
+}
 
 export default class Shelf extends Component {
   static navigationOptions = {
-    title: 'Shelf',
+    headerTitle: <CheckinHeader />,
+    headerRight: <Ionicons name="ios-barcode" size={25} color="gray" />,
   };
 
   constructor(props) {
@@ -19,10 +27,6 @@ export default class Shelf extends Component {
           category: 'Single Malt',
           abv: '65.9',
           statedAge: null,
-          vintageYear: null,
-          bottleYear: null,
-          caskType: null,
-          thumbnail: 'https://covers.openlibrary.org/w/id/7984916-M.jpg',
         },
         {
           id: '2',
@@ -31,10 +35,6 @@ export default class Shelf extends Component {
           category: 'Single Malt',
           abv: '43.0',
           statedAge: 21,
-          vintageYear: null,
-          bottleYear: null,
-          caskType: null,
-          thumbnail: 'https://covers.openlibrary.org/w/id/7984916-M.jpg',
         },
         {
           id: '3',
@@ -46,13 +46,37 @@ export default class Shelf extends Component {
           vintageYear: 1967,
           bottleYear: 1982,
           caskType: 'Sherry Cask',
-          thumbnail: 'https://covers.openlibrary.org/w/id/7984916-M.jpg',
+          thumbnail: 'https://static.whiskybase.com/storage/whiskies/2/4/413/70765-small.png',
+        },
+        {
+          id: '4',
+          name: 'Bowmore 1956',
+          distillery: 'Bowmore',
+          category: 'Single Malt',
+          series: 'Islay Pure Malt',
+          abv: '43.0',
+          vintageYear: 1956,
+          caskType: 'Shery Cask',
+          thumbnail: 'https://static.whiskybase.com/storage/whiskies/9/3/129/147563-small.png',
+        },
+        {
+          id: '5',
+          name: 'Ardbeg 1976',
+          distillery: 'Ardbeg',
+          category: 'Single Malt',
+          series: 'Feis Ile 2002',
+          abv: '53.1',
+          statedAge: 25,
+          vintageYear: 1976,
+          caskNumber: 2390,
+          caskType: 'Shery Butt',
+          thumbnail: 'https://static.whiskybase.com/storage/whiskies/1/3/07/81452-small.png',
         },
       ],
     };
   }
 
-  _renderItem = ({ item }) => <CellarItem item={item} />;
+  _renderItem = ({ item }) => <Bottle item={item} navigation={this.props.navigation} />;
 
   _keyExtractor = item => item.id;
 

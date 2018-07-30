@@ -6,7 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Activity from './screens/Activity';
 import Shelf from './screens/Shelf';
 import Profile from './screens/Profile';
-import EditCellarItem from './screens/EditCellarItem';
+import BottleDetails from './screens/BottleDetails';
 
 export const Tabs = createBottomTabNavigator(
   {
@@ -54,7 +54,7 @@ export const Tabs = createBottomTabNavigator(
 
 export const ShelfStack = createStackNavigator({
   Shelf,
-  EditCellarItem,
+  BottleDetails,
 });
 
 export const createRootNavigator = () => {
