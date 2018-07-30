@@ -42,8 +42,14 @@ export const Tabs = createBottomTabNavigator(
       return {
         tabBarIcon: TabBarIcon,
         tabBarOptions: {
-          activeTintColor: 'tomato',
+          showLabel: false,
+          activeTintColor: 'purple',
           inactiveTintColor: 'gray',
+          style: {
+            borderTopColor: '#dddddd',
+            borderTopWidth: 1,
+            backgroundColor: 'white',
+          },
         },
       };
     },
@@ -51,18 +57,8 @@ export const Tabs = createBottomTabNavigator(
 );
 
 export const ShelfStack = createStackNavigator({
-  Shelf: {
-    screen: Shelf,
-    navigationOptions: { title: 'Shelf' },
-  },
-  EditCellarItem: {
-    screen: EditCellarItem,
-    navigationOptions: ({ navigation }) => ({
-      header: null,
-      tabBarVisible: false,
-      gesturesEnabled: false,
-    }),
-  },
+  Shelf,
+  EditCellarItem,
 });
 
 export const createRootNavigator = () => {
@@ -81,6 +77,19 @@ export const createRootNavigator = () => {
         },
       },
     },
-    {}
+    {
+      initialRouteName: 'Tabs',
+      navigationOptions: {
+        headerStyle: {
+          backgroundColor: 'white',
+          borderBottomColor: '#dddddd',
+          borderBottomWidth: 1,
+        },
+        headerTintColor: 'purple',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      },
+    }
   );
 };

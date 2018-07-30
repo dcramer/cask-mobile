@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { StatusBar, StyleSheet, FlatList, View } from 'react-native';
+import { StatusBar, StyleSheet, FlatList, Text, View } from 'react-native';
 
 import CellarItem from '../components/CellarItem';
 
 export default class Shelf extends Component {
+  static navigationOptions = {
+    title: 'Shelf',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
