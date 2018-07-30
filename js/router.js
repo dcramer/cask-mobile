@@ -16,7 +16,7 @@ const commonOptions = {
     borderBottomColor: '#dddddd',
     borderBottomWidth: 1,
   },
-  headerTintColor: '#7b6be6',
+  headerTintColor: 'white',
   headerTitleStyle: {
     color: 'white',
     fontWeight: 'bold',

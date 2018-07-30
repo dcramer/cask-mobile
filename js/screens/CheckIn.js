@@ -75,10 +75,6 @@ export default class CheckIn extends Component {
     navigation: PropTypes.object.isRequired,
   };
 
-  static navigationOptions = {
-    title: 'Record Tasting',
-  };
-
   render() {
     let { bottle } = this.props.navigation.state.params;
 
