@@ -7,20 +7,60 @@ import { SearchBar } from 'react-native-elements';
 import AgedPropTypes from '../propTypes';
 import Bottle from '../components/Bottle';
 
-class Header extends Component {
-  render() {
-    return (
-      <View style={styles.header}>
-        <SearchBar
-          placeholder="bottle, distillery, style"
-          lightTheme
-          containerStyle={styles.searchContainer}
-          inputStyle={styles.searchInput}
-        />
-      </View>
-    );
-  }
-}
+const whiskyDatabase = [
+  {
+    id: '1',
+    name: 'Balmenach 1982 JM',
+    distillery: 'Balmenach',
+    category: 'Single Malt',
+    abv: '65.9',
+    statedAge: null,
+  },
+  {
+    id: '2',
+    name: 'Balmenach 21-year-old MoM',
+    distillery: 'Balmenach',
+    category: 'Single Malt',
+    abv: '43.0',
+    statedAge: 21,
+  },
+  {
+    id: '3',
+    name: 'Laphroaig 1967 RWD',
+    distillery: 'Laphroaig',
+    category: 'Single Malt',
+    abv: '57.0',
+    statedAge: 15,
+    vintageYear: 1967,
+    bottleYear: 1982,
+    caskType: 'Sherry Cask',
+    thumbnail: 'https://static.whiskybase.com/storage/whiskies/2/4/413/70765-small.png',
+  },
+  {
+    id: '4',
+    name: 'Bowmore 1956',
+    distillery: 'Bowmore',
+    category: 'Single Malt',
+    series: 'Islay Pure Malt',
+    abv: '43.0',
+    vintageYear: 1956,
+    caskType: 'Shery Cask',
+    thumbnail: 'https://static.whiskybase.com/storage/whiskies/9/3/129/147563-small.png',
+  },
+  {
+    id: '5',
+    name: 'Ardbeg 1976',
+    distillery: 'Ardbeg',
+    category: 'Single Malt',
+    series: 'Feis Ile 2002',
+    abv: '53.1',
+    statedAge: 25,
+    vintageYear: 1976,
+    caskNumber: 2390,
+    caskType: 'Shery Butt',
+    thumbnail: 'https://static.whiskybase.com/storage/whiskies/1/3/07/81452-small.png',
+  },
+];
 
 class BottleEntry extends Component {
   static propTypes = {
@@ -46,60 +86,7 @@ class RecentActivity extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: [
-        {
-          id: '1',
-          name: 'Balmenach 1982 JM',
-          distillery: 'Balmenach',
-          category: 'Single Malt',
-          abv: '65.9',
-          statedAge: null,
-        },
-        {
-          id: '2',
-          name: 'Balmenach 21-year-old MoM',
-          distillery: 'Balmenach',
-          category: 'Single Malt',
-          abv: '43.0',
-          statedAge: 21,
-        },
-        {
-          id: '3',
-          name: 'Laphroaig 1967 RWD',
-          distillery: 'Laphroaig',
-          category: 'Single Malt',
-          abv: '57.0',
-          statedAge: 15,
-          vintageYear: 1967,
-          bottleYear: 1982,
-          caskType: 'Sherry Cask',
-          thumbnail: 'https://static.whiskybase.com/storage/whiskies/2/4/413/70765-small.png',
-        },
-        {
-          id: '4',
-          name: 'Bowmore 1956',
-          distillery: 'Bowmore',
-          category: 'Single Malt',
-          series: 'Islay Pure Malt',
-          abv: '43.0',
-          vintageYear: 1956,
-          caskType: 'Shery Cask',
-          thumbnail: 'https://static.whiskybase.com/storage/whiskies/9/3/129/147563-small.png',
-        },
-        {
-          id: '5',
-          name: 'Ardbeg 1976',
-          distillery: 'Ardbeg',
-          category: 'Single Malt',
-          series: 'Feis Ile 2002',
-          abv: '53.1',
-          statedAge: 25,
-          vintageYear: 1976,
-          caskNumber: 2390,
-          caskType: 'Shery Butt',
-          thumbnail: 'https://static.whiskybase.com/storage/whiskies/1/3/07/81452-small.png',
-        },
-      ],
+      items: whiskyDatabase.slice(2, 4),
     };
   }
 
@@ -121,76 +108,18 @@ class RecentActivity extends Component {
 }
 
 class SearchResults extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      items: [
-        {
-          id: '1',
-          name: 'Balmenach 1982 JM',
-          distillery: 'Balmenach',
-          category: 'Single Malt',
-          abv: '65.9',
-          statedAge: null,
-        },
-        {
-          id: '2',
-          name: 'Balmenach 21-year-old MoM',
-          distillery: 'Balmenach',
-          category: 'Single Malt',
-          abv: '43.0',
-          statedAge: 21,
-        },
-        {
-          id: '3',
-          name: 'Laphroaig 1967 RWD',
-          distillery: 'Laphroaig',
-          category: 'Single Malt',
-          abv: '57.0',
-          statedAge: 15,
-          vintageYear: 1967,
-          bottleYear: 1982,
-          caskType: 'Sherry Cask',
-          thumbnail: 'https://static.whiskybase.com/storage/whiskies/2/4/413/70765-small.png',
-        },
-        {
-          id: '4',
-          name: 'Bowmore 1956',
-          distillery: 'Bowmore',
-          category: 'Single Malt',
-          series: 'Islay Pure Malt',
-          abv: '43.0',
-          vintageYear: 1956,
-          caskType: 'Shery Cask',
-          thumbnail: 'https://static.whiskybase.com/storage/whiskies/9/3/129/147563-small.png',
-        },
-        {
-          id: '5',
-          name: 'Ardbeg 1976',
-          distillery: 'Ardbeg',
-          category: 'Single Malt',
-          series: 'Feis Ile 2002',
-          abv: '53.1',
-          statedAge: 25,
-          vintageYear: 1976,
-          caskNumber: 2390,
-          caskType: 'Shery Butt',
-          thumbnail: 'https://static.whiskybase.com/storage/whiskies/1/3/07/81452-small.png',
-        },
-      ],
-    };
-  }
-
   _renderItem = ({ item }) => <BottleEntry item={item} navigation={this.props.navigation} />;
 
   _keyExtractor = item => item.id;
 
   render() {
+    let results =
+      this.props.query && whiskyDatabase.filter(i => i.name.indexOf(this.props.query) !== -1);
     return (
       <View>
         {this.props.query ? (
           <FlatList
-            data={this.state.items.filter(i => i.name.indexOf(this.props.query) !== -1)}
+            data={results}
             keyExtractor={this._keyExtractor}
             renderItem={this._renderItem}
           />
