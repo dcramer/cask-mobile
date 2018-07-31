@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ViewPropTypes } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ViewPropTypes } from 'react-native';
 
 import { colors, margins } from '../styles';
 
@@ -20,7 +20,7 @@ class TagItem extends Component {
     let props = this.props;
     return (
       <View style={styles.tagContainer}>
-        <TouchableOpacity onPress={props.onPress}>
+        <TouchableOpacity onPress={props.onPress} activeOpacity={1}>
           <View
             style={[
               styles.inner,
@@ -54,27 +54,22 @@ export default class TagList extends Component {
       })
     ).isRequired,
     style: ViewPropTypes.style,
-    onChangeValue: PropTypes.func,
+    value: PropTypes.arrayOf(PropTypes.string).isRequired,
+    onChangeValue: PropTypes.func.isRequired,
   };
 
-  constructor(...args) {
-    super(...args);
-    this.state = { selectedTags: new Set() };
-  }
-
   onSelectTag = value => {
-    let selectedTags = new Set(this.state.selectedTags);
-    if (selectedTags.has(value)) {
-      selectedTags.delete(value);
+    let selected = new Set(this.props.value);
+    if (selected.has(value)) {
+      selected.delete(value);
     } else {
-      selectedTags.add(value);
+      selected.add(value);
     }
-    this.setState({ selectedTags });
-    this.props.onChangeValue && this.props.onChangeValue(selectedTags);
+    this.props.onChangeValue(selected);
   };
 
   render() {
-    let { selectedTags } = this.state;
+    let selected = new Set(this.props.value);
     return (
       <View style={[styles.listContainer, this.props.style]}>
         {this.props.tagList.map(({ label, value }) => (
@@ -83,7 +78,7 @@ export default class TagList extends Component {
             label={label}
             value={value}
             onPress={() => this.onSelectTag(value)}
-            selected={selectedTags.has(value)}
+            selected={selected.has(value)}
           />
         ))}
       </View>

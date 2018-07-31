@@ -5,7 +5,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Activity from './screens/Activity';
 import CheckIn from './screens/CheckIn';
-import CheckInLocation from './screens/CheckInLocation';
+import FlavorProfileSelect from './screens/FlavorProfileSelect';
+import FriendSelect from './screens/FriendSelect';
+import LocationSelect from './screens/LocationSelect';
 import Notifications from './screens/Notifications';
 import Home from './screens/Home';
 import Profile from './screens/Profile';
@@ -98,13 +100,17 @@ const RootStack = createStackNavigator(
     Main: {
       screen: MainStack,
     },
-    CheckInLocation: {
-      screen: CheckInLocation,
-    },
+    LocationSelect,
+    FriendSelect,
+    FlavorProfileSelect,
   },
   {
     mode: 'modal',
     headerMode: 'none',
+    navigationOptions: ({ navigation }) => ({
+      ...commonOptions,
+      tabBarVisible: navigation.state.index === 0,
+    }),
   }
 );
 

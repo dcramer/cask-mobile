@@ -8,6 +8,7 @@ export default ({ children, style }) => <View style={[styles.container, style]}>
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
+    justifyContent: 'center',
     backgroundColor: colors.background,
     padding: margins.half,
     paddingLeft: margins.full,

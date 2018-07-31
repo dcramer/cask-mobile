@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Constants } from 'expo';
 import { StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
+import { withNavigation } from 'react-navigation';
+
+import Card from '../components/Card';
+import ModalHeader from '../components/ModalHeader';
 
 const locationDatabase = [
   {
@@ -35,7 +38,9 @@ class LocationEntry extends Component {
     let { location } = this.props;
     return (
       <TouchableOpacity onPress={this._onPress}>
-        <Text>{location.name}</Text>
+        <Card>
+          <Text>{location.name}</Text>
+        </Card>
       </TouchableOpacity>
     );
   }
@@ -56,7 +61,7 @@ class SearchResults extends Component {
   }
 }
 
-export default class Home extends Component {
+class LocationSelect extends Component {
   static navigationOptions = {
     header: null,
   };
@@ -69,7 +74,8 @@ export default class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
+        <ModalHeader title="Select Location" />
+        <View style={styles.search}>
           <SearchBar
             lightTheme
             onFocus={() => this.setState({ searchActive: true })}
@@ -91,9 +97,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5FCFF',
   },
-  header: {
+  search: {
     backgroundColor: '#7b6be6',
-    paddingTop: Constants.statusBarHeight,
   },
   searchContainer: {
     backgroundColor: '#7b6be6',
@@ -104,3 +109,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
 });
+
+export default withNavigation(LocationSelect);

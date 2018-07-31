@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, Image, View } from 'react-native';
 
-import { margins } from '../styles';
+import { colors, margins } from '../styles';
 import AgedPropTypes from '../propTypes';
 import Card from './Card';
 
@@ -48,19 +48,19 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#777',
+    color: colors.default,
   },
   distillery: {
     paddingLeft: 10,
     marginTop: 5,
     fontSize: 14,
-    color: '#777',
+    color: colors.default,
   },
   category: {
     paddingLeft: 10,
     marginTop: 5,
     fontSize: 14,
-    color: '#777',
+    color: colors.default,
   },
   thumbnail: {
     flex: 1,

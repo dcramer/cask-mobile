@@ -8,7 +8,16 @@ import { colors, margins } from '../styles';
 import Bottle from '../components/Bottle';
 import Card from '../components/Card';
 import FormLabel from '../components/FormLabel';
+import PersonList from '../components/PersonList';
 import TagList from '../components/TagList';
+
+const flavorProfileDatabase = [
+  { label: 'Bold', value: 'Bold' },
+  { label: 'Peaty', value: 'Peaty' },
+  { label: 'Wood', value: 'Wood' },
+  { label: 'Fire', value: 'Fire' },
+  { label: 'Apple Pie', value: 'Apple Pie' },
+];
 
 class CheckInRating extends Component {
   static propTypes = {
@@ -22,7 +31,7 @@ class CheckInRating extends Component {
 
   setValue = value => {
     this.setState({ value });
-    this.props.onChangeValue({ value });
+    this.props.onChangeValue(value);
   };
 
   render() {
@@ -70,7 +79,7 @@ class CheckInNotes extends Component {
 
   setValue = value => {
     this.setState({ value });
-    this.props.onChangeValue({ value });
+    this.props.onChangeValue(value);
   };
 
   render() {
@@ -79,6 +88,7 @@ class CheckInNotes extends Component {
         <FormLabel>Tasting Notes</FormLabel>
         <TextInput
           placeholder="How was it?"
+          placeholderTextColor={colors.light}
           style={styles.textInput}
           value={this.state.value}
           onChangeText={this.setValue}
@@ -100,7 +110,7 @@ class CheckInFriends extends Component {
 
   setValue = value => {
     this.setState({ value });
-    this.props.onChangeValue({ value });
+    this.props.onChangeValue(value);
   };
 
   render() {
@@ -110,9 +120,9 @@ class CheckInFriends extends Component {
       <Card style={styles.formElementContainer}>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate('CheckInLocation', {
+            navigation.navigate('FriendSelect', {
               currentValue: value,
-              onComplete: this.setValue,
+              onChangeValue: this.setValue,
             })
           }>
           <View style={styles.labelContainer}>
@@ -120,11 +130,11 @@ class CheckInFriends extends Component {
               <FormLabel>Tag Friends</FormLabel>
             </View>
             <View style={styles.labelRight}>
+              {value && <PersonList personList={value} style={styles.friendList} />}
               <Ionicons name="ios-arrow-forward" size={18} color={colors.default} />
             </View>
           </View>
         </TouchableOpacity>
-        {value && <Text>{value.name}</Text>}
       </Card>
     );
   }
@@ -142,7 +152,7 @@ class CheckInLocation extends Component {
 
   setValue = value => {
     this.setState({ value });
-    this.props.onChangeValue({ value });
+    this.props.onChangeValue(value);
   };
 
   render() {
@@ -152,7 +162,7 @@ class CheckInLocation extends Component {
       <Card style={styles.formElementContainer}>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate('CheckInLocation', {
+            navigation.navigate('LocationSelect', {
               currentValue: value,
               onComplete: this.setValue,
             })
@@ -173,19 +183,40 @@ class CheckInLocation extends Component {
 }
 
 class CheckInFlavorProfile extends Component {
+  constructor(...args) {
+    super(...args);
+    this.state = { value: new Set() };
+  }
+  setValue = value => {
+    this.setState({ value });
+    this.props.onChangeValue(value);
+  };
+
   render() {
+    let { navigation } = this.props;
     return (
       <Card style={styles.formElementContainer}>
-        <FormLabel>Flavor Profile</FormLabel>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('FlavorProfileSelect', {
+              currentValue: this.state.value,
+              onChangeValue: this.setValue,
+            })
+          }>
+          <View style={styles.labelContainer}>
+            <View style={styles.labelLeft}>
+              <FormLabel>Flavor Profile</FormLabel>
+            </View>
+            <View style={styles.labelRight}>
+              <Ionicons name="ios-arrow-forward" size={18} color={colors.default} />
+            </View>
+          </View>
+        </TouchableOpacity>
         <TagList
-          tagList={[
-            { label: 'Bold', value: 'Bold' },
-            { label: 'Peaty', value: 'Peaty' },
-            { label: 'Wood', value: 'Wood' },
-            { label: 'Fire', value: 'Fire' },
-            { label: 'Apple Pie', value: 'Apple Pie' },
-          ]}
+          tagList={flavorProfileDatabase}
           style={styles.tagSelect}
+          value={this.state.value}
+          onChangeValue={this.setValue}
         />
       </Card>
     );
@@ -214,6 +245,10 @@ export default class CheckIn extends Component {
 
   onCheckIn = () => {};
 
+  isValid = () => {
+    return true;
+  };
+
   render() {
     let { navigation } = this.props;
     let { bottle } = navigation.state.params;
@@ -241,7 +276,7 @@ export default class CheckIn extends Component {
           title="Confirm Check-in"
           onPress={this.onCheckIn}
           containerViewStyle={styles.buttonContainer}
-          buttonStyle={styles.button}
+          buttonStyle={[styles.button, this.isValid() && styles.buttonPrimary]}
         />
       </ScrollView>
     );
@@ -255,14 +290,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   buttonContainer: {
-    padding: margins.half,
+    marginTop: margins.full,
+    marginBottom: margins.full,
     alignSelf: 'stretch',
   },
   button: {
     alignSelf: 'stretch',
   },
+  buttonPrimary: {
+    backgroundColor: colors.primary,
+  },
   formElementContainer: {
     alignSelf: 'stretch',
+    justifyContent: 'center',
   },
   labelContainer: {
     flexDirection: 'row',
@@ -272,8 +312,13 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   labelRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: margins.half,
     marginBottom: margins.half,
+  },
+  friendList: {
+    marginRight: margins.half,
   },
   ratingTextPresent: {
     color: colors.default,

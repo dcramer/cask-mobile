@@ -1,17 +1,17 @@
 const colors = {
   background: '#ffffff',
-  trim: '#dddddd',
-
+  trim: '#e9e9e9',
   primary: '#7b6be6',
   primaryLight: '#e1def1',
-  default: '#888888',
+  default: '#333333',
   light: '#aaaaaa',
 };
 
 const margins = {
-  full: 15,
-  half: 7.5,
-  quarter: 3.75,
+  full: 18,
+  half: 9,
+  quarter: 4.5,
+  threeQuarter: 9 + 4.5,
 };
 
 export { colors, margins };
