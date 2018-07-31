@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { StyleSheet, Text, Image, View } from 'react-native';
 
 import { colors, margins } from '../styles';
-import AgedPropTypes from '../propTypes';
+import CustomPropTypes from '../propTypes';
 import Card from './Card';
 
 export default class Bottle extends Component {
   static propTypes = {
-    bottle: AgedPropTypes.Bottle.isRequired,
+    bottle: CustomPropTypes.Bottle.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 

@@ -4,7 +4,7 @@ import { Constants } from 'expo';
 import { StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
-import AgedPropTypes from '../propTypes';
+import CustomPropTypes from '../propTypes';
 import Bottle from '../components/Bottle';
 
 const whiskyDatabase = [
@@ -64,7 +64,7 @@ const whiskyDatabase = [
 
 class BottleEntry extends Component {
   static propTypes = {
-    bottle: AgedPropTypes.Bottle.isRequired,
+    bottle: CustomPropTypes.Bottle.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 
