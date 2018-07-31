@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, Text, Image, View } from 'react-native';
 
 import AgedPropTypes from '../propTypes';
+import Card from './Card';
 
 export default class Bottle extends Component {
   static propTypes = {
@@ -18,7 +19,7 @@ export default class Bottle extends Component {
   render() {
     let { bottle } = this.props;
     return (
-      <View style={styles.rowContainer}>
+      <Card style={styles.cardContainer}>
         <Image source={{ uri: bottle.thumbnail }} style={styles.thumbnail} resizeMode="contain" />
         <View style={styles.rowText}>
           <Text style={styles.name} numberOfLines={2} ellipsizeMode={'tail'}>
@@ -31,29 +32,17 @@ export default class Bottle extends Component {
             {bottle.category} {!!bottle.statedAge && `${bottle.statedAge} yo`}
           </Text>
         </View>
-      </View>
+      </Card>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  rowContainer: {
+  cardContainer: {
     flexDirection: 'row',
-    backgroundColor: '#FFF',
-    height: 100,
-    padding: 10,
-    marginRight: 10,
-    marginLeft: 10,
-    marginTop: 10,
-    borderRadius: 4,
-    shadowOffset: { width: 1, height: 1 },
-    shadowColor: '#CCC',
-    shadowOpacity: 1.0,
-    shadowRadius: 1,
   },
   name: {
     paddingLeft: 10,
-    paddingTop: 5,
     fontSize: 16,
     fontWeight: 'bold',
     color: '#777',

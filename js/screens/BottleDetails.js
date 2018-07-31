@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'react-native-elements';
 import { StyleSheet, ScrollView } from 'react-native';
 
+import { colors } from '../styles';
 import Bottle from '../components/Bottle';
 
 export default class BottleDetails extends Component {
@@ -34,7 +35,8 @@ export default class BottleDetails extends Component {
           title="Check-in"
           onPress={this._onCheckIn}
           containerViewStyle={styles.buttonContainer}
-          buttonStyle={styles.button}
+          color={colors.background}
+          backgroundColor={colors.primary}
         />
       </ScrollView>
     );
@@ -49,9 +51,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignSelf: 'stretch',
-    padding: 10,
-  },
-  button: {
-    alignSelf: 'stretch',
+    paddingTop: 15,
+    paddingBottom: 15,
+    alignItems: 'stretch',
   },
 });

@@ -5,33 +5,32 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Activity from './screens/Activity';
 import CheckIn from './screens/CheckIn';
+import CheckInLocation from './screens/CheckInLocation';
 import Notifications from './screens/Notifications';
 import Home from './screens/Home';
 import Profile from './screens/Profile';
 import BottleDetails from './screens/BottleDetails';
+import { colors } from './styles';
 
 const commonOptions = {
   headerStyle: {
-    backgroundColor: '#7b6be6',
-    borderBottomColor: '#dddddd',
+    backgroundColor: colors.primary,
+    borderBottomColor: colors.trim,
     borderBottomWidth: 1,
   },
-  headerTintColor: 'white',
+  headerTintColor: colors.background,
   headerTitleStyle: {
-    color: 'white',
+    color: colors.background,
     fontWeight: 'bold',
   },
   headerBackTitleStyle: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: colors.background,
   },
   headerLeftTitleStyle: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: colors.background,
   },
   headerRightTitleStyle: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: colors.background,
   },
 };
 
@@ -46,52 +45,69 @@ const HomeStack = createStackNavigator(
   }
 );
 
-export const createRootNavigator = () => {
-  return createBottomTabNavigator(
-    {
-      HomeStack,
-      Activity,
-      Notifications,
-      Profile,
-    },
-    {
-      initialRouteName: 'HomeStack',
-      navigationOptions: ({ navigation }) => {
-        const TabBarIcon = ({ focused, tintColor }) => {
-          const { routeName } = navigation.state;
-          let iconName;
-          if (routeName === 'HomeStack') {
-            iconName = `ios-home`;
-          } else if (routeName === 'Activity') {
-            iconName = `ios-map`;
-          } else if (routeName === 'Notifications') {
-            iconName = `ios-notifications`;
-          } else if (routeName === 'Profile') {
-            iconName = `ios-contact`;
-          }
-          return <Ionicons name={iconName} size={25} color={tintColor} />;
-        };
+const MainStack = createBottomTabNavigator(
+  {
+    HomeStack,
+    Activity,
+    Notifications,
+    Profile,
+  },
+  {
+    initialRouteName: 'HomeStack',
+    navigationOptions: ({ navigation }) => {
+      const TabBarIcon = ({ focused, tintColor }) => {
+        const { routeName } = navigation.state;
+        let iconName;
+        if (routeName === 'HomeStack') {
+          iconName = `ios-home${!focused ? '-outline' : ''}`;
+        } else if (routeName === 'Activity') {
+          iconName = `ios-map${!focused ? '-outline' : ''}`;
+        } else if (routeName === 'Notifications') {
+          iconName = `ios-notifications${!focused ? '-outline' : ''}`;
+        } else if (routeName === 'Profile') {
+          iconName = `ios-contact${!focused ? '-outline' : ''}`;
+        }
+        return <Ionicons name={iconName} size={25} color={tintColor} />;
+      };
 
-        TabBarIcon.propTypes = {
-          focused: PropTypes.boolean,
-          tintColor: PropTypes.string,
-        };
+      TabBarIcon.propTypes = {
+        focused: PropTypes.boolean,
+        tintColor: PropTypes.string,
+      };
 
-        return {
-          tabBarIcon: TabBarIcon,
-          tabBarOptions: {
-            showLabel: false,
-            activeTintColor: 'white',
-            inactiveTintColor: '#b4ade4',
-            style: {
-              borderTopColor: '#dddddd',
-              borderTopWidth: 1,
-              backgroundColor: '#7b6be6',
-            },
+      return {
+        tabBarIcon: TabBarIcon,
+        tabBarOptions: {
+          showLabel: false,
+          activeTintColor: colors.primary,
+          inactiveTintColor: colors.default,
+          style: {
+            borderTopColor: colors.trim,
+            borderTopWidth: 1,
+            backgroundColor: colors.background,
           },
-          ...commonOptions,
-        };
-      },
-    }
-  );
+        },
+        ...commonOptions,
+      };
+    },
+  }
+);
+
+const RootStack = createStackNavigator(
+  {
+    Main: {
+      screen: MainStack,
+    },
+    CheckInLocation: {
+      screen: CheckInLocation,
+    },
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
+  }
+);
+
+export const createRootNavigator = () => {
+  return RootStack;
 };
