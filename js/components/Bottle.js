@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, Image, View } from 'react-native';
 
+import { margins } from '../styles';
 import AgedPropTypes from '../propTypes';
 import Card from './Card';
 
@@ -40,6 +41,8 @@ export default class Bottle extends Component {
 const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: 'row',
+    paddingTop: margins.full,
+    paddingBottom: margins.full,
   },
   name: {
     paddingLeft: 10,
