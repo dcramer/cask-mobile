@@ -54,7 +54,7 @@ export default class TagList extends Component {
       })
     ).isRequired,
     style: ViewPropTypes.style,
-    value: PropTypes.arrayOf(PropTypes.string).isRequired,
+    value: PropTypes.arrayOf(PropTypes.string, PropTypes.object).isRequired,
     onChangeValue: PropTypes.func.isRequired,
   };
 
