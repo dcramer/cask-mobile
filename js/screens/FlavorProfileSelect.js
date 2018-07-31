@@ -15,7 +15,7 @@ const flavorProfileDatabase = [
   { label: 'Wood', value: 'Wood' },
   { label: 'Fire', value: 'Fire' },
   { label: 'Apple Pie', value: 'Apple Pie' },
-];
+].sort((a, b) => a.label > b.label);
 
 class FlavorProfileSelect extends Component {
   static navigationOptions = {
@@ -44,9 +44,7 @@ class FlavorProfileSelect extends Component {
   };
 
   render() {
-    let results = flavorProfileDatabase
-      .filter(i => i.label.indexOf(this.state.query) !== -1)
-      .sort((a, b) => a.label > b.label);
+    let results = flavorProfileDatabase.filter(i => i.label.indexOf(this.state.query) !== -1);
     return (
       <ScrollView style={styles.container}>
         <ModalHeader onDone={this.onDone} title="Flavor Profile" />

@@ -17,7 +17,7 @@ const flavorProfileDatabase = [
   { label: 'Wood', value: 'Wood' },
   { label: 'Fire', value: 'Fire' },
   { label: 'Apple Pie', value: 'Apple Pie' },
-];
+].sort((a, b) => a.label > b.label);
 
 class CheckInRating extends Component {
   static propTypes = {
