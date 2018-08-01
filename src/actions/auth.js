@@ -1,4 +1,6 @@
-import { LOG_IN, LOG_IN_SUCCESS, LOG_IN_FAILURE, LOG_OUT } from '../reducers/auth';
+import { LOG_IN, LOG_IN_SUCCESS, LOG_IN_FAILURE, LOG_OUT, LOG_OUT_SCCESS } from '../reducers/auth';
+
+import { LoginManager } from 'react-native-fbsdk';
 
 export function logIn() {
   return {
@@ -7,6 +9,7 @@ export function logIn() {
 }
 
 export function logOut() {
+  LoginManager.logOut();
   return {
     type: LOG_OUT,
   };

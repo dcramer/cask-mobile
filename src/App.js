@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StatusBar } from 'react-native';
+import { AccessToken } from 'react-native-fbsdk';
 
+import { logInSuccess } from './actions/auth';
 import { RootNavigator, UnauthenticatedNavigator } from './router';
 
 const navigationPersistenceKey = __DEV__ ? 'NavigationStateDEV' : null;
 
 class App extends Component {
   async componentDidMount() {
-    StatusBar.setHidden(true);
+    AccessToken.getCurrentAccessToken().then(data => {
+      this.props.logInSuccess(data);
+    });
   }
 
   render() {
@@ -19,6 +22,9 @@ class App extends Component {
   }
 }
 
-export default connect(({ auth }) => ({
-  auth,
-}))(App);
+export default connect(
+  ({ auth }) => ({
+    auth,
+  }),
+  { logInSuccess }
+)(App);

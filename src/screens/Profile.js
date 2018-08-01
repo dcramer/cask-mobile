@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { connect } from 'react-redux';
+import { Button, StyleSheet, Text, View } from 'react-native';
 
-export default class Profile extends Component {
+import { logOut } from '../actions/auth';
+
+class Profile extends Component {
   static navigationOptions = {
     title: 'Profile',
   };
@@ -10,6 +13,7 @@ export default class Profile extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Profile</Text>
+        <Button onPress={this.props.logOut} title="Log Out" />
       </View>
     );
   }
@@ -28,3 +32,10 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 });
+
+export default connect(
+  ({ auth }) => ({
+    auth,
+  }),
+  { logOut }
+)(Profile);

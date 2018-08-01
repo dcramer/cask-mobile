@@ -26,6 +26,7 @@ class Welcome extends Component {
                 // nothing to do here
               } else {
                 AccessToken.getCurrentAccessToken().then(data => {
+                  console.log(data);
                   this.props.logInSuccess(data);
                   // alert(data.accessToken.toString());
                 });
@@ -34,9 +35,11 @@ class Welcome extends Component {
             onLogoutFinished={() => this.props.logOut}
           />
         </View>
-        <TouchableOpacity onPress={() => this.props.logInSuccess({})}>
-          <Text style={styles.debugAction}>Debug: Bypass Auth</Text>
-        </TouchableOpacity>
+        {__DEV__ && (
+          <TouchableOpacity onPress={() => this.props.logInSuccess({})}>
+            <Text style={styles.debugAction}>Debug: Bypass Auth</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   }
