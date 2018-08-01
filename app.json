@@ -3,5 +3,7 @@
     "name": "Peated",
     "slug": "peated",
     "sdkVersion": "27.0.0"
-  }
+  },
+  "name": "peated",
+  "displayName": "Peated"
 }
