@@ -1,37 +1,50 @@
-export const LOG_IN = 'LOG_IN';
-export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
-export const LOG_IN_FAILURE = 'LOG_IN_FAILURE';
-export const LOG_OUT = 'LOG_OUT';
+export const ACCESS_TOKEN_FAILURE = 'ACCESS_TOKEN_FAILURE';
+export const CHECK_AUTH = 'CHECK_AUTH';
+export const LOGIN = 'LOGIN';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_FAILURE = 'LOGIN_FAILURE';
+export const LOGOUT = 'LOGOUT';
 
 const initialState = {
+  validToken: null,
   isAuthenticating: false,
   user: null,
 
-  logInError: false,
-  logInErrorMessage: '',
+  loginError: false,
+  loginErrorMessage: '',
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case LOG_IN:
+    case ACCESS_TOKEN_FAILURE: {
+      return {
+        ...initialState,
+        ...state,
+        validToken: false,
+        isAuthenticating: false,
+      };
+    }
+    case LOGIN:
       return {
         ...state,
         isAuthenticating: true,
-        logInError: false,
+        loginError: false,
       };
-    case LOG_IN_SUCCESS:
+    case LOGIN_SUCCESS:
       return {
+        validToken: true,
         isAuthenticating: false,
         user: action.user,
       };
-    case LOG_IN_FAILURE:
+    case LOGIN_FAILURE:
       return {
         ...state,
+        validToken: false,
         isAuthenticating: false,
-        logInError: true,
-        logInErrorMessage: action.error.message,
+        loginError: true,
+        loginErrorMessage: action.error.message,
       };
-    case LOG_OUT:
+    case LOGOUT:
       return {
         ...initialState,
       };

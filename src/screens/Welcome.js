@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { LoginButton, AccessToken } from 'react-native-fbsdk';
 
-import { logInFailure, logInSuccess, logOut } from '../actions/auth';
+import { loginFacebook, loginSuccess } from '../actions/auth';
 import { colors, layout, margins } from '../styles';
 
 class Welcome extends Component {
@@ -18,25 +17,10 @@ class Welcome extends Component {
         <Icon style={styles.icon} name="ios-beer" size={160} color="white" />
         <Text style={styles.label}>Peated</Text>
         <View style={styles.loginContainer}>
-          <LoginButton
-            onLoginFinished={(error, result) => {
-              if (error) {
-                this.props.logInFailure(error, result);
-              } else if (result.isCancelled) {
-                // nothing to do here
-              } else {
-                AccessToken.getCurrentAccessToken().then(data => {
-                  console.log(data);
-                  this.props.logInSuccess(data);
-                  // alert(data.accessToken.toString());
-                });
-              }
-            }}
-            onLogoutFinished={() => this.props.logOut}
-          />
+          <Button onPress={this.props.loginFacebook} title="Continue with Facebook" color="#fff" />
         </View>
         {__DEV__ && (
-          <TouchableOpacity onPress={() => this.props.logInSuccess({})}>
+          <TouchableOpacity onPress={() => this.props.loginSuccess({})}>
             <Text style={styles.debugAction}>Debug: Bypass Auth</Text>
           </TouchableOpacity>
         )}
@@ -61,7 +45,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'stretch',
-    backgroundColor: '#4267b2',
+    backgroundColor: '#4267B2',
   },
   label: {
     color: '#fff',
@@ -77,5 +61,5 @@ const styles = StyleSheet.create({
 
 export default connect(
   ({ auth }) => ({}),
-  { logInSuccess, logInFailure, logOut }
+  { loginFacebook, loginSuccess }
 )(Welcome);

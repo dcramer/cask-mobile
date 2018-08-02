@@ -1,30 +1,86 @@
-import { LOG_IN, LOG_IN_SUCCESS, LOG_IN_FAILURE, LOG_OUT, LOG_OUT_SCCESS } from '../reducers/auth';
+import { Alert } from 'react-native';
+import { AccessToken, LoginManager } from 'react-native-fbsdk';
+import {
+  ACCESS_TOKEN_FAILURE,
+  LOGIN,
+  LOGIN_SUCCESS,
+  LOGIN_FAILURE,
+  LOGOUT,
+} from '../reducers/auth';
 
-import { LoginManager } from 'react-native-fbsdk';
+import firebase from '../firebase';
 
-export function logIn() {
+export const loginFacebook = () => {
+  return dispatch => {
+    dispatch(login());
+    LoginManager.logInWithReadPermissions(['public_profile', 'user_friends', 'email']).then(
+      result => {
+        if (result.isCancelled) {
+          Alert.alert('Whoops!', 'You cancelled the sign in.');
+        } else {
+          dispatch(fetchAccessToken());
+        }
+      },
+      error => {
+        dispatch(loginFailure(error.message));
+      }
+    );
+  };
+};
+
+export function fetchAccessToken() {
+  return dispatch => {
+    AccessToken.getCurrentAccessToken()
+      .then(data => {
+        const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+        firebase
+          .auth()
+          .signInAndRetrieveDataWithCredential(credential)
+          .then(() => {
+            dispatch(loginSuccess(data));
+          })
+          .catch(error => {
+            dispatch(loginFailure(error.message));
+          });
+      })
+      .catch(error => {
+        dispatch(accessTokenFailure(error.message));
+      });
+  };
+}
+
+export function login() {
   return {
-    type: LOG_IN,
+    type: LOGIN,
   };
 }
 
 export function logOut() {
   LoginManager.logOut();
   return {
-    type: LOG_OUT,
+    type: LOGOUT,
   };
 }
 
-export function logInSuccess(user) {
+export function loginSuccess(user) {
   return {
-    type: LOG_IN_SUCCESS,
+    type: LOGIN_SUCCESS,
     user: user,
   };
 }
 
-export function logInFailure(err) {
+export function loginFailure(error) {
+  Alert.alert('Sign in error', error);
+
   return {
-    type: LOG_IN_FAILURE,
-    error: err,
+    type: LOGIN_FAILURE,
+    error,
+  };
+}
+
+export function accessTokenFailure(error) {
+  return {
+    type: ACCESS_TOKEN_FAILURE,
+    error,
   };
 }
