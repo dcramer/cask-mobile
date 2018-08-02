@@ -6,3 +6,7 @@ export const firebase = {
   storageBucket: 'peated-1ff7b.appspot.com',
   messagingSenderId: '534028188457',
 };
+
+export const firestore = {
+  timestampsInSnapshots: true,
+};

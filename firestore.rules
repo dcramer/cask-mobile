@@ -1,16 +1,116 @@
+function isYearValue(value, nullable) {
+  return (value == null && nullable) || (value is int && value > 1900 && value < 2100);
+}
+
+function isAgeValue(value, nullable) {
+  return (value == null && nullable) || (value is int && value > 0 && value < 100);
+}
+
+function isRatingValue(value) {
+  return value is number && value >= 0 && value <= 5
+}
+
+function isBottleRef(database, value) {
+  return exists(/databases/$(database)/documents/bottles/$(value))
+}
+
+function isLocationRef(database, value) {
+  return exists(/databases/$(database)/documents/locations/$(value))
+}
+
+function isUserRef(database, value) {
+  return exists(/databases/$(database)/documents/users/$(value))
+}
+
+function isUser(database, resource) {
+  return resource.data.keys().hasAll(['email', 'emailVerified', 'displayName', 'photoURL'])
+    && resource.data.email is string
+    && resource.data.email.size() < 200
+    && resource.data.displayName is string
+    && resource.data.displayName.size() < 200
+    && resource.data.emailVerified is bool
+    && resource.data.photoURL is string
+}
+
+function isBottle(database, resource) {
+  return resource.data.keys().hasAll([
+      'name',
+      'distillery',
+      'category'
+      // 'abv',
+      // 'statedAge',
+      // 'vintageYear',
+      // 'bottleYear',
+      // 'caskType'
+    ]) && (
+      resource.data.size() >= 2 ||
+      resource.data.size() <= 4
+    )
+    && resource.data.name is string
+    && resource.data.name.size() < 200
+    // && (
+    //   resource.data.abv is number ||
+    //   resource.data.abv == null
+    // )
+    // && resource.data.distillery is string
+    // && exists(/databases/$(database)/documents/locations/$(resource.data.distillery))
+    // && resource.data.category is string
+    // && resource.data.caskType is string
+    // && isAgeValue(resource.data.stagedAge)
+    // && isYearValue(resource.data.vintageYear)
+    // && isYearValue(resource.data.bottleYear)
+}
+
+function isLocation(database, resource) {
+  return resource.data.keys().hasAll(['name', 'latlng'])
+    && resource.data.size() == 2
+    && resource.data.name is string
+    && resource.data.name.size() < 200
+    && resource.data.latlng is latlng
+  // new firebase.firestore.GeoPoint(latitude, longitude)
+}
+
+function isCheckin(database, resource) {
+  return resource.data.keys().hasAll(['bottle', 'notes', 'user', 'rating', 'location', 'flavorProfile', 'friends'])
+    && isUserRef(database, resource.data.user)
+    && isBottleRef(database, resource.data.bottle)
+    && (
+      resource.data.notes == null ||
+      (resource.data.notes is string && resource.data.notes.size() < 200)
+    )
+    && (
+      resource.data.location == null ||
+      isLocationRef(database, resource.data.location)
+    )
+    && isRatingValue(resource.data.rating)
+    && resource.data.flavorProfile is list
+    && resource.data.friends is list
+}
+
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId} {
-      allow read, update: if request.auth.uid == userId;
-      allow create: if request.auth.uid != null;
-      allow delete: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+      allow read: if request.auth.uid == userId;
+      allow update: if request.auth.uid == userId
+                    && isUser(database, request.resource);
+      allow create: if request.auth.uid == userId;
     }
-    match /checkIns {
-      allow read, update, delete: if request.auth.uid == request.data.uid;
-      allow create: if request.auth.uid != null;
+    match /bottles/{bottleId} {
+      allow read: if request.auth.uid != null
     }
-    // match /{document=**} {
-    //   allow read, write;
-    // }
+    match /locations/{locationId} {
+      allow read: if request.auth.uid != null;
+    }
+    match /checkins/{checkinId} {
+      allow read, delete: if request.auth.uid == resource.data.user;
+      allow create: if request.auth.uid == request.resource.data.user
+                    && isCheckin(database, request.resource);
+      allow update: if request.auth.uid == resource.data.user
+                    && request.resource.data.user == resource.data.user
+                    && isCheckin(database, request.resource);
+    }
+    match /{document=**} {
+      allow read;
+    }
   }
 }

@@ -1,5 +1,7 @@
 import { Alert } from 'react-native';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
+import { Sentry } from 'react-native-sentry';
+
 import {
   ACCESS_TOKEN_FAILURE,
   LOGIN,
@@ -9,7 +11,6 @@ import {
   UPDATE_USER_SUCCESS,
   UPDATE_USER_FAILURE,
 } from '../reducers/auth';
-import { Sentry } from 'react-native-sentry';
 
 import firebase, { db } from '../firebase';
 
@@ -62,7 +63,7 @@ export function login() {
 }
 
 export function logOut() {
-  LoginManager.logOut();
+  firebase.auth().signOut();
   return {
     type: LOGOUT,
   };

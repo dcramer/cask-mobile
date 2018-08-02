@@ -9,6 +9,7 @@
         "lextudio.restructuredtext",
         "PeterJausovec.vscode-docker",
         "DavidAnson.vscode-markdownlint",
-        "toba.vsfire"
+        "toba.vsfire",
+        "smkamranqadri.vscode-bolt-language"
     ]
 }

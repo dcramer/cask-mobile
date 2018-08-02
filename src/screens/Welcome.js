@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { loginFacebook, loginSuccess } from '../actions/auth';
@@ -19,11 +19,6 @@ class Welcome extends Component {
         <View style={styles.loginContainer}>
           <Button onPress={this.props.loginFacebook} title="Continue with Facebook" color="#fff" />
         </View>
-        {__DEV__ && (
-          <TouchableOpacity onPress={() => this.props.loginSuccess({})}>
-            <Text style={styles.debugAction}>Debug: Bypass Auth</Text>
-          </TouchableOpacity>
-        )}
       </View>
     );
   }
@@ -53,13 +48,9 @@ const styles = StyleSheet.create({
     fontSize: 34,
     fontWeight: 'bold',
   },
-  debugAction: {
-    color: '#fff',
-    alignSelf: 'flex-end',
-  },
 });
 
 export default connect(
-  ({ auth }) => ({}),
+  () => ({}),
   { loginFacebook, loginSuccess }
 )(Welcome);

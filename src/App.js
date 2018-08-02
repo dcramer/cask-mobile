@@ -1,20 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { ActivityIndicator, View } from 'react-native';
 
-import { fetchAccessToken } from './actions/auth';
+import firebase from './firebase';
+import { loginSuccess } from './actions/auth';
 import { RootNavigator, UnauthenticatedNavigator } from './router';
 
 const navigationPersistenceKey = __DEV__ ? 'NavigationStateDEV' : null;
 
 class App extends Component {
-  constructor(...args) {
-    super(...args);
-    this.props.fetchAccessToken();
+  state = { loaded: false };
+
+  async componentWillMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      this.setState({ loaded: true });
+
+      if (user) {
+        this.props.loginSuccess(user);
+      }
+    });
   }
 
   render() {
-    if (this.props.auth.validToken === null) {
-      return null;
+    if (!this.state.loaded) {
+      return (
+        <View>
+          <ActivityIndicator size="large" />
+        </View>
+      );
     }
     if (!this.props.auth.user) {
       return <UnauthenticatedNavigator {...this.props} />;
@@ -27,5 +40,5 @@ export default connect(
   ({ auth }) => ({
     auth,
   }),
-  { fetchAccessToken }
+  { loginSuccess }
 )(App);

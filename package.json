@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "firebase": "^5.3.0",
+    "firebase-bolt": "^0.8.4",
     "prop-types": "^15.6.2",
     "react": "16.4.1",
     "react-native": "^0.56.0",

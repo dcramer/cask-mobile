@@ -245,23 +245,31 @@ class CheckIn extends Component {
     };
   }
 
+  async componentDidMount() {
+    let { auth, navigation } = this.props;
+    let { bottle } = navigation.state.params;
+    if (!bottle || auth.user.uid) {
+      navigation.navigate('Main');
+    }
+  }
+
   onChangeValue = (name, value) => {
     this.setState({ [name]: value });
   };
 
   onCheckIn = () => {
     let state = this.state;
-    let { navigation } = this.props;
+    let { auth, navigation } = this.props;
     let { bottle } = navigation.state.params;
     this.setState({ submitting: true });
     this.props.checkIn({
-      uid: this.props.auth.user.uid,
+      user: auth.user.uid,
       bottle: bottle.id,
       notes: state.notes,
       rating: state.rating,
-      friends: Array.from(state.friends).map(f => f.id),
+      friends: state.friends.map(f => f.id),
       location: state.location ? state.location.id : null,
-      flavorProfile: Array.from(state.flavorProfile).map(f => f.value),
+      flavorProfile: state.flavorProfile,
     });
   };
 

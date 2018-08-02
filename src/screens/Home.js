@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
+import { Sentry } from 'react-native-sentry';
 import PropTypes from 'prop-types';
-import { StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  Text,
+  View,
+} from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
+import { db } from '../firebase';
 import { layout } from '../styles';
 import CustomPropTypes from '../propTypes';
 import Bottle from '../components/Bottle';
@@ -85,16 +94,45 @@ class BottleEntry extends Component {
 class RecentActivity extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      items: whiskyDatabase.slice(2, 4),
-    };
+    this.state = { loading: true, error: null, items: [] };
+    db.collection('bottles')
+      .get()
+      .then(snapshot => {
+        this.setState({
+          loading: false,
+          items: snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          })),
+        });
+      })
+      .catch(error => {
+        this.setState({ error, loading: false });
+        Sentry.captureException(error);
+      });
   }
+
+  // async componentDidMount() {}
 
   _renderItem = ({ item }) => <BottleEntry bottle={item} navigation={this.props.navigation} />;
 
   _keyExtractor = item => item.id;
 
   render() {
+    if (this.state.loading) {
+      return (
+        <View>
+          <ActivityIndicator size="large" />
+        </View>
+      );
+    }
+    if (this.state.error) {
+      return (
+        <View>
+          <Text>Error: {this.state.error.message}</Text>
+        </View>
+      );
+    }
     return (
       <View>
         <FlatList
