@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ActivityIndicator, View } from 'react-native';
 
 import firebase from './firebase';
 import { loginSuccess } from './actions/auth';
 import { RootNavigator, UnauthenticatedNavigator } from './router';
+import Loading from './screens/Loading';
 
 const navigationPersistenceKey = __DEV__ ? 'NavigationStateDEV' : null;
 
@@ -23,11 +23,7 @@ class App extends Component {
 
   render() {
     if (!this.state.loaded) {
-      return (
-        <View>
-          <ActivityIndicator size="large" />
-        </View>
-      );
+      return <Loading />;
     }
     if (!this.props.auth.user) {
       return <UnauthenticatedNavigator {...this.props} />;
