@@ -59,17 +59,17 @@ export default class TagList extends Component {
   };
 
   onSelectTag = value => {
-    let selected = new Set(this.props.value);
-    if (selected.has(value)) {
-      selected.delete(value);
+    let selected = this.props.value;
+    if (selected.indexOf(value) !== -1) {
+      selected = selected.filter(v => v !== value);
     } else {
-      selected.add(value);
+      selected = [...selected, value];
     }
     this.props.onChangeValue(selected);
   };
 
   render() {
-    let selected = new Set(this.props.value);
+    let selectedSet = new Set(this.props.value);
     return (
       <View style={[styles.listContainer, this.props.style]}>
         {this.props.tagList.map(({ label, value }) => (
@@ -78,7 +78,7 @@ export default class TagList extends Component {
             label={label}
             value={value}
             onPress={() => this.onSelectTag(value)}
-            selected={selected.has(value)}
+            selected={selectedSet.has(value)}
           />
         ))}
       </View>

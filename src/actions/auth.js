@@ -76,6 +76,7 @@ export function loginSuccess(user) {
 }
 
 export function loginFailure(error) {
+  Sentry.captureException(error);
   Alert.alert('Sign in error', error);
 
   return {
@@ -118,7 +119,6 @@ export function updateUserSuccess(user) {
 
 export function updateUserFailure(user, error) {
   Sentry.captureException(error);
-  Alert.alert('User update failure', error.message);
 
   return {
     type: UPDATE_USER_FAILURE,

@@ -1,7 +1,12 @@
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId} {
-      allow read, update, delete: if request.auth.uid == userId;
+      allow read, update: if request.auth.uid == userId;
+      allow create: if request.auth.uid != null;
+      allow delete: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+    }
+    match /checkIns {
+      allow read, update, delete: if request.auth.uid == request.data.uid;
       allow create: if request.auth.uid != null;
     }
     // match /{document=**} {

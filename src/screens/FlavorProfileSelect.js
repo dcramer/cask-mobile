@@ -28,7 +28,7 @@ class FlavorProfileSelect extends Component {
     let { currentValue } = navigation.state.params;
     this.state = {
       query: '',
-      selected: new Set(currentValue),
+      selected: currentValue || [],
     };
   }
 
@@ -58,15 +58,13 @@ class FlavorProfileSelect extends Component {
             placeholder="Search"
           />
         </View>
-        {this.state.selected.size && (
+        {this.state.selected.length && (
           <Card>
             <FormLabel>Selected</FormLabel>
             <TagList
-              tagList={Array.from(this.state.selected)
-                .sort()
-                .map(value => {
-                  return flavorProfileDatabase.find(p => p.value === value);
-                })}
+              tagList={this.state.selected.sort().map(value => {
+                return flavorProfileDatabase.find(p => p.value === value);
+              })}
               style={styles.tagSelect}
               value={this.state.selected}
               onChangeValue={this.setValue}

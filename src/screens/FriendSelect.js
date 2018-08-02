@@ -80,14 +80,14 @@ class FriendSelect extends Component {
     let { currentValue } = navigation.state.params;
     this.state = {
       query: '',
-      selected: new Set(currentValue ? currentValue.map(i => i.id) : null),
+      selected: currentValue ? currentValue.map(i => i.id) : [],
     };
   }
   _renderItem = ({ item }) => (
     <PersonEntry
       person={item}
       navigation={this.props.navigation}
-      selected={this.state.selected.has(item.id)}
+      selected={this.state.selected.indexOf(item.id) !== -1}
       onPress={() => this.onPressPerson(item.id)}
     />
   );
@@ -95,11 +95,11 @@ class FriendSelect extends Component {
   _keyExtractor = item => item.id;
 
   onPressPerson = value => {
-    let selected = new Set(this.state.selected);
-    if (selected.has(value)) {
-      selected.delete(value);
+    let selected = this.state.selected;
+    if (selected.indexOf(value) !== -1) {
+      selected = selected.filter(v => v !== value);
     } else {
-      selected.add(value);
+      selected = [...selected, value];
     }
     this.setState({ selected });
   };
@@ -108,7 +108,7 @@ class FriendSelect extends Component {
     let { navigation } = this.props;
     let { selected } = this.state;
     navigation.state.params.onChangeValue(
-      Array.from(selected).map(personId => {
+      selected.map(personId => {
         return friendDatabase.find(p => p.id === personId);
       })
     );

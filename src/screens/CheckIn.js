@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Slider } from 'react-native-elements';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { checkIn } from '../actions/checkIns';
 import { colors, margins } from '../styles';
 import Bottle from '../components/Bottle';
 import Card from '../components/Card';
@@ -185,8 +187,9 @@ class CheckInLocation extends Component {
 class CheckInFlavorProfile extends Component {
   constructor(...args) {
     super(...args);
-    this.state = { value: new Set() };
+    this.state = { value: [] };
   }
+
   setValue = value => {
     this.setState({ value });
     this.props.onChangeValue(value);
@@ -223,8 +226,10 @@ class CheckInFlavorProfile extends Component {
   }
 }
 
-export default class CheckIn extends Component {
+class CheckIn extends Component {
   static propTypes = {
+    auth: PropTypes.object.isRequired,
+    checkIn: PropTypes.func.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 
@@ -235,7 +240,8 @@ export default class CheckIn extends Component {
       rating: 0,
       friends: [],
       location: null,
-      flavorProfile: null,
+      flavorProfile: [],
+      submitting: false,
     };
   }
 
@@ -243,7 +249,21 @@ export default class CheckIn extends Component {
     this.setState({ [name]: value });
   };
 
-  onCheckIn = () => {};
+  onCheckIn = () => {
+    let state = this.state;
+    let { navigation } = this.props;
+    let { bottle } = navigation.state.params;
+    this.setState({ submitting: true });
+    this.props.checkIn({
+      uid: this.props.auth.user.uid,
+      bottle: bottle.id,
+      notes: state.notes,
+      rating: state.rating,
+      friends: Array.from(state.friends).map(f => f.id),
+      location: state.location ? state.location.id : null,
+      flavorProfile: Array.from(state.flavorProfile).map(f => f.value),
+    });
+  };
 
   isValid = () => {
     return true;
@@ -338,3 +358,10 @@ const styles = StyleSheet.create({
     marginBottom: margins.half,
   },
 });
+
+export default connect(
+  ({ auth }) => ({
+    auth,
+  }),
+  { checkIn }
+)(CheckIn);
