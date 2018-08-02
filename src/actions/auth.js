@@ -6,9 +6,12 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
   LOGOUT,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_FAILURE,
 } from '../reducers/auth';
+import { Sentry } from 'react-native-sentry';
 
-import firebase from '../firebase';
+import firebase, { db } from '../firebase';
 
 export const loginFacebook = () => {
   return dispatch => {
@@ -18,7 +21,7 @@ export const loginFacebook = () => {
         if (result.isCancelled) {
           Alert.alert('Whoops!', 'You cancelled the sign in.');
         } else {
-          dispatch(fetchAccessToken());
+          dispatch(fetchAccessToken(true));
         }
       },
       error => {
@@ -28,7 +31,7 @@ export const loginFacebook = () => {
   };
 };
 
-export function fetchAccessToken() {
+export function fetchAccessToken(update = false) {
   return dispatch => {
     AccessToken.getCurrentAccessToken()
       .then(data => {
@@ -36,8 +39,11 @@ export function fetchAccessToken() {
         firebase
           .auth()
           .signInAndRetrieveDataWithCredential(credential)
-          .then(() => {
-            dispatch(loginSuccess(data));
+          .then(({ user }) => {
+            if (updateUser) {
+              dispatch(updateUser(user));
+            }
+            dispatch(loginSuccess(user));
           })
           .catch(error => {
             dispatch(loginFailure(error.message));
@@ -81,6 +87,42 @@ export function loginFailure(error) {
 export function accessTokenFailure(error) {
   return {
     type: ACCESS_TOKEN_FAILURE,
+    error,
+  };
+}
+
+export function updateUser(user) {
+  return dispatch => {
+    db.collection('users')
+      .doc(user.uid)
+      .set({
+        email: user.email,
+        emailVerified: user.emailVerified,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+      })
+      .then(() => {
+        dispatch(updateUserSuccess(user));
+      })
+      .catch(error => {
+        dispatch(updateUserFailure(user, error));
+      });
+  };
+}
+export function updateUserSuccess(user) {
+  return {
+    type: UPDATE_USER_SUCCESS,
+    user,
+  };
+}
+
+export function updateUserFailure(user, error) {
+  Sentry.captureException(error);
+  Alert.alert('User update failure', error.message);
+
+  return {
+    type: UPDATE_USER_FAILURE,
+    user,
     error,
   };
 }

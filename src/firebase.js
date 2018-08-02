@@ -1,7 +1,14 @@
-import * as firebase from 'firebase';
+import firebase from 'firebase';
+require('firebase/firestore');
 
 import { firebase as firebaseConfig } from '../config';
 
-export const firebaseApp = firebase.initializeApp(firebaseConfig);
-export const database = firebaseApp.database().ref();
+firebase.initializeApp(firebaseConfig);
+
+export const db = firebase.firestore();
+
+db.settings({
+  timestampsInSnapshots: true,
+});
+
 export default firebase;
