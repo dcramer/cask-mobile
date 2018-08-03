@@ -12,9 +12,9 @@ export function checkIn(data) {
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           ...data,
         })
-        .then(docRef => {
+        .then(doc => {
           let item = {
-            id: docRef.id,
+            id: doc.id,
             ...data,
           };
           resolve(item);

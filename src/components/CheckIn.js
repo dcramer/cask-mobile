@@ -10,6 +10,21 @@ import CustomPropTypes from '../propTypes';
 import Bottle from './Bottle';
 import Card from './Card';
 
+class Rating extends Component {
+  render() {
+    let { value, maxValue } = this.props;
+    let nodes = [];
+    let totalStars = Math.min(value, maxValue);
+    for (var i = 0; i < Math.floor(totalStars); i++) {
+      nodes.push(<Icon name="star" solid size={24} key={i} />);
+    }
+    if (totalStars % 1 > 0.5) {
+      nodes.push(<Icon name="star-half" solid size={24} key={0.5} />);
+    }
+    return <View style={styles.rating}>{nodes}</View>;
+  }
+}
+
 class CheckIn extends Component {
   static propTypes = {
     checkIn: CustomPropTypes.CheckIn.isRequired,
@@ -39,7 +54,7 @@ class CheckIn extends Component {
                 {user.displayName}
               </Text>
               <Text style={styles.timestamp}>
-                <TimeAgo time={checkIn.createdAt.toDate()} />
+                {!!checkIn.createdAt && <TimeAgo time={checkIn.createdAt.toDate()} />}
               </Text>
             </View>
             {!!location && (
@@ -52,7 +67,7 @@ class CheckIn extends Component {
         <Bottle bottle={bottle} style={styles.bottleCard} />
         {!!checkIn.rating && (
           <View style={styles.ratingContainer}>
-            Rated {checkIn.rating} <Icon name="star" size={24} />
+            <Rating value={checkIn.rating} maxValue={5} />
           </View>
         )}
         <View style={styles.actionContainer}>
@@ -118,6 +133,12 @@ const styles = StyleSheet.create({
   },
   ratingContainer: {
     marginTop: margins.half,
+  },
+  rating: {
+    flex: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   actionContainer: {
     marginTop: margins.half,
