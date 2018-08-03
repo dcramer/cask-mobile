@@ -163,8 +163,9 @@ class SearchResults extends Component {
     let { query } = this.props;
     if (!query) return;
     this.setState({ loading: true });
+    // this doesn't behave as expected and seems to break on various characters (like space)
     db.collection('bottles')
-      .where('name', '>=', this.props.query)
+      .where('name', '>=', query)
       .orderBy('name')
       .limit(25)
       .get()
@@ -195,6 +196,8 @@ class SearchResults extends Component {
     if (this.state.error) {
       return <Text>{this.state.error.message}</Text>;
     }
+
+    console.log(this.state.items.length);
 
     if (this.props.query && !this.state.loading && !this.state.items.length) {
       return (

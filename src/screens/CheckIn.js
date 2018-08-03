@@ -170,7 +170,7 @@ class CheckIn extends Component {
     let { navigation } = this.props;
     let { bottle } = navigation.state.params;
     return (
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView>
         <Bottle navigation={this.props.navigation} bottle={bottle} />
         <TextField
           onChangeValue={v => this.onChangeValue('notes', v)}
@@ -189,6 +189,8 @@ class CheckIn extends Component {
         <TagField
           onChangeValue={v => this.onChangeValue('flavorProfile', v)}
           name="Flavor Profile"
+          maxValues={5}
+          tagList={flavorProfileDatabase}
         />
         <Button
           title="Confirm Check-in"
@@ -204,7 +206,6 @@ class CheckIn extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
   },
   buttonContainer: {
     marginTop: margins.full,

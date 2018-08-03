@@ -109,8 +109,9 @@ export const RootNavigator = createStackNavigator(
     TagSelect,
   },
   {
-    mode: 'modal',
+    // mode: 'modal',
     headerMode: 'none',
+    gesturesEnabled: true,
     navigationOptions: ({ navigation }) => ({
       ...commonOptions,
       tabBarVisible: navigation.state.index === 0,

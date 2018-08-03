@@ -63,7 +63,7 @@ class TagSelect extends Component {
         </View>
         {!!this.state.selected.length && (
           <Card>
-            <FormLabel>Selected</FormLabel>
+            <FormLabel>Selected {!!maxValues && `(${maxValues} max)`}</FormLabel>
             <TagList
               tagList={this.state.selected.sort().map(v => {
                 return tagList.find(({ value }) => value === v);

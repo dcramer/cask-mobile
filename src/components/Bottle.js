@@ -32,7 +32,9 @@ class Bottle extends Component {
   render() {
     let { bottle, style } = this.props;
     return (
-      <Card style={[styles.cardContainer, style]} onPress={this.props.canPress && this._onPress}>
+      <Card
+        style={[styles.cardContainer, style]}
+        onPress={this.props.canPress ? this._onPress : null}>
         <Image source={{ uri: bottle.thumbnail }} style={styles.thumbnail} resizeMode="contain" />
         <View style={styles.rowText}>
           <Text style={styles.name} numberOfLines={2} ellipsizeMode={'tail'}>

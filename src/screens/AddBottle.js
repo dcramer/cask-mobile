@@ -76,7 +76,7 @@ class AddBottle extends Component {
 
   render() {
     return (
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView>
         <TextField
           onChangeValue={v => this.onChangeValue('name', v)}
           name="Name"
