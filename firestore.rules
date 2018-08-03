@@ -27,12 +27,11 @@ function isUserRef(database, value) {
 }
 
 function isUser(database, resource) {
-  return resource.data.keys().hasAll(['email', 'emailVerified', 'displayName', 'photoURL'])
+  return resource.data.keys().hasAll(['email', 'displayName', 'photoURL'])
     && resource.data.email is string
     && resource.data.email.size() < 200
     && resource.data.displayName is string
     && resource.data.displayName.size() < 200
-    && resource.data.emailVerified is bool
     && resource.data.photoURL is string
 }
 
@@ -42,8 +41,8 @@ function isBottle(database, resource) {
       'name',
       'distillery'
     ])
-    && isUserRef(resource.data.userAdded)
-    && isDistilleryRef(resource.data.distillery)
+    && isUserRef(database, resource.data.userAdded)
+    && isDistilleryRef(database, resource.data.distillery)
 }
 
 function isDistillery(database, resource) {
@@ -53,7 +52,7 @@ function isDistillery(database, resource) {
       'country',
       'region'
     ])
-    && isUserRef(resource.data.userAdded)
+    && isUserRef(database, resource.data.userAdded)
 }
 
 function isLocation(database, resource) {

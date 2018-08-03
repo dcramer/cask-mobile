@@ -54,11 +54,11 @@ class AddBottle extends Component {
         distillery: state.distillery ? state.distillery.id : null,
         category: state.category.length ? state.category[0] : null,
         series: state.series,
-        statedAge: state.statedAge,
-        vintageYear: state.vintageYear,
-        bottleYear: state.bottleYear,
+        statedAge: state.statedAge ? parseInt(state.statedAge, 10) : null,
+        vintageYear: state.vintageYear ? parseInt(state.vintageYear, 10) : null,
+        bottleYear: state.bottleYear ? parseInt(state.bottleYear, 10) : null,
         caskType: state.caskType,
-        abv: state.abv,
+        abv: state.abv ? parseInt(state.abv * 100, 10) / 100 : null,
       })
       .then(bottle => {
         navigation.navigate('BottleDetails', {

@@ -5,6 +5,9 @@
 # sensitive credentials for Sentry
 sentry.properties
 
+# firebase-adminsdk credentials
+/credentials.json
+
 # expo
 .expo/
 

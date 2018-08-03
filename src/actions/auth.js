@@ -72,7 +72,7 @@ export function logOut() {
 export function loginSuccess(user) {
   return {
     type: LOGIN_SUCCESS,
-    user: user,
+    user,
   };
 }
 
@@ -99,7 +99,6 @@ export function updateUser(user) {
       .doc(user.uid)
       .set({
         email: user.email,
-        emailVerified: user.emailVerified,
         displayName: user.displayName,
         photoURL: user.photoURL,
       })
