@@ -7,12 +7,8 @@ const RULES = fs.readFileSync(path.join(__dirname, '../firestore.rules'), { enco
 
 const CREDENTIAL = JSON.parse(fs.readFileSync(path.join(__dirname, '../credentials.json')));
 
-// const db = new Database({
-//   data: DATA,
-//   rules: RULES,
-//   credential: CREDENTIAL
-// });
-
+// NOTE(dcramer): There's a bug in expect-firestore that requires all data to have a
+// subcollection defined even if its empty
 const db = new firestore.Database({
   // Credentials from firebase console
   credential: CREDENTIAL,
@@ -45,6 +41,17 @@ const db = new firestore.Database({
           name: 'Macallan',
           country: 'Scotland',
           region: 'Speyside',
+        },
+        collections: {},
+      },
+    ],
+    bottles: [
+      {
+        key: 'bottleA',
+        fields: {
+          name: 'Macallan 15',
+          distillery: 'distA',
+          stagedAge: 15,
         },
         collections: {},
       },
@@ -140,6 +147,53 @@ describe('distilleries', () => {
         region: 'Highlands',
       });
       firestore.assert(result);
+    });
+  });
+
+  describe('bottles', () => {
+    beforeAll(async () => {
+      await db.authorize();
+    });
+
+    describe('read', () => {
+      it('should allow authenticated', async () => {
+        const result = await db.canGet({ uid: 'userA' }, 'bottles/bottleA');
+        firestore.assert(result);
+      });
+
+      it('should not allow anonymous', async () => {
+        const result = await db.cannotGet({}, 'bottles/bottleA');
+        firestore.assert(result);
+      });
+    });
+
+    describe('set', () => {
+      it('should allow authenticated', async () => {
+        const result = await db.canSet({ uid: 'userA' }, 'bottles/bottleB', {
+          userAdded: 'userA',
+          name: 'Highland Park 15',
+          distillery: 'distA',
+        });
+        firestore.assert(result);
+      });
+
+      it('requires current user as userAdded', async () => {
+        const result = await db.cannotSet({ uid: 'userA' }, 'bottles/bottleB', {
+          userAdded: 'userB',
+          name: 'Highland Park 15',
+          distillery: 'distA',
+        });
+        firestore.assert(result);
+      });
+
+      it('requires valid distillary', async () => {
+        const result = await db.cannotSet({ uid: 'userA' }, 'bottles/bottleB', {
+          userAdded: 'userA',
+          name: 'Highland Park 15',
+          distillery: 'distB',
+        });
+        firestore.assert(result);
+      });
     });
   });
 });
