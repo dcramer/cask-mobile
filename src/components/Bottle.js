@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, Image, View, ViewPropTypes } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { colors, margins } from '../styles';
 import CustomPropTypes from '../propTypes';
@@ -35,7 +36,11 @@ class Bottle extends Component {
       <Card
         style={[styles.cardContainer, style]}
         onPress={this.props.canPress ? this._onPress : null}>
-        <Image source={{ uri: bottle.thumbnail }} style={styles.thumbnail} resizeMode="contain" />
+        {bottle.thumbnail ? (
+          <Image source={{ uri: bottle.thumbnail }} style={styles.thumbnail} resizeMode="contain" />
+        ) : (
+          <Icon name="file-image" size={64} style={styles.thumbnail} color={colors.trim} />
+        )}
         <View style={styles.rowText}>
           <Text style={styles.name} numberOfLines={2} ellipsizeMode={'tail'}>
             {Bottle.getBottleName(bottle)} {!!bottle.series && bottle.series}

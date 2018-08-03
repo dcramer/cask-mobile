@@ -247,6 +247,7 @@ const styles = StyleSheet.create({
   },
   activityContainer: {
     flex: 1,
+    backgroundColor: '#f9f9f9',
   },
   searchContainer: {
     flex: 1,

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import Activity from './screens/Activity';
 import AddBottle from './screens/AddBottle';
@@ -68,15 +68,15 @@ const MainStack = createBottomTabNavigator(
         const { routeName } = navigation.state;
         let iconName;
         if (routeName === 'HomeStack') {
-          iconName = `ios-home`;
+          iconName = `home`;
         } else if (routeName === 'Activity') {
-          iconName = `ios-map`;
+          iconName = `map`;
         } else if (routeName === 'Notifications') {
-          iconName = `ios-notifications`;
+          iconName = `bell`;
         } else if (routeName === 'Profile') {
-          iconName = `ios-contact`;
+          iconName = `user`;
         }
-        return <Icon name={iconName} size={25} color={tintColor} />;
+        return <Icon name={iconName} size={24} color={tintColor} solid={focused} />;
       };
 
       TabBarIcon.propTypes = {

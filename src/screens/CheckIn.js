@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Slider } from 'react-native-elements';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { checkIn } from '../actions/checkIns';
 import { colors, margins } from '../styles';
@@ -104,7 +104,7 @@ class CheckInFriends extends Component {
             </View>
             <View style={styles.labelRight}>
               {value && <PersonList personList={value} style={styles.friendList} />}
-              <Icon name="ios-arrow-forward" size={18} color={colors.default} />
+              <Icon name="chevron-right" size={18} color={colors.default} />
             </View>
           </View>
         </TouchableOpacity>

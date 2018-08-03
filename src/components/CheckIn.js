@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, Image, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import TimeAgo from 'react-native-timeago';
 
 import { colors, margins } from '../styles';
@@ -21,13 +22,17 @@ class CheckIn extends Component {
     return (
       <Card style={styles.cardContainer}>
         <View style={styles.header}>
-          <Image
-            source={{
-              uri: 'https://pbs.twimg.com/profile_images/865686039192416257/94eEB9RO_400x400.jpg',
-            }}
-            style={styles.thumbnail}
-            resizeMode="contain"
-          />
+          {user.photoURL ? (
+            <Image
+              source={{
+                uri: user.photoURL,
+              }}
+              style={styles.thumbnail}
+              resizeMode="contain"
+            />
+          ) : (
+            <Icon name="user-circle" size={24} style={styles.thumbnail} />
+          )}
           <View style={styles.rowText}>
             <View style={styles.rowOne}>
               <Text style={styles.user} numberOfLines={2} ellipsizeMode={'tail'}>
@@ -45,6 +50,15 @@ class CheckIn extends Component {
           </View>
         </View>
         <Bottle bottle={bottle} style={styles.bottleCard} />
+        {!!checkIn.rating && (
+          <View style={styles.ratingContainer}>
+            Rated {checkIn.rating} <Icon name="star" size={24} />
+          </View>
+        )}
+        <View style={styles.actionContainer}>
+          <Icon name="heart" size={24} color={colors.default} style={styles.action} />
+          <Icon name="comments" size={24} color={colors.default} style={styles.action} />
+        </View>
       </Card>
     );
   }
@@ -101,6 +115,21 @@ const styles = StyleSheet.create({
   timestamp: {
     color: colors.light,
     fontSize: 12,
+  },
+  ratingContainer: {
+    marginTop: margins.half,
+  },
+  actionContainer: {
+    marginTop: margins.half,
+    flex: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  action: {
+    flex: 1,
+    textAlign: 'center',
+    padding: margins.quarter,
   },
 });
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Image, StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { colors, margins } from '../styles';
 import Card from '../components/Card';
@@ -59,8 +59,9 @@ class PersonEntry extends Component {
             </Text>
           </View>
           <Icon
-            name={`ios-${selected ? 'checkmark-circle' : 'radio-button-off'}`}
+            name={selected ? 'check-square' : 'square'}
             size={24}
+            solid={selected}
             color={selected ? colors.primary : colors.default}
           />
         </Card>

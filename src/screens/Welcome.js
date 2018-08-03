@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { loginFacebook, loginSuccess } from '../actions/auth';
 import { colors, layout, margins } from '../styles';
@@ -14,7 +14,7 @@ class Welcome extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Icon style={styles.icon} name="ios-beer" size={160} color="white" />
+        <Icon style={styles.icon} name="glass-martini" size={160} color="white" />
         <Text style={styles.label}>Peated</Text>
         <View style={styles.loginContainer}>
           <Button onPress={this.props.loginFacebook} title="Continue with Facebook" color="#fff" />

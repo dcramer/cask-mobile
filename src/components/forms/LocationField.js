@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import { withNavigation } from 'react-navigation';
 
 import CustomPropTypes from '../../propTypes';
@@ -44,7 +44,7 @@ class LocationField extends Component {
               <FormLabel>{this.props.name}</FormLabel>
             </View>
             <View style={styles.labelRight}>
-              <Icon name="ios-arrow-forward" size={18} color={colors.default} />
+              <Icon name="chevron-right" size={18} color={colors.default} />
             </View>
           </View>
         </TouchableOpacity>
