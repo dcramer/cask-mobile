@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import { ButtonGroup } from 'react-native-elements';
 
 import { logOut } from '../actions/auth';
+import { colors, margins } from '../styles';
 
 class Profile extends Component {
   static navigationOptions = {
@@ -12,7 +14,15 @@ class Profile extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Profile</Text>
+        <ButtonGroup
+          containerStyle={styles.buttonGroup}
+          textStyle={styles.buttonText}
+          selectedIndex={0}
+          innerBorderStyle={styles.buttonGroupInnerBorderStyle}
+          selectedButtonStyle={styles.buttonActive}
+          selectedTextStyle={styles.buttonActiveText}
+          buttons={['Activity', 'Friends', 'Settings']}
+        />
         <Button onPress={this.props.logOut} title="Log Out" />
       </View>
     );
@@ -22,14 +32,28 @@ class Profile extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  title: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  buttonGroup: {
+    backgroundColor: '#fff',
+    borderColor: colors.primary,
+    marginTop: margins.half,
+    marginBottom: margins.half,
+    borderWidth: 2,
+  },
+  buttonGroupInnerBorderStyle: {
+    color: colors.primary,
+    width: 2,
+  },
+  buttonText: {
+    color: colors.default,
+  },
+  buttonActive: {
+    backgroundColor: colors.primary,
+  },
+  buttonActiveText: {
+    color: '#fff',
   },
 });
 

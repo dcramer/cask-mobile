@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import idx from 'idx';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -30,15 +31,6 @@ const commonOptions = {
     color: colors.background,
     fontWeight: 'bold',
   },
-  headerBackTitleStyle: {
-    color: colors.background,
-  },
-  headerLeftTitleStyle: {
-    color: colors.background,
-  },
-  headerRightTitleStyle: {
-    color: colors.background,
-  },
 };
 
 const HomeStack = createStackNavigator(
@@ -64,8 +56,8 @@ const MainStack = createBottomTabNavigator(
   {
     initialRouteName: 'HomeStack',
     navigationOptions: ({ navigation }) => {
+      const { routeName } = navigation.state;
       const TabBarIcon = ({ focused, tintColor }) => {
-        const { routeName } = navigation.state;
         let iconName;
         if (routeName === 'HomeStack') {
           iconName = `home`;
@@ -113,13 +105,33 @@ export const RootNavigator = createStackNavigator(
     TagSelect,
   },
   {
-    // mode: 'modal',
-    headerMode: 'none',
+    mode: 'modal',
     gesturesEnabled: true,
-    navigationOptions: ({ navigation }) => ({
-      ...commonOptions,
-      tabBarVisible: navigation.state.index === 0,
-    }),
+    navigationOptions: ({ navigation }) => {
+      let focusedRouteName = idx(navigation, _ => _.state.routes[_.state.index].routeName);
+      let header,
+        title = null;
+      switch (focusedRouteName) {
+        case 'HomeStack':
+          header = null;
+          break;
+        case 'Activity':
+          title = 'Activity';
+          break;
+        case 'Notifications':
+          title = 'Notifications';
+          break;
+        case 'Profile':
+          title = 'Profile';
+          break;
+      }
+      return {
+        ...commonOptions,
+        header: header,
+        title: title,
+        tabBarVisible: navigation.state.index === 0,
+      };
+    },
   }
 );
 
