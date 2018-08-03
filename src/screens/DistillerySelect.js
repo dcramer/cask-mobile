@@ -1,16 +1,24 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
 import { Sentry } from 'react-native-sentry';
 
 import { db } from '../firebase';
+import { colors } from '../styles';
 import AlertCard from '../components/AlertCard';
 import Card from '../components/Card';
 import ModalHeader from '../components/ModalHeader';
 import LoadingIndicator from '../components/LoadingIndicator';
 
 class SearchResults extends Component {
+  static propTypes = {
+    navigation: PropTypes.object.isRequired,
+    onSelect: PropTypes.func,
+    query: PropTypes.string,
+  };
+
   constructor(props) {
     super(props);
     this.state = { loading: false, error: null, items: [] };
@@ -52,7 +60,7 @@ class SearchResults extends Component {
   _renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => this.props.onSelect(item)}>
       <Card>
-        <Text>{item.name}</Text>
+        <Text style={styles.name}>{item.name}</Text>
       </Card>
     </TouchableOpacity>
   );
@@ -68,28 +76,27 @@ class SearchResults extends Component {
       return <Text>{this.state.error.message}</Text>;
     }
 
-    if (this.props.query && !this.state.loading && !this.state.items.length) {
-      return (
-        <AlertCard
-          onPress={() => {
-            this.props.navigation.navigate('AddDistillery');
-          }}
-          heading="Can't find a distillery?"
-          subheading={`Tap here to add ${this.props.query}.`}
-        />
-      );
-    }
-
     if (this.state.loading && !this.state.items.length) {
       return <LoadingIndicator />;
     }
 
     return (
-      <FlatList
-        data={this.state.items}
-        keyExtractor={this._keyExtractor}
-        renderItem={this._renderItem}
-      />
+      <View>
+        <FlatList
+          data={this.state.items}
+          keyExtractor={this._keyExtractor}
+          renderItem={this._renderItem}
+        />
+        {!!this.props.query && (
+          <AlertCard
+            onPress={() => {
+              this.props.navigation.navigate('AddDistillery');
+            }}
+            heading="Can't find a distillery?"
+            subheading={`Tap here to add ${this.props.query}.`}
+          />
+        )}
+      </View>
     );
   }
 }
@@ -132,7 +139,11 @@ class DistillerySelect extends Component {
             inputStyle={styles.searchInput}
           />
         </View>
-        <SearchResults onSelect={this.onSelect} query={this.state.searchQuery} />
+        <SearchResults
+          onSelect={this.onSelect}
+          query={this.state.query}
+          navigation={this.props.navigation}
+        />
       </View>
     );
   }
@@ -142,6 +153,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.default,
   },
   search: {
     backgroundColor: '#7b6be6',

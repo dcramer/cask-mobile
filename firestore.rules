@@ -46,6 +46,16 @@ function isBottle(database, resource) {
     && isDistilleryRef(resource.data.distillery)
 }
 
+function isDistillery(database, resource) {
+  return resource.data.keys().hasAll([
+      'userAdded',
+      'name',
+      'country',
+      'region'
+    ])
+    && isUserRef(resource.data.userAdded)
+}
+
 function isLocation(database, resource) {
   return resource.data.keys().hasAll(['name', 'latlng'])
     && resource.data.size() == 2
@@ -108,6 +118,9 @@ service cloud.firestore {
     }
     match /distilleries/{distilleryId} {
       allow read: if request.auth.uid != null;
+      allow create: if request.auth.uid != null
+                    && request.auth.uid == request.resource.data.userAdded
+                    && isDistillery(database, request.resource);
     }
     match /checkins/{checkinId} {
       allow read, delete: if request.auth.uid == resource.data.user;
@@ -116,9 +129,6 @@ service cloud.firestore {
       allow update: if request.auth.uid == resource.data.user
                     && request.resource.data.user == resource.data.user
                     && isCheckin(database, request.resource);
-    }
-    match /{document=**} {
-      allow read;
     }
   }
 }

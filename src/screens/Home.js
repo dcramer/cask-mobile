@@ -174,11 +174,20 @@ class SearchResults extends Component {
 
     if (this.props.query) {
       return (
-        <FlatList
-          data={this.state.items}
-          keyExtractor={this._keyExtractor}
-          renderItem={this._renderItem}
-        />
+        <View>
+          <FlatList
+            data={this.state.items}
+            keyExtractor={this._keyExtractor}
+            renderItem={this._renderItem}
+          />
+          <AlertCard
+            onPress={() => {
+              this.props.navigation.navigate('AddBottle');
+            }}
+            heading="Can't find a bottle?"
+            subheading={`Tap here to add ${this.props.query}.`}
+          />
+        </View>
       );
     }
 

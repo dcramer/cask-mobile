@@ -166,7 +166,7 @@ class CheckIn extends Component {
         navigation.navigate('Home');
       })
       .catch(error => {
-        this.setState({ error });
+        this.setState({ error, submitting: false });
       });
   };
 
@@ -204,7 +204,8 @@ class CheckIn extends Component {
           title="Confirm Check-in"
           onPress={this.onCheckIn}
           containerViewStyle={styles.buttonContainer}
-          buttonStyle={[styles.button, this.isValid() && styles.buttonPrimary]}
+          disabled={!this.isValid() || this.state.submitting}
+          buttonStyle={styles.button}
         />
       </ScrollView>
     );
@@ -222,8 +223,6 @@ const styles = StyleSheet.create({
   },
   button: {
     alignSelf: 'stretch',
-  },
-  buttonPrimary: {
     backgroundColor: colors.primary,
   },
   formElementContainer: {

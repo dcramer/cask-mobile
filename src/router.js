@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import Activity from './screens/Activity';
 import AddBottle from './screens/AddBottle';
+import AddDistillery from './screens/AddDistillery';
 import CheckIn from './screens/CheckIn';
 import DistillerySelect from './screens/DistillerySelect';
 import FriendSelect from './screens/FriendSelect';
@@ -46,6 +47,7 @@ const HomeStack = createStackNavigator(
     BottleDetails,
     CheckIn,
     AddBottle,
+    AddDistillery,
   },
   {
     navigationOptions: { ...commonOptions },

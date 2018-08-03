@@ -4,36 +4,26 @@ import PropTypes from 'prop-types';
 import { Button } from 'react-native-elements';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 
-import { addBottle } from '../actions/bottles';
+import { addDistillery } from '../actions/distilleries';
 import { colors, margins } from '../styles';
-import DistilleryField from '../components/forms/DistilleryField';
-import TagField from '../components/forms/TagField';
 import TextField from '../components/forms/TextField';
 
-class AddBottle extends Component {
+class AddDistillery extends Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 
   static navigationOptions = {
-    title: 'Add Bottle',
+    title: 'Add Distillery',
   };
 
   constructor(...args) {
     super(...args);
     this.state = {
       name: '',
-      distillery: null,
-      category: '',
-      abv: null,
-      statedAge: null,
-      vintageYear: null,
-      bottleYear: null,
-      caskType: '',
-      series: '',
-      error: null,
-      submitting: false,
+      region: '',
+      country: '',
     };
   }
 
@@ -47,27 +37,21 @@ class AddBottle extends Component {
     let state = this.state;
     let { auth, navigation } = this.props;
     this.setState({ error: null, submitting: true });
+    console.warn({
+      userAdded: auth.user.uid,
+      name: state.name,
+      region: state.region,
+      country: state.country,
+    });
     this.props
-      .addBottle({
+      .addDistillery({
         userAdded: auth.user.uid,
         name: state.name,
-        distillery: state.distillery ? state.distillery.id : null,
-        category: state.category.length ? state.category[0] : null,
-        series: state.series,
-        statedAge: state.statedAge,
-        vintageYear: state.vintageYear,
-        bottleYear: state.bottleYear,
-        caskType: state.caskType,
-        abv: state.abv,
+        region: state.region,
+        country: state.country,
       })
-      .then(bottle => {
-        navigation.navigate('BottleDetails', {
-          id: bottle.id,
-          bottle: {
-            ...bottle,
-            distillery: state.distillery,
-          },
-        });
+      .then(distillery => {
+        navigation.goBack(null);
       })
       .catch(error => {
         this.setState({ error, submitting: false });
@@ -76,16 +60,7 @@ class AddBottle extends Component {
 
   isValid = () => {
     let state = this.state;
-
-    if (!state.name) return false;
-
-    if (!state.distillery) return false;
-
-    //if (!state.category) return false;
-
-    if (state.statedAge && !(parseInt(state.statedAge, 10) > 0)) return false;
-
-    return true;
+    return state.name && state.country && state.region;
   };
 
   render() {
@@ -95,31 +70,20 @@ class AddBottle extends Component {
         <TextField
           onChangeValue={v => this.onChangeValue('name', v)}
           name="Name"
-          placeholder="e.g. Bowmore 1965"
-        />
-        <DistilleryField
-          onChangeValue={v => this.onChangeValue('distillery', v)}
-          name="Distillery"
+          placeholder="e.g. Bowmore"
         />
         <TextField
-          onChangeValue={v => this.onChangeValue('statedAge', v)}
-          name="Stated Age (in years)"
-          placeholder="e.g. 21"
-          keyboardType="number-pad"
-        />
-        <TagField
-          onChangeValue={v => this.onChangeValue('category', v)}
-          name="Category"
-          maxValues={1}
-          tagList={['Single Malt', 'Scotch', 'Rye', 'Bourbon']}
+          onChangeValue={v => this.onChangeValue('country', v)}
+          name="Country"
+          placeholder="e.g. Scotland"
         />
         <TextField
-          onChangeValue={v => this.onChangeValue('series', v)}
-          name="Series"
-          placeholder="e.g. 2018 Limited"
+          onChangeValue={v => this.onChangeValue('region', v)}
+          name="Region"
+          placeholder="e.g. Highlands"
         />
         <Button
-          title="Add Bottle"
+          title="Add Distillery"
           onPress={this.onSubmit}
           containerViewStyle={styles.buttonContainer}
           disabled={!this.isValid() || this.state.submitting}
@@ -150,5 +114,5 @@ export default connect(
   ({ auth }) => ({
     auth,
   }),
-  { addBottle }
-)(AddBottle);
+  { addDistillery }
+)(AddDistillery);
