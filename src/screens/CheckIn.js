@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Slider } from 'react-native-elements';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { checkIn } from '../actions/checkIns';
@@ -12,6 +12,8 @@ import Card from '../components/Card';
 import FormLabel from '../components/FormLabel';
 import PersonList from '../components/PersonList';
 import TagList from '../components/TagList';
+import LocationField from '../components/forms/LocationField';
+import TextField from '../components/forms/TextField';
 
 const flavorProfileDatabase = [
   { label: 'Bold', value: 'Bold' },
@@ -69,37 +71,6 @@ class CheckInRating extends Component {
   }
 }
 
-class CheckInNotes extends Component {
-  static propTypes = {
-    onChangeValue: PropTypes.func.isRequired,
-  };
-
-  constructor(...args) {
-    super(...args);
-    this.state = { value: '' };
-  }
-
-  setValue = value => {
-    this.setState({ value });
-    this.props.onChangeValue(value);
-  };
-
-  render() {
-    return (
-      <Card>
-        <FormLabel>Tasting Notes</FormLabel>
-        <TextInput
-          placeholder="How was it?"
-          placeholderTextColor={colors.light}
-          style={styles.textInput}
-          value={this.state.value}
-          onChangeText={this.setValue}
-        />
-      </Card>
-    );
-  }
-}
-
 class CheckInFriends extends Component {
   static propTypes = {
     onChangeValue: PropTypes.func.isRequired,
@@ -137,48 +108,6 @@ class CheckInFriends extends Component {
             </View>
           </View>
         </TouchableOpacity>
-      </Card>
-    );
-  }
-}
-
-class CheckInLocation extends Component {
-  static propTypes = {
-    onChangeValue: PropTypes.func.isRequired,
-  };
-
-  constructor(...args) {
-    super(...args);
-    this.state = { value: null };
-  }
-
-  setValue = value => {
-    this.setState({ value });
-    this.props.onChangeValue(value);
-  };
-
-  render() {
-    let { navigation } = this.props;
-    let { value } = this.state;
-    return (
-      <Card style={styles.formElementContainer}>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('LocationSelect', {
-              currentValue: value,
-              onComplete: this.setValue,
-            })
-          }>
-          <View style={styles.labelContainer}>
-            <View style={styles.labelLeft}>
-              <FormLabel>Location</FormLabel>
-            </View>
-            <View style={styles.labelRight}>
-              <Icon name="ios-arrow-forward" size={18} color={colors.default} />
-            </View>
-          </View>
-        </TouchableOpacity>
-        {value && <Text>{value.name}</Text>}
       </Card>
     );
   }
@@ -258,6 +187,8 @@ class CheckIn extends Component {
   };
 
   onCheckIn = () => {
+    if (!this.isValid()) return;
+    if (this.state.submitting) return;
     let state = this.state;
     let { auth, navigation } = this.props;
     let { bottle } = navigation.state.params;
@@ -283,7 +214,11 @@ class CheckIn extends Component {
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <Bottle navigation={this.props.navigation} bottle={bottle} />
-        <CheckInNotes onChangeValue={v => this.onChangeValue('notes', v)} navigation={navigation} />
+        <TextField
+          onChangeValue={v => this.onChangeValue('notes', v)}
+          name="Tasting Notes"
+          placeholder="How was it?"
+        />
         <CheckInRating
           onChangeValue={v => this.onChangeValue('rating', v)}
           navigation={navigation}
@@ -292,10 +227,7 @@ class CheckIn extends Component {
           onChangeValue={v => this.onChangeValue('friends', v)}
           navigation={navigation}
         />
-        <CheckInLocation
-          onChangeValue={v => this.onChangeValue('location', v)}
-          navigation={navigation}
-        />
+        <LocationField onChangeValue={v => this.onChangeValue('location', v)} name="Location" />
         <CheckInFlavorProfile
           onChangeValue={v => this.onChangeValue('flavorProfile', v)}
           navigation={navigation}

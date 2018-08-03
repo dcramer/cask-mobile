@@ -5,8 +5,9 @@ import { StyleSheet, FlatList, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
 import { db } from '../firebase';
-import { layout } from '../styles';
+import { colors, margins, layout } from '../styles';
 import Bottle from '../components/Bottle';
+import AlertCard from '../components/AlertCard';
 import CheckIn from '../components/CheckIn';
 import LoadingIndicator from '../components/LoadingIndicator';
 
@@ -196,7 +197,16 @@ class SearchResults extends Component {
     }
 
     if (this.props.query && !this.state.loading && !this.state.items.length) {
-      return <Text>Cant find a bottle? [... call to action ...]</Text>;
+      return (
+        <AlertCard
+          onPress={() => {
+            this.props.navigation.navigate('AddBottle');
+          }}
+          style={styles.missingBottleContainer}
+          heading="Can't find a bottle?"
+          subheading={`Tap here to add ${this.props.query}.`}
+        />
+      );
     }
 
     if (this.state.loading && !this.state.items.length) {
@@ -232,6 +242,7 @@ class Home extends Component {
       <View style={styles.container}>
         <View style={styles.header}>
           <SearchBar
+            autoCorrect={false}
             placeholder="bottle, distillery, style"
             lightTheme
             onFocus={() => this.setState({ searchActive: true })}
@@ -257,7 +268,7 @@ class Home extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
+    backgroundColor: colors.background,
   },
   resultsContainer: {
     flexDirection: 'row',
@@ -271,15 +282,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    backgroundColor: '#7b6be6',
+    backgroundColor: colors.primary,
     paddingTop: layout.statusBarHeight,
   },
   searchBarContainer: {
-    backgroundColor: '#7b6be6',
+    backgroundColor: colors.primary,
     borderTopWidth: 0,
   },
   searchBarInput: {
-    color: '#000',
+    color: colors.dark,
     backgroundColor: '#eee',
   },
 });

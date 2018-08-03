@@ -9,27 +9,30 @@ export function checkIn(data) {
     db.collection('checkins')
       .add(data)
       .then(docRef => {
-        dispatch(checkInSuccess(docRef.id, data));
+        dispatch(
+          checkInSuccess({
+            id: docRef.id,
+            ...data,
+          })
+        );
       })
       .catch(error => {
-        dispatch(checkInFailure(data, error));
+        dispatch(checkInFailure(error));
       });
   };
 }
-export function checkInSuccess(id, data) {
+export function checkInSuccess(checkIn) {
   return {
     type: CHECK_IN_SUCCESS,
-    id,
-    data,
+    checkIn,
   };
 }
 
-export function checkInFailure(data, error) {
+export function checkInFailure(error) {
   Sentry.captureException(error);
 
   return {
     type: CHECK_IN_FAILURE,
-    data,
     error,
   };
 }

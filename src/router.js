@@ -4,6 +4,7 @@ import { createBottomTabNavigator, createStackNavigator } from 'react-navigation
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import Activity from './screens/Activity';
+import AddBottle from './screens/AddBottle';
 import CheckIn from './screens/CheckIn';
 import FlavorProfileSelect from './screens/FlavorProfileSelect';
 import FriendSelect from './screens/FriendSelect';
@@ -43,6 +44,7 @@ const HomeStack = createStackNavigator(
     Home,
     BottleDetails,
     CheckIn,
+    AddBottle,
   },
   {
     navigationOptions: { ...commonOptions },

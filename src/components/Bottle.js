@@ -30,16 +30,9 @@ class Bottle extends Component {
   };
 
   render() {
-    if (this.props.canPress) {
-      return <TouchableOpacity onPress={this._onPress}>{this.renderChild()}</TouchableOpacity>;
-    }
-    return this.renderChild();
-  }
-
-  renderChild() {
     let { bottle, style } = this.props;
     return (
-      <Card style={[styles.cardContainer, style]}>
+      <Card style={[styles.cardContainer, style]} onPress={this.props.canPress && this._onPress}>
         <Image source={{ uri: bottle.thumbnail }} style={styles.thumbnail} resizeMode="contain" />
         <View style={styles.rowText}>
           <Text style={styles.name} numberOfLines={2} ellipsizeMode={'tail'}>

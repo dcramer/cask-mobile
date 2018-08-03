@@ -15,6 +15,7 @@ export const Bottle = PropTypes.shape({
   vintageYear: PropTypes.number,
   bottleYear: PropTypes.number,
   caskType: PropTypes.string,
+  series: PropTypes.string,
 });
 
 export const CheckIn = PropTypes.shape({
