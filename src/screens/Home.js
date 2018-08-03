@@ -6,7 +6,6 @@ import { SearchBar } from 'react-native-elements';
 
 import { db } from '../firebase';
 import { layout } from '../styles';
-import CustomPropTypes from '../propTypes';
 import Bottle from '../components/Bottle';
 import CheckIn from '../components/CheckIn';
 
@@ -22,6 +21,44 @@ const getAll = docs => {
         })
     )
   );
+};
+
+const populateRelations = (items, relations) => {
+  /*
+  * Populates relations on a set of items (effectively a hash join).
+  *
+  *   populateRelations(snapshot.docs, [
+  *     {name: 'bottle', collection: 'bottles'}
+  *   ])
+  */
+  return Promise.all(
+    relations.map(({ name, collection }) =>
+      getAll(items.filter(d => !!d[name]).map(d => db.doc(`${collection}/${d[name]}`))).then(
+        snapshot => {
+          let results = {};
+          snapshot.forEach(doc => {
+            results[doc.id] = {
+              id: doc.id,
+              ...doc.data(),
+            };
+          });
+          return { name, results };
+        }
+      )
+    )
+  ).then(values => {
+    return new Promise(resolve => {
+      resolve(
+        items.map(item => {
+          let result = { ...item };
+          values.forEach(({ name, results }) => {
+            result[name] = results[item[name]];
+          });
+          return result;
+        })
+      );
+    });
+  });
 };
 
 class RecentActivity extends Component {
@@ -41,36 +78,25 @@ class RecentActivity extends Component {
             id: doc.id,
             ...doc.data(),
           }));
-
-          let bottlesById = {};
-          let usersById = {};
-          Promise.all([
-            getAll(checkins.map(d => db.doc(`bottles/${d.bottle}`))).then(snapshot => {
-              snapshot.forEach(doc => {
-                bottlesById[doc.id] = {
-                  id: doc.id,
-                  ...doc.data(),
-                };
-              });
-            }),
-            getAll(checkins.map(d => db.doc(`users/${d.user}`))).then(snapshot => {
-              snapshot.forEach(doc => {
-                usersById[doc.id] = {
-                  id: doc.id,
-                  ...doc.data(),
-                };
-              });
-            }),
+          populateRelations(checkins, [
+            {
+              name: 'bottle',
+              collection: 'bottles',
+            },
+            {
+              name: 'user',
+              collection: 'users',
+            },
+            {
+              name: 'location',
+              collection: 'locations',
+            },
           ])
-            .then(() => {
+            .then(items => {
               this.setState({
                 loading: false,
                 error: null,
-                items: checkins.map(checkin => ({
-                  ...checkin,
-                  bottle: bottlesById[checkin.bottle],
-                  user: usersById[checkin.user],
-                })),
+                items: items,
               });
             })
             .catch(error => {

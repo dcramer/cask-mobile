@@ -32,7 +32,7 @@ class CheckIn extends Component {
             </Text>
             {!!location && (
               <Text style={styles.location} numberOfLines={1} ellipsizeMode={'tail'}>
-                {location}
+                {location.name}
               </Text>
             )}
           </View>
