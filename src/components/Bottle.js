@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, Image, View } from 'react-native';
+import { StyleSheet, Text, Image, View, ViewPropTypes } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
 import { colors, margins } from '../styles';
@@ -11,6 +11,7 @@ class Bottle extends Component {
   static propTypes = {
     bottle: CustomPropTypes.Bottle.isRequired,
     navigation: PropTypes.object.isRequired,
+    style: ViewPropTypes.style,
   };
 
   static getBottleName = bottle => {
@@ -19,9 +20,9 @@ class Bottle extends Component {
   };
 
   render() {
-    let { bottle } = this.props;
+    let { bottle, style } = this.props;
     return (
-      <Card style={styles.cardContainer}>
+      <Card style={[styles.cardContainer, style]}>
         <Image source={{ uri: bottle.thumbnail }} style={styles.thumbnail} resizeMode="contain" />
         <View style={styles.rowText}>
           <Text style={styles.name} numberOfLines={2} ellipsizeMode={'tail'}>

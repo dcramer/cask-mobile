@@ -15,43 +15,72 @@ class CheckIn extends Component {
   };
 
   render() {
-    let { bottle } = this.props.checkIn;
-    return <Bottle bottle={bottle} />;
+    let { bottle, location, user } = this.props.checkIn;
+    return (
+      <Card style={styles.cardContainer}>
+        <View style={styles.header}>
+          <Image
+            source={{
+              uri: 'https://pbs.twimg.com/profile_images/865686039192416257/94eEB9RO_400x400.jpg',
+            }}
+            style={styles.thumbnail}
+            resizeMode="contain"
+          />
+          <View style={styles.rowText}>
+            <Text style={styles.user} numberOfLines={2} ellipsizeMode={'tail'}>
+              {user.displayName}
+            </Text>
+            {!!location && (
+              <Text style={styles.location} numberOfLines={1} ellipsizeMode={'tail'}>
+                {location}
+              </Text>
+            )}
+          </View>
+        </View>
+        <Bottle bottle={bottle} style={styles.bottleCard} />
+      </Card>
+    );
   }
 }
 
 const styles = StyleSheet.create({
   cardContainer: {
-    flexDirection: 'row',
-    paddingTop: margins.full,
-    paddingBottom: margins.full,
+    padding: margins.half,
+    marginBottom: margins.full,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.trim,
   },
-  name: {
+  bottleCard: {
+    borderWidth: 1,
+    borderColor: colors.trim,
+    borderRadius: 4,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: margins.half,
+  },
+  user: {
     paddingLeft: 10,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: colors.default,
   },
-  distillery: {
-    paddingLeft: 10,
-    marginTop: 5,
-    fontSize: 14,
-    color: colors.default,
-  },
-  category: {
+  location: {
     paddingLeft: 10,
     marginTop: 5,
     fontSize: 14,
     color: colors.default,
   },
   thumbnail: {
-    flex: 1,
-    height: undefined,
-    width: undefined,
+    height: 24,
+    width: 24,
+    borderRadius: 12,
   },
   rowText: {
-    flex: 4,
-    flexDirection: 'column',
+    flex: 1,
+    alignSelf: 'center',
   },
 });
 

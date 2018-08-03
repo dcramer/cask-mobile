@@ -89,22 +89,35 @@ class RecentActivity extends Component {
             id: doc.id,
             ...doc.data(),
           }));
-          getAll(checkins.map(d => db.doc(`bottles/${d.bottle}`)))
-            .then(bottlesSnapshot => {
-              let bottlesById = {};
-              bottlesSnapshot.forEach(doc => {
+
+          let bottlesById = {};
+          let usersById = {};
+          Promise.all([
+            getAll(checkins.map(d => db.doc(`bottles/${d.bottle}`))).then(snapshot => {
+              snapshot.forEach(doc => {
                 bottlesById[doc.id] = {
                   id: doc.id,
                   ...doc.data(),
                 };
               });
-
+            }),
+            getAll(checkins.map(d => db.doc(`users/${d.user}`))).then(snapshot => {
+              snapshot.forEach(doc => {
+                usersById[doc.id] = {
+                  id: doc.id,
+                  ...doc.data(),
+                };
+              });
+            }),
+          ])
+            .then(() => {
               this.setState({
                 loading: false,
                 error: null,
                 items: checkins.map(checkin => ({
                   ...checkin,
                   bottle: bottlesById[checkin.bottle],
+                  user: usersById[checkin.user],
                 })),
               });
             })
