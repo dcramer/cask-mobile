@@ -23,6 +23,7 @@ class RecentActivity extends Component {
     this.unsubscribeCheckins = db
       .collection('checkins')
       .where('user', '==', this.props.auth.user.uid)
+      .orderBy('createdAt', 'desc')
       .limit(25)
       .onSnapshot(
         snapshot => {
@@ -58,6 +59,7 @@ class RecentActivity extends Component {
             });
         },
         error => {
+          console.error(error);
           Sentry.captureException(error);
         }
       );

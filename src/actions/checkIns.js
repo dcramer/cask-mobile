@@ -2,13 +2,16 @@ import { Sentry } from 'react-native-sentry';
 
 import { CHECK_IN_SUCCESS, CHECK_IN_FAILURE } from '../reducers/checkIns';
 
-import { db } from '../firebase';
+import firebase, { db } from '../firebase';
 
 export function checkIn(data) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       db.collection('checkins')
-        .add(data)
+        .add({
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          ...data,
+        })
         .then(docRef => {
           let item = {
             id: docRef.id,

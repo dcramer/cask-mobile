@@ -161,9 +161,8 @@ class CheckIn extends Component {
         location: state.location ? state.location.id : null,
         flavorProfile: state.flavorProfile,
       })
-      .then(bottle => {
-        // TODO(dcramer): go to checkin details?
-        navigation.navigate('Home');
+      .then(checkin => {
+        navigation.popToTop();
       })
       .catch(error => {
         this.setState({ error, submitting: false });
@@ -180,6 +179,7 @@ class CheckIn extends Component {
     return (
       <ScrollView>
         <Bottle navigation={this.props.navigation} bottle={bottle} />
+        {!!this.state.error && <Text>{this.state.error.message}</Text>}
         <TextField
           onChangeValue={v => this.onChangeValue('notes', v)}
           name="Tasting Notes"

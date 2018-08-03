@@ -2,13 +2,16 @@ import { Sentry } from 'react-native-sentry';
 
 import { ADD_DISTILLERY_SUCCESS, ADD_DISTILLERY_FAILURE } from '../reducers/distilleries';
 
-import { db } from '../firebase';
+import firebase, { db } from '../firebase';
 
 export function addDistillery(data) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       db.collection('distilleries')
-        .add(data)
+        .add({
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          ...data,
+        })
         .then(docRef => {
           let item = {
             id: docRef.id,
