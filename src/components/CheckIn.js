@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, Image, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import TimeAgo from 'react-native-timeago';
 
 import { colors, margins } from '../styles';
 import CustomPropTypes from '../propTypes';
@@ -15,7 +16,8 @@ class CheckIn extends Component {
   };
 
   render() {
-    let { bottle, location, user } = this.props.checkIn;
+    let { checkIn } = this.props;
+    let { bottle, location, user } = checkIn;
     return (
       <Card style={styles.cardContainer}>
         <View style={styles.header}>
@@ -27,9 +29,14 @@ class CheckIn extends Component {
             resizeMode="contain"
           />
           <View style={styles.rowText}>
-            <Text style={styles.user} numberOfLines={2} ellipsizeMode={'tail'}>
-              {user.displayName}
-            </Text>
+            <View style={styles.rowOne}>
+              <Text style={styles.user} numberOfLines={2} ellipsizeMode={'tail'}>
+                {user.displayName}
+              </Text>
+              <Text style={styles.timestamp}>
+                <TimeAgo time={checkIn.createdAt.toDate()} />
+              </Text>
+            </View>
             {!!location && (
               <Text style={styles.location} numberOfLines={1} ellipsizeMode={'tail'}>
                 {location.name}
@@ -62,6 +69,7 @@ const styles = StyleSheet.create({
     marginBottom: margins.half,
   },
   user: {
+    flex: 1,
     paddingLeft: 10,
     fontSize: 14,
     fontWeight: 'bold',
@@ -80,7 +88,19 @@ const styles = StyleSheet.create({
   },
   rowText: {
     flex: 1,
+    flexDirection: 'row',
     alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rowOne: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  timestamp: {
+    color: colors.light,
+    fontSize: 12,
   },
 });
 
