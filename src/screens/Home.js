@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Sentry } from 'react-native-sentry';
-import { ActivityIndicator, StyleSheet, FlatList, Text, View } from 'react-native';
+import { StyleSheet, FlatList, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
 import { db } from '../firebase';
 import { layout } from '../styles';
 import Bottle from '../components/Bottle';
 import CheckIn from '../components/CheckIn';
+import LoadingIndicator from '../components/LoadingIndicator';
 
 const getAll = docs => {
   return Promise.all(
@@ -120,21 +121,17 @@ class RecentActivity extends Component {
 
   render() {
     if (this.state.loading) {
-      return (
-        <View>
-          <ActivityIndicator size="large" />
-        </View>
-      );
+      return <LoadingIndicator />;
     }
     if (this.state.error) {
       return (
-        <View>
+        <View style={styles.activityContainer}>
           <Text>Error: {this.state.error.message}</Text>
         </View>
       );
     }
     return (
-      <View>
+      <View style={styles.activityContainer}>
         <FlatList
           data={this.state.items}
           keyExtractor={this._keyExtractor}
@@ -148,7 +145,7 @@ class RecentActivity extends Component {
 class SearchResults extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: true, error: null, items: [] };
+    this.state = { loading: false, error: null, items: [] };
   }
 
   async componentDidMount() {
@@ -161,13 +158,14 @@ class SearchResults extends Component {
     }
   }
 
-  async fetchData() {
+  fetchData = () => {
     let { query } = this.props;
+    if (!query) return;
+    this.setState({ loading: true });
     db.collection('bottles')
-      // .where('name', '==', this.props.query)
-      .startAt(query)
-      .endAt(query + '\uf8ff')
+      .where('name', '>=', this.props.query)
       .orderBy('name')
+      .limit(25)
       .get()
       .then(snapshot => {
         this.setState({
@@ -182,26 +180,40 @@ class SearchResults extends Component {
         this.setState({ error, loading: false });
         Sentry.captureException(error);
       });
-  }
+  };
 
   _renderItem = ({ item }) => <Bottle bottle={item} />;
 
   _keyExtractor = item => item.id;
 
   render() {
-    return (
-      <View>
-        {this.props.query ? (
-          <FlatList
-            data={this.state.items}
-            keyExtractor={this._keyExtractor}
-            renderItem={this._renderItem}
-          />
-        ) : (
-          <Text>Type something!</Text>
-        )}
-      </View>
-    );
+    return <View style={styles.searchContainer}>{this.renderChild()}</View>;
+  }
+
+  renderChild() {
+    if (this.state.error) {
+      return <Text>{this.state.error.message}</Text>;
+    }
+
+    if (this.props.query && !this.state.loading && !this.state.items.length) {
+      return <Text>Cant find a bottle? [... call to action ...]</Text>;
+    }
+
+    if (this.state.loading && !this.state.items.length) {
+      return <LoadingIndicator />;
+    }
+
+    if (this.props.query) {
+      return (
+        <FlatList
+          data={this.state.items}
+          keyExtractor={this._keyExtractor}
+          renderItem={this._renderItem}
+        />
+      );
+    }
+
+    return <Text>Type something!</Text>;
   }
 }
 
@@ -226,15 +238,17 @@ class Home extends Component {
             onBlur={() => this.setState({ searchActive: false })}
             onChangeText={text => this.setState({ searchQuery: text })}
             onClearText={text => this.setState({ searchQuery: text })}
-            containerStyle={styles.searchContainer}
-            inputStyle={styles.searchInput}
+            containerStyle={styles.searchBarContainer}
+            inputStyle={styles.searchBarInput}
           />
         </View>
-        {this.state.searchActive || !!this.state.searchQuery ? (
-          <SearchResults query={this.state.searchQuery} navigation={this.props.navigation} />
-        ) : (
-          <RecentActivity auth={this.props.auth} navigation={this.props.navigation} />
-        )}
+        <View style={styles.resultsContainer}>
+          {this.state.searchActive || !!this.state.searchQuery ? (
+            <SearchResults query={this.state.searchQuery} navigation={this.props.navigation} />
+          ) : (
+            <RecentActivity auth={this.props.auth} navigation={this.props.navigation} />
+          )}
+        </View>
       </View>
     );
   }
@@ -245,15 +259,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5FCFF',
   },
+  resultsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  activityContainer: {
+    flex: 1,
+  },
+  searchContainer: {
+    flex: 1,
+  },
   header: {
     backgroundColor: '#7b6be6',
     paddingTop: layout.statusBarHeight,
   },
-  searchContainer: {
+  searchBarContainer: {
     backgroundColor: '#7b6be6',
     borderTopWidth: 0,
   },
-  searchInput: {
+  searchBarInput: {
     color: '#000',
     backgroundColor: '#eee',
   },
