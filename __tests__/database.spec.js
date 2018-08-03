@@ -149,51 +149,51 @@ describe('distilleries', () => {
       firestore.assert(result);
     });
   });
+});
 
-  describe('bottles', () => {
-    beforeAll(async () => {
-      await db.authorize();
+describe('bottles', () => {
+  beforeAll(async () => {
+    await db.authorize();
+  });
+
+  describe('read', () => {
+    it('should allow authenticated', async () => {
+      const result = await db.canGet({ uid: 'userA' }, 'bottles/bottleA');
+      firestore.assert(result);
     });
 
-    describe('read', () => {
-      it('should allow authenticated', async () => {
-        const result = await db.canGet({ uid: 'userA' }, 'bottles/bottleA');
-        firestore.assert(result);
-      });
+    it('should not allow anonymous', async () => {
+      const result = await db.cannotGet({}, 'bottles/bottleA');
+      firestore.assert(result);
+    });
+  });
 
-      it('should not allow anonymous', async () => {
-        const result = await db.cannotGet({}, 'bottles/bottleA');
-        firestore.assert(result);
+  describe('set', () => {
+    it('should allow authenticated', async () => {
+      const result = await db.canSet({ uid: 'userA' }, 'bottles/bottleB', {
+        userAdded: 'userA',
+        name: 'Highland Park 15',
+        distillery: 'distA',
       });
+      firestore.assert(result);
     });
 
-    describe('set', () => {
-      it('should allow authenticated', async () => {
-        const result = await db.canSet({ uid: 'userA' }, 'bottles/bottleB', {
-          userAdded: 'userA',
-          name: 'Highland Park 15',
-          distillery: 'distA',
-        });
-        firestore.assert(result);
+    it('requires current user as userAdded', async () => {
+      const result = await db.cannotSet({ uid: 'userA' }, 'bottles/bottleB', {
+        userAdded: 'userB',
+        name: 'Highland Park 15',
+        distillery: 'distA',
       });
+      firestore.assert(result);
+    });
 
-      it('requires current user as userAdded', async () => {
-        const result = await db.cannotSet({ uid: 'userA' }, 'bottles/bottleB', {
-          userAdded: 'userB',
-          name: 'Highland Park 15',
-          distillery: 'distA',
-        });
-        firestore.assert(result);
+    it('requires valid distillary', async () => {
+      const result = await db.cannotSet({ uid: 'userA' }, 'bottles/bottleB', {
+        userAdded: 'userA',
+        name: 'Highland Park 15',
+        distillery: 'distB',
       });
-
-      it('requires valid distillary', async () => {
-        const result = await db.cannotSet({ uid: 'userA' }, 'bottles/bottleB', {
-          userAdded: 'userA',
-          name: 'Highland Park 15',
-          distillery: 'distB',
-        });
-        firestore.assert(result);
-      });
+      firestore.assert(result);
     });
   });
 });
