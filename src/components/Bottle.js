@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, TouchableOpacity, Image, View, ViewPropTypes } from 'react-native';
+import { StyleSheet, Text, Image, View, ViewPropTypes } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
 import { colors, margins } from '../styles';
@@ -20,8 +20,8 @@ class Bottle extends Component {
   };
 
   static getBottleName = bottle => {
-    if (!!bottle.name) return bottle.name;
-    return `${bottle.distillery} ${bottle.statedAge || ''}`;
+    if (bottle.name) return bottle.name;
+    return `${bottle.distillery.name} ${bottle.statedAge || ''}`;
   };
 
   _onPress = () => {
@@ -41,7 +41,7 @@ class Bottle extends Component {
             {Bottle.getBottleName(bottle)} {!!bottle.series && bottle.series}
           </Text>
           <Text style={styles.distillery} numberOfLines={1} ellipsizeMode={'tail'}>
-            {bottle.distillery}
+            {bottle.distillery.name}
           </Text>
           <Text style={styles.category} numberOfLines={1} ellipsizeMode={'tail'}>
             {bottle.category} {!!bottle.statedAge && `${bottle.statedAge} yo`}

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
@@ -21,24 +20,6 @@ const locationDatabase = [
     name: 'Bourbon and Branch',
   },
 ];
-
-class LocationEntry extends Component {
-  static propTypes = {
-    location: PropTypes.object.isRequired,
-    onPress: PropTypes.func.isRequired,
-  };
-
-  render() {
-    let { location, onPress } = this.props;
-    return (
-      <TouchableOpacity onPress={onPress}>
-        <Card>
-          <Text>{location.name}</Text>
-        </Card>
-      </TouchableOpacity>
-    );
-  }
-}
 
 class LocationSelect extends Component {
   static navigationOptions = {
@@ -62,7 +43,13 @@ class LocationSelect extends Component {
     navigation.goBack();
   };
 
-  _renderItem = ({ item }) => <LocationEntry location={item} onPress={() => this.onSelect(item)} />;
+  _renderItem = ({ item }) => (
+    <TouchableOpacity onPress={() => this.onSelect(item)}>
+      <Card>
+        <Text>{item.name}</Text>
+      </Card>
+    </TouchableOpacity>
+  );
 
   _keyExtractor = item => item.id;
 
@@ -75,6 +62,7 @@ class LocationSelect extends Component {
         <View style={styles.search}>
           <SearchBar
             lightTheme
+            autoCorrect={false}
             onFocus={() => this.setState({ searchActive: true })}
             onBlur={() => this.setState({ searchActive: false })}
             onChangeText={text => this.setState({ searchQuery: text })}

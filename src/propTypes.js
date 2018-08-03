@@ -11,10 +11,15 @@ export const Location = PropTypes.shape({
   name: PropTypes.string.isRequired,
 });
 
+export const Distillery = PropTypes.shape({
+  id: PropTypes.string,
+  name: PropTypes.string.isRequired,
+});
+
 export const Bottle = PropTypes.shape({
   id: PropTypes.string,
   name: PropTypes.string.isRequired,
-  distillery: PropTypes.string.isRequired,
+  distillery: Distillery.isRequired,
   category: PropTypes.string.isRequired,
   abv: PropTypes.number,
   statedAge: PropTypes.number,

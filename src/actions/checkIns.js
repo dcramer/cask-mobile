@@ -6,19 +6,22 @@ import { db } from '../firebase';
 
 export function checkIn(data) {
   return dispatch => {
-    db.collection('checkins')
-      .add(data)
-      .then(docRef => {
-        dispatch(
-          checkInSuccess({
+    return new Promise((resolve, reject) => {
+      db.collection('checkins')
+        .add(data)
+        .then(docRef => {
+          let item = {
             id: docRef.id,
             ...data,
-          })
-        );
-      })
-      .catch(error => {
-        dispatch(checkInFailure(error));
-      });
+          };
+          resolve(item);
+          return dispatch(checkInSuccess(item));
+        })
+        .catch(error => {
+          reject(error);
+          return dispatch(checkInFailure(error));
+        });
+    });
   };
 }
 export function checkInSuccess(checkIn) {

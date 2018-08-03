@@ -5,63 +5,13 @@ import { StyleSheet, FlatList, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
 import { db } from '../firebase';
-import { colors, margins, layout } from '../styles';
+import { colors, layout } from '../styles';
 import Bottle from '../components/Bottle';
 import AlertCard from '../components/AlertCard';
 import CheckIn from '../components/CheckIn';
 import LoadingIndicator from '../components/LoadingIndicator';
 
-const getAll = docs => {
-  return Promise.all(
-    docs.map(
-      doc =>
-        new Promise((resolve, reject) => {
-          doc
-            .get()
-            .then(resolve)
-            .catch(reject);
-        })
-    )
-  );
-};
-
-const populateRelations = (items, relations) => {
-  /*
-  * Populates relations on a set of items (effectively a hash join).
-  *
-  *   populateRelations(snapshot.docs, [
-  *     {name: 'bottle', collection: 'bottles'}
-  *   ])
-  */
-  return Promise.all(
-    relations.map(({ name, collection }) =>
-      getAll(items.filter(d => !!d[name]).map(d => db.doc(`${collection}/${d[name]}`))).then(
-        snapshot => {
-          let results = {};
-          snapshot.forEach(doc => {
-            results[doc.id] = {
-              id: doc.id,
-              ...doc.data(),
-            };
-          });
-          return { name, results };
-        }
-      )
-    )
-  ).then(values => {
-    return new Promise(resolve => {
-      resolve(
-        items.map(item => {
-          let result = { ...item };
-          values.forEach(({ name, results }) => {
-            result[name] = results[item[name]];
-          });
-          return result;
-        })
-      );
-    });
-  });
-};
+import { populateRelations } from '../utils/query';
 
 class RecentActivity extends Component {
   constructor(props) {
@@ -75,8 +25,8 @@ class RecentActivity extends Component {
       .where('user', '==', this.props.auth.user.uid)
       .limit(25)
       .onSnapshot(
-        checkinsSnapshot => {
-          let checkins = checkinsSnapshot.docs.map(doc => ({
+        snapshot => {
+          let checkins = snapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
           }));
@@ -84,6 +34,7 @@ class RecentActivity extends Component {
             {
               name: 'bottle',
               collection: 'bottles',
+              relations: [{ name: 'distillery', collection: 'distilleries' }],
             },
             {
               name: 'user',
@@ -98,7 +49,7 @@ class RecentActivity extends Component {
               this.setState({
                 loading: false,
                 error: null,
-                items: items,
+                items,
               });
             })
             .catch(error => {
@@ -170,12 +121,20 @@ class SearchResults extends Component {
       .limit(25)
       .get()
       .then(snapshot => {
-        this.setState({
-          loading: false,
-          items: snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          })),
+        let items = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        populateRelations(items, [
+          {
+            name: 'distillery',
+            collection: 'distilleries',
+          },
+        ]).then(items => {
+          this.setState({
+            loading: false,
+            items,
+          });
         });
       })
       .catch(error => {
@@ -197,15 +156,12 @@ class SearchResults extends Component {
       return <Text>{this.state.error.message}</Text>;
     }
 
-    console.log(this.state.items.length);
-
     if (this.props.query && !this.state.loading && !this.state.items.length) {
       return (
         <AlertCard
           onPress={() => {
             this.props.navigation.navigate('AddBottle');
           }}
-          style={styles.missingBottleContainer}
           heading="Can't find a bottle?"
           subheading={`Tap here to add ${this.props.query}.`}
         />

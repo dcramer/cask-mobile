@@ -151,15 +151,23 @@ class CheckIn extends Component {
     let { auth, navigation } = this.props;
     let { bottle } = navigation.state.params;
     this.setState({ submitting: true });
-    this.props.checkIn({
-      user: auth.user.uid,
-      bottle: bottle.id,
-      notes: state.notes,
-      rating: state.rating,
-      friends: state.friends.map(f => f.id),
-      location: state.location ? state.location.id : null,
-      flavorProfile: state.flavorProfile,
-    });
+    this.props
+      .checkIn({
+        user: auth.user.uid,
+        bottle: bottle.id,
+        notes: state.notes,
+        rating: state.rating,
+        friends: state.friends.map(f => f.id),
+        location: state.location ? state.location.id : null,
+        flavorProfile: state.flavorProfile,
+      })
+      .then(bottle => {
+        // TODO(dcramer): go to checkin details?
+        navigation.navigate('Home');
+      })
+      .catch(error => {
+        this.setState({ error });
+      });
   };
 
   isValid = () => {

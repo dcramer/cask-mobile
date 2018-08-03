@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Activity from './screens/Activity';
 import AddBottle from './screens/AddBottle';
 import CheckIn from './screens/CheckIn';
+import DistillerySelect from './screens/DistillerySelect';
 import FriendSelect from './screens/FriendSelect';
 import LocationSelect from './screens/LocationSelect';
 import Notifications from './screens/Notifications';
@@ -104,6 +105,7 @@ export const RootNavigator = createStackNavigator(
     Main: {
       screen: MainStack,
     },
+    DistillerySelect,
     LocationSelect,
     FriendSelect,
     TagSelect,

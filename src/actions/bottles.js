@@ -6,25 +6,28 @@ import { db } from '../firebase';
 
 export function addBottle(data) {
   return dispatch => {
-    db.collection('bottles')
-      .add(data)
-      .then(docRef => {
-        dispatch(
-          addBottleSuccess({
+    return new Promise((resolve, reject) => {
+      db.collection('bottles')
+        .add(data)
+        .then(docRef => {
+          let bottle = {
             id: docRef.id,
             ...data,
-          })
-        );
-      })
-      .catch(error => {
-        dispatch(addBottleFailure(error, error));
-      });
+          };
+          resolve(bottle);
+          return dispatch(addBottleSuccess(bottle));
+        })
+        .catch(error => {
+          reject(error);
+          return dispatch(addBottleFailure(error));
+        });
+    });
   };
 }
 export function addBottleSuccess(bottle) {
   return {
     type: ADD_BOTTLE_SUCCESS,
-    bottle: bottle,
+    bottle,
   };
 }
 

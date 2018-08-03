@@ -14,6 +14,10 @@ function isBottleRef(database, value) {
   return exists(/databases/$(database)/documents/bottles/$(value))
 }
 
+function isDistilleryRef(database, value) {
+  return exists(/databases/$(database)/documents/distilleries/$(value))
+}
+
 function isLocationRef(database, value) {
   return exists(/databases/$(database)/documents/locations/$(value))
 }
@@ -34,42 +38,12 @@ function isUser(database, resource) {
 
 function isBottle(database, resource) {
   return resource.data.keys().hasAll([
+      'userAdded',
       'name',
-      'distillery',
-      'series',
-      'category',
-      'abv',
-      'statedAge',
-      'vintageYear',
-      'bottleYear',
-      'caskType'
-    ]) && (
-      resource.data.size() >= 2 ||
-      resource.data.size() <= 4
-    )
-    && resource.data.name is string
-    && resource.data.name.size() < 200
-    && (
-      resource.data.abv is number ||
-      resource.data.abv == null
-    )
-    && resource.data.distillery is string
-    && exists(/databases/$(database)/documents/locations/$(resource.data.distillery))
-    && (
-      resource.data.series == null ||
-      (resource.data.series is string && resource.data.series.size() < 50)
-    )
-    && (
-      resource.data.category == null ||
-      (resource.data.category is string && resource.data.category.size() < 50)
-    )
-    && (
-      resource.data.caskType == null ||
-      (resource.data.caskType is string && resource.data.caskType.size() < 50)
-    )
-    && isAgeValue(resource.data.stagedAge, true)
-    && isYearValue(resource.data.vintageYear, true)
-    && isYearValue(resource.data.bottleYear, true)
+      'distillery'
+    ])
+    && isUserRef(resource.data.userAdded)
+    && isDistilleryRef(resource.data.distillery)
 }
 
 function isLocation(database, resource) {
@@ -126,9 +100,13 @@ service cloud.firestore {
     match /bottles/{bottleId} {
       allow read: if request.auth.uid != null
       allow create: if request.auth.uid != null
+                    && request.auth.uid == request.resource.data.userAdded
                     && isBottle(database, request.resource);
     }
     match /locations/{locationId} {
+      allow read: if request.auth.uid != null;
+    }
+    match /distilleries/{distilleryId} {
       allow read: if request.auth.uid != null;
     }
     match /checkins/{checkinId} {
