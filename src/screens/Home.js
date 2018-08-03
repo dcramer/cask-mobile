@@ -6,95 +6,12 @@ import { SearchBar } from 'react-native-elements';
 
 import { db } from '../firebase';
 import { colors, layout } from '../styles';
-import Bottle from '../components/Bottle';
+import Activity from '../components/Activity';
 import AlertCard from '../components/AlertCard';
-import CheckIn from '../components/CheckIn';
+import Bottle from '../components/Bottle';
 import LoadingIndicator from '../components/LoadingIndicator';
 
 import { populateRelations } from '../utils/query';
-
-class RecentActivity extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { loading: true, error: null, items: [] };
-  }
-
-  async componentDidMount() {
-    this.unsubscribeCheckins = db
-      .collection('checkins')
-      .where('user', '==', this.props.auth.user.uid)
-      .orderBy('createdAt', 'desc')
-      .limit(25)
-      .onSnapshot(
-        snapshot => {
-          let checkins = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          populateRelations(checkins, [
-            {
-              name: 'bottle',
-              collection: 'bottles',
-              relations: [{ name: 'distillery', collection: 'distilleries' }],
-            },
-            {
-              name: 'user',
-              collection: 'users',
-            },
-            {
-              name: 'location',
-              collection: 'locations',
-            },
-          ])
-            .then(items => {
-              this.setState({
-                loading: false,
-                error: null,
-                items,
-              });
-            })
-            .catch(error => {
-              this.setState({ error, loading: false });
-              Sentry.captureException(error);
-            });
-        },
-        error => {
-          console.error(error);
-          Sentry.captureException(error);
-        }
-      );
-  }
-
-  async componentWillUnmount() {
-    this.unsubscribeCheckins && this.unsubscribeCheckins();
-  }
-
-  _renderItem = ({ item }) => <CheckIn checkIn={item} />;
-
-  _keyExtractor = item => item.id;
-
-  render() {
-    if (this.state.loading) {
-      return <LoadingIndicator />;
-    }
-    if (this.state.error) {
-      return (
-        <View style={styles.activityContainer}>
-          <Text>Error: {this.state.error.message}</Text>
-        </View>
-      );
-    }
-    return (
-      <View style={styles.activityContainer}>
-        <FlatList
-          data={this.state.items}
-          keyExtractor={this._keyExtractor}
-          renderItem={this._renderItem}
-        />
-      </View>
-    );
-  }
-}
 
 class SearchResults extends Component {
   constructor(props) {
@@ -227,7 +144,14 @@ class Home extends Component {
           {this.state.searchActive || !!this.state.searchQuery ? (
             <SearchResults query={this.state.searchQuery} navigation={this.props.navigation} />
           ) : (
-            <RecentActivity auth={this.props.auth} navigation={this.props.navigation} />
+            <Activity
+              auth={this.props.auth}
+              navigation={this.props.navigation}
+              queryset={db
+                .collection('checkins')
+                .where('user', '==', this.props.auth.user.uid)
+                .orderBy('createdAt', 'desc')}
+            />
           )}
         </View>
       </View>

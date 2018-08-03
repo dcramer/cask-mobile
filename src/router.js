@@ -107,6 +107,7 @@ export const RootNavigator = createStackNavigator(
   {
     mode: 'modal',
     gesturesEnabled: true,
+    // XXX(dcramer):
     navigationOptions: ({ navigation }) => {
       let focusedRouteName = idx(navigation, _ => _.state.routes[_.state.index].routeName);
       let header,
@@ -122,9 +123,10 @@ export const RootNavigator = createStackNavigator(
           title = 'Notifications';
           break;
         case 'Profile':
-          title = 'Profile';
+          header = null;
           break;
       }
+
       return {
         ...commonOptions,
         header: header,

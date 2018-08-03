@@ -120,7 +120,7 @@ class FriendSelect extends Component {
     let results = friendDatabase.filter(i => i.name.indexOf(this.state.query) !== -1);
     return (
       <View style={styles.container}>
-        <ModalHeader onDone={this.onDone} title="Tag Friends" />
+        <ModalHeader rightActionOnPress={this.onDone} title="Tag Friends" />
         <View style={styles.search}>
           <SearchBar
             lightTheme

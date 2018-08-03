@@ -9,22 +9,36 @@ class ModalHeader extends Component {
   static propTypes = {
     navigation: PropTypes.object.isRequired,
     title: PropTypes.string.isRequired,
-    onCancel: PropTypes.func,
-    onDone: PropTypes.func,
+    leftActionText: PropTypes.string,
+    leftActionOnPress: PropTypes.func,
+    rightActionText: PropTypes.string,
+    rightActionOnPress: PropTypes.func,
+  };
+
+  static defaultProps = {
+    leftActionText: 'Cancel',
+    leftActionOnPress: () => this.props.navigation.goBack(),
+    rightActionText: 'Save',
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-          <Text style={[styles.action, styles.leftAction]}>Cancel</Text>
-        </TouchableOpacity>
+        {this.props.leftActionOnPress ? (
+          <TouchableOpacity onPress={this.props.leftActionOnPress}>
+            <Text style={[styles.action, styles.leftAction]}>{this.props.leftActionText}</Text>
+          </TouchableOpacity>
+        ) : (
+          <Text style={[styles.action, styles.leftAction]} />
+        )}
         <Text style={styles.text}>{this.props.title}</Text>
-        <TouchableOpacity onPress={this.props.onDone}>
-          <Text style={[styles.action, styles.rightAction]}>
-            {!!this.props.onDone ? 'Save' : ''}
-          </Text>
-        </TouchableOpacity>
+        {this.props.rightActionOnPress ? (
+          <TouchableOpacity onPress={this.props.rightActionOnPress}>
+            <Text style={[styles.action, styles.rightAction]}>{this.props.rightActionText}</Text>
+          </TouchableOpacity>
+        ) : (
+          <Text style={[styles.action, styles.rightAction]} />
+        )}
       </View>
     );
   }
@@ -36,8 +50,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#7b6be6',
-    paddingTop: layout.statusBarHeight,
-    paddingBottom: margins.half,
+    paddingTop: layout.statusBarHeight + 2,
+    paddingBottom: 11.5,
   },
   action: {
     color: '#fff',
@@ -52,7 +66,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 17,
     textAlign: 'center',
     fontWeight: 'bold',
     flex: 1,

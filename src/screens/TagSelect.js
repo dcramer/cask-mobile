@@ -50,7 +50,7 @@ class TagSelect extends Component {
 
     return (
       <ScrollView style={styles.container}>
-        <ModalHeader onDone={this.onDone} title={title} />
+        <ModalHeader rightActionOnPress={this.onDone} title={title} />
         <View style={styles.search}>
           <SearchBar
             lightTheme
