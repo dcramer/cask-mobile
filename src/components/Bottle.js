@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, Image, View, ViewPropTypes } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, Image, View, ViewPropTypes } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
 import { colors, margins } from '../styles';
@@ -12,6 +12,11 @@ class Bottle extends Component {
     bottle: CustomPropTypes.Bottle.isRequired,
     navigation: PropTypes.object.isRequired,
     style: ViewPropTypes.style,
+    canPress: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    canPress: true,
   };
 
   static getBottleName = bottle => {
@@ -19,7 +24,19 @@ class Bottle extends Component {
     return `${bottle.distillery} ${bottle.statedAge || ''}`;
   };
 
+  _onPress = () => {
+    let { bottle, navigation } = this.props;
+    navigation.navigate('BottleDetails', { id: bottle.id, bottle });
+  };
+
   render() {
+    if (this.props.canPress) {
+      return <TouchableOpacity onPress={this._onPress}>{this.renderChild()}</TouchableOpacity>;
+    }
+    return this.renderChild();
+  }
+
+  renderChild() {
     let { bottle, style } = this.props;
     return (
       <Card style={[styles.cardContainer, style]}>

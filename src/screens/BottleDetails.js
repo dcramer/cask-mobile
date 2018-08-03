@@ -30,7 +30,7 @@ export default class BottleDetails extends Component {
 
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        <Bottle navigation={navigation} bottle={bottle} />
+        <Bottle canPress={false} bottle={bottle} />
         <Button
           title="Check-in"
           onPress={this._onCheckIn}

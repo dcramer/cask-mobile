@@ -1,15 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Sentry } from 'react-native-sentry';
-import PropTypes from 'prop-types';
-import {
-  ActivityIndicator,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-  Text,
-  View,
-} from 'react-native';
+import { ActivityIndicator, StyleSheet, FlatList, Text, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
 import { db } from '../firebase';
@@ -17,46 +9,6 @@ import { layout } from '../styles';
 import CustomPropTypes from '../propTypes';
 import Bottle from '../components/Bottle';
 import CheckIn from '../components/CheckIn';
-
-class BottleEntry extends Component {
-  static propTypes = {
-    bottle: CustomPropTypes.Bottle.isRequired,
-    navigation: PropTypes.object.isRequired,
-  };
-
-  _onPress = () => {
-    let { bottle, navigation } = this.props;
-    navigation.navigate('BottleDetails', { id: bottle.id, bottle });
-  };
-
-  render() {
-    return (
-      <TouchableOpacity onPress={this._onPress}>
-        <Bottle {...this.props} />
-      </TouchableOpacity>
-    );
-  }
-}
-
-class CheckInEntry extends Component {
-  static propTypes = {
-    checkIn: CustomPropTypes.CheckIn.isRequired,
-    navigation: PropTypes.object.isRequired,
-  };
-
-  _onPress = () => {
-    let { checkIn, navigation } = this.props;
-    navigation.navigate('CheckInDetails', { id: checkIn.id, checkIn });
-  };
-
-  render() {
-    return (
-      <TouchableOpacity onPress={this._onPress}>
-        <CheckIn {...this.props} />
-      </TouchableOpacity>
-    );
-  }
-}
 
 const getAll = docs => {
   return Promise.all(
@@ -136,7 +88,7 @@ class RecentActivity extends Component {
     this.unsubscribeCheckins && this.unsubscribeCheckins();
   }
 
-  _renderItem = ({ item }) => <CheckInEntry checkIn={item} navigation={this.props.navigation} />;
+  _renderItem = ({ item }) => <CheckIn checkIn={item} />;
 
   _keyExtractor = item => item.id;
 
@@ -206,7 +158,7 @@ class SearchResults extends Component {
       });
   }
 
-  _renderItem = ({ item }) => <BottleEntry bottle={item} navigation={this.props.navigation} />;
+  _renderItem = ({ item }) => <Bottle bottle={item} />;
 
   _keyExtractor = item => item.id;
 
