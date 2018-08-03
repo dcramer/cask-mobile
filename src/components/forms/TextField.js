@@ -12,6 +12,7 @@ export default class TextField extends Component {
     name: PropTypes.string.isRequired,
     placeholder: PropTypes.string,
     keyboardType: PropTypes.string,
+    value: PropTypes.string,
   };
 
   constructor(...args) {

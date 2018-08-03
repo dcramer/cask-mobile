@@ -6,13 +6,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Activity from './screens/Activity';
 import AddBottle from './screens/AddBottle';
 import CheckIn from './screens/CheckIn';
-import FlavorProfileSelect from './screens/FlavorProfileSelect';
 import FriendSelect from './screens/FriendSelect';
 import LocationSelect from './screens/LocationSelect';
 import Notifications from './screens/Notifications';
 import Home from './screens/Home';
 import Profile from './screens/Profile';
 import BottleDetails from './screens/BottleDetails';
+import TagSelect from './screens/TagSelect';
 import Welcome from './screens/Welcome';
 
 import { colors } from './styles';
@@ -106,7 +106,7 @@ export const RootNavigator = createStackNavigator(
     },
     LocationSelect,
     FriendSelect,
-    FlavorProfileSelect,
+    TagSelect,
   },
   {
     mode: 'modal',

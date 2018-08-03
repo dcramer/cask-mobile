@@ -7,6 +7,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import { addBottle } from '../actions/bottles';
 import { colors, margins } from '../styles';
 import LocationField from '../components/forms/LocationField';
+import TagField from '../components/forms/TagField';
 import TextField from '../components/forms/TextField';
 
 class AddBottle extends Component {
@@ -87,6 +88,17 @@ class AddBottle extends Component {
           name="Stated Age (in years)"
           placeholder="e.g. 21"
           keyboardType="number-pad"
+        />
+        <TagField
+          onChangeValue={v => this.onChangeValue('category', v)}
+          name="Category"
+          maxValues={1}
+          tagList={['Single Malt', 'Scotch', 'Rye', 'Bourbon']}
+        />
+        <TextField
+          onChangeValue={v => this.onChangeValue('series', v)}
+          name="Series"
+          placeholder="e.g. 2018 Limited"
         />
         <Button
           title="Add Bottle"

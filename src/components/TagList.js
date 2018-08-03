@@ -55,17 +55,25 @@ export default class TagList extends Component {
     ).isRequired,
     style: ViewPropTypes.style,
     value: PropTypes.arrayOf(PropTypes.string), // set or array
+    maxValues: PropTypes.number,
     onChangeValue: PropTypes.func.isRequired,
   };
 
   onSelectTag = value => {
     let selected = this.props.value;
-    if (selected.indexOf(value) !== -1) {
-      selected = selected.filter(v => v !== value);
+    if (this.props.maxValues && selected.length === this.props.maxValues) {
+      if (this.props.maxValues === 1) {
+        selected = [value];
+        this.props.onChangeValue(selected);
+      }
     } else {
-      selected = [...selected, value];
+      if (selected.indexOf(value) !== -1) {
+        selected = selected.filter(v => v !== value);
+      } else {
+        selected = [...selected, value];
+      }
+      this.props.onChangeValue(selected);
     }
-    this.props.onChangeValue(selected);
   };
 
   render() {

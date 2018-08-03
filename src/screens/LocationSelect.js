@@ -25,38 +25,17 @@ const locationDatabase = [
 class LocationEntry extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
-    navigation: PropTypes.object.isRequired,
-  };
-
-  _onPress = () => {
-    let { location, navigation } = this.props;
-    navigation.getParam('onComplete')(location);
-    navigation.goBack();
+    onPress: PropTypes.func.isRequired,
   };
 
   render() {
-    let { location } = this.props;
+    let { location, onPress } = this.props;
     return (
-      <TouchableOpacity onPress={this._onPress}>
+      <TouchableOpacity onPress={onPress}>
         <Card>
           <Text>{location.name}</Text>
         </Card>
       </TouchableOpacity>
-    );
-  }
-}
-
-class SearchResults extends Component {
-  _renderItem = ({ item }) => <LocationEntry location={item} navigation={this.props.navigation} />;
-
-  _keyExtractor = item => item.id;
-
-  render() {
-    let results = locationDatabase.filter(i => i.name.indexOf(this.props.query) !== -1);
-    return (
-      <View>
-        <FlatList data={results} keyExtractor={this._keyExtractor} renderItem={this._renderItem} />
-      </View>
     );
   }
 }
@@ -71,10 +50,28 @@ class LocationSelect extends Component {
     this.state = { searchActive: false, searchQuery: '' };
   }
 
+  async componentWillMount() {
+    let { navigation } = this.props;
+    let { title, onChangeValue } = navigation.state.params;
+    if (!title || !onChangeValue) navigation.goBack(null);
+  }
+
+  onSelect = value => {
+    let { navigation } = this.props;
+    navigation.state.params.onChangeValue(value);
+    navigation.goBack();
+  };
+
+  _renderItem = ({ item }) => <LocationEntry location={item} onPress={() => this.onSelect(item)} />;
+
+  _keyExtractor = item => item.id;
+
   render() {
+    let { navigation } = this.props;
+    let { title } = navigation.state.params;
     return (
       <View style={styles.container}>
-        <ModalHeader title="Select Location" />
+        <ModalHeader title={title} />
         <View style={styles.search}>
           <SearchBar
             lightTheme
@@ -86,7 +83,11 @@ class LocationSelect extends Component {
             inputStyle={styles.searchInput}
           />
         </View>
-        <SearchResults query={this.state.searchQuery} navigation={this.props.navigation} />
+        <FlatList
+          data={locationDatabase}
+          keyExtractor={this._keyExtractor}
+          renderItem={this._renderItem}
+        />
       </View>
     );
   }

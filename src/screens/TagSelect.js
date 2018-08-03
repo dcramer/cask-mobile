@@ -9,15 +9,7 @@ import FormLabel from '../components/FormLabel';
 import TagList from '../components/TagList';
 import ModalHeader from '../components/ModalHeader';
 
-const flavorProfileDatabase = [
-  { label: 'Bold', value: 'Bold' },
-  { label: 'Peaty', value: 'Peaty' },
-  { label: 'Wood', value: 'Wood' },
-  { label: 'Fire', value: 'Fire' },
-  { label: 'Apple Pie', value: 'Apple Pie' },
-].sort((a, b) => a.label > b.label);
-
-class FlavorProfileSelect extends Component {
+class TagSelect extends Component {
   static navigationOptions = {
     header: null,
   };
@@ -32,6 +24,12 @@ class FlavorProfileSelect extends Component {
     };
   }
 
+  async componentWillMount() {
+    let { navigation } = this.props;
+    let { tagList, title, onChangeValue } = navigation.state.params;
+    if (!tagList || !title || !onChangeValue) navigation.goBack(null);
+  }
+
   setValue = selected => {
     this.setState({ selected });
   };
@@ -44,10 +42,15 @@ class FlavorProfileSelect extends Component {
   };
 
   render() {
-    let results = flavorProfileDatabase.filter(i => i.label.indexOf(this.state.query) !== -1);
+    let { navigation } = this.props;
+    let { maxValues, tagList, title } = navigation.state.params;
+    let results = this.state.query
+      ? tagList.filter(i => i.label.indexOf(this.state.query) !== -1)
+      : tagList;
+
     return (
       <ScrollView style={styles.container}>
-        <ModalHeader onDone={this.onDone} title="Flavor Profile" />
+        <ModalHeader onDone={this.onDone} title={title} />
         <View style={styles.search}>
           <SearchBar
             lightTheme
@@ -58,15 +61,16 @@ class FlavorProfileSelect extends Component {
             placeholder="Search"
           />
         </View>
-        {this.state.selected.length && (
+        {!!this.state.selected.length && (
           <Card>
             <FormLabel>Selected</FormLabel>
             <TagList
-              tagList={this.state.selected.sort().map(value => {
-                return flavorProfileDatabase.find(p => p.value === value);
+              tagList={this.state.selected.sort().map(v => {
+                return tagList.find(({ value }) => value === v);
               })}
               style={styles.tagSelect}
               value={this.state.selected}
+              maxValues={maxValues}
               onChangeValue={this.setValue}
             />
           </Card>
@@ -77,6 +81,7 @@ class FlavorProfileSelect extends Component {
             tagList={results}
             style={styles.tagSelect}
             value={this.state.selected}
+            maxValues={maxValues}
             onChangeValue={this.setValue}
           />
         </Card>
@@ -134,4 +139,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withNavigation(FlavorProfileSelect);
+export default withNavigation(TagSelect);

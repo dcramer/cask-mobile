@@ -11,7 +11,7 @@ import Bottle from '../components/Bottle';
 import Card from '../components/Card';
 import FormLabel from '../components/FormLabel';
 import PersonList from '../components/PersonList';
-import TagList from '../components/TagList';
+import TagField from '../components/forms/TagField';
 import LocationField from '../components/forms/LocationField';
 import TextField from '../components/forms/TextField';
 
@@ -113,48 +113,6 @@ class CheckInFriends extends Component {
   }
 }
 
-class CheckInFlavorProfile extends Component {
-  constructor(...args) {
-    super(...args);
-    this.state = { value: [] };
-  }
-
-  setValue = value => {
-    this.setState({ value });
-    this.props.onChangeValue(value);
-  };
-
-  render() {
-    let { navigation } = this.props;
-    return (
-      <Card style={styles.formElementContainer}>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('FlavorProfileSelect', {
-              currentValue: this.state.value,
-              onChangeValue: this.setValue,
-            })
-          }>
-          <View style={styles.labelContainer}>
-            <View style={styles.labelLeft}>
-              <FormLabel>Flavor Profile</FormLabel>
-            </View>
-            <View style={styles.labelRight}>
-              <Icon name="ios-arrow-forward" size={18} color={colors.default} />
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TagList
-          tagList={flavorProfileDatabase}
-          style={styles.tagSelect}
-          value={this.state.value}
-          onChangeValue={this.setValue}
-        />
-      </Card>
-    );
-  }
-}
-
 class CheckIn extends Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
@@ -228,9 +186,9 @@ class CheckIn extends Component {
           navigation={navigation}
         />
         <LocationField onChangeValue={v => this.onChangeValue('location', v)} name="Location" />
-        <CheckInFlavorProfile
+        <TagField
           onChangeValue={v => this.onChangeValue('flavorProfile', v)}
-          navigation={navigation}
+          name="Flavor Profile"
         />
         <Button
           title="Confirm Check-in"

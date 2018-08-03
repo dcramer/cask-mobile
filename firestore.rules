@@ -36,29 +36,40 @@ function isBottle(database, resource) {
   return resource.data.keys().hasAll([
       'name',
       'distillery',
-      'category'
-      // 'abv',
-      // 'statedAge',
-      // 'vintageYear',
-      // 'bottleYear',
-      // 'caskType'
+      'series',
+      'category',
+      'abv',
+      'statedAge',
+      'vintageYear',
+      'bottleYear',
+      'caskType'
     ]) && (
       resource.data.size() >= 2 ||
       resource.data.size() <= 4
     )
     && resource.data.name is string
     && resource.data.name.size() < 200
-    // && (
-    //   resource.data.abv is number ||
-    //   resource.data.abv == null
-    // )
-    // && resource.data.distillery is string
-    // && exists(/databases/$(database)/documents/locations/$(resource.data.distillery))
-    // && resource.data.category is string
-    // && resource.data.caskType is string
-    // && isAgeValue(resource.data.stagedAge)
-    // && isYearValue(resource.data.vintageYear)
-    // && isYearValue(resource.data.bottleYear)
+    && (
+      resource.data.abv is number ||
+      resource.data.abv == null
+    )
+    && resource.data.distillery is string
+    && exists(/databases/$(database)/documents/locations/$(resource.data.distillery))
+    && (
+      resource.data.series == null ||
+      (resource.data.series is string && resource.data.series.size() < 50)
+    )
+    && (
+      resource.data.category == null ||
+      (resource.data.category is string && resource.data.category.size() < 50)
+    )
+    && (
+      resource.data.caskType == null ||
+      (resource.data.caskType is string && resource.data.caskType.size() < 50)
+    )
+    && isAgeValue(resource.data.stagedAge, true)
+    && isYearValue(resource.data.vintageYear, true)
+    && isYearValue(resource.data.bottleYear, true)
 }
 
 function isLocation(database, resource) {
@@ -67,7 +78,12 @@ function isLocation(database, resource) {
     && resource.data.name is string
     && resource.data.name.size() < 200
     && resource.data.latlng is latlng
-  // new firebase.firestore.GeoPoint(latitude, longitude)
+}
+
+function isFriend(database, resource) {
+  return resource.data.keys().hasAll(['mutual'])
+    && resource.data.size() == 1
+    && resource.data.mutual is bool
 }
 
 function isCheckin(database, resource) {
@@ -91,12 +107,26 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId} {
       allow read: if request.auth.uid == userId;
-      allow update: if request.auth.uid == userId
+      allow create, update: if request.auth.uid == userId
                     && isUser(database, request.resource);
-      allow create: if request.auth.uid == userId;
+    }
+    match /users/{userId}/friends/{friendId} {
+      allow read: if request.auth.uid == userId;
+      allow update: if (request.auth.uid == userId || request.auth.uid == friendId)
+                    && (
+                      request.resource.mutual == resource.mutual
+                      || request.auth.uid == friendId
+                    )
+                    && exists(/databases/$(database)/documents/users/$(friendId))
+      allow create: if (request.auth.uid == userId || request.auth.uid == friendId)
+                    && request.resource == false
+                    && isFriend(database, request.resource)
+                    && exists(/databases/$(database)/documents/users/$(friendId))
     }
     match /bottles/{bottleId} {
       allow read: if request.auth.uid != null
+      allow create: if request.auth.uid != null
+                    && isBottle(database, request.resource);
     }
     match /locations/{locationId} {
       allow read: if request.auth.uid != null;
