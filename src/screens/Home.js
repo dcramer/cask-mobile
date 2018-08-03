@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Sentry } from 'react-native-sentry';
 import PropTypes from 'prop-types';
 import {
@@ -15,6 +16,7 @@ import { db } from '../firebase';
 import { layout } from '../styles';
 import CustomPropTypes from '../propTypes';
 import Bottle from '../components/Bottle';
+import { resolve } from '../../node_modules/uri-js';
 
 const whiskyDatabase = [
   {
@@ -91,20 +93,59 @@ class BottleEntry extends Component {
   }
 }
 
+const getAll = docs => {
+  return Promise.all(
+    docs.map(
+      doc =>
+        new Promise((resolve, reject) => {
+          doc
+            .get()
+            .then(resolve)
+            .catch(reject);
+        })
+    )
+  );
+};
+
 class RecentActivity extends Component {
   constructor(props) {
     super(props);
     this.state = { loading: true, error: null, items: [] };
-    db.collection('bottles')
+  }
+
+  async componentDidMount() {
+    db.collection('checkins')
+      .where('user', '==', this.props.auth.user.uid)
+      .limit(25)
       .get()
-      .then(snapshot => {
-        this.setState({
-          loading: false,
-          items: snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          })),
-        });
+      .then(checkinsSnapshot => {
+        let checkins = checkinsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        getAll(checkins.map(d => db.doc(`bottles/${d.bottle}`)))
+          .then(bottlesSnapshot => {
+            let bottlesById = {};
+            bottlesSnapshot.forEach(doc => {
+              bottlesById[doc.id] = {
+                id: doc.id,
+                ...doc.data(),
+              };
+            });
+
+            this.setState({
+              loading: false,
+              error: null,
+              items: checkins.map(checkin => ({
+                ...checkin,
+                bottle: bottlesById[checkin.bottle],
+              })),
+            });
+          })
+          .catch(error => {
+            this.setState({ error, loading: false });
+            Sentry.captureException(error);
+          });
       })
       .catch(error => {
         this.setState({ error, loading: false });
@@ -112,9 +153,9 @@ class RecentActivity extends Component {
       });
   }
 
-  // async componentDidMount() {}
-
-  _renderItem = ({ item }) => <BottleEntry bottle={item} navigation={this.props.navigation} />;
+  _renderItem = ({ item }) => (
+    <BottleEntry bottle={item.bottle} navigation={this.props.navigation} />
+  );
 
   _keyExtractor = item => item.id;
 
@@ -146,18 +187,54 @@ class RecentActivity extends Component {
 }
 
 class SearchResults extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { loading: true, error: null, items: [] };
+  }
+
+  async componentDidMount() {
+    this.fetchData();
+  }
+
+  async componentDidUpdate(prevProps) {
+    if (prevProps.query !== this.props.query) {
+      this.fetchData();
+    }
+  }
+
+  async fetchData() {
+    let { query } = this.props;
+    db.collection('bottles')
+      // .where('name', '==', this.props.query)
+      .startAt(query)
+      .endAt(query + '\uf8ff')
+      .orderBy('name')
+      .get()
+      .then(snapshot => {
+        this.setState({
+          loading: false,
+          items: snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          })),
+        });
+      })
+      .catch(error => {
+        this.setState({ error, loading: false });
+        Sentry.captureException(error);
+      });
+  }
+
   _renderItem = ({ item }) => <BottleEntry bottle={item} navigation={this.props.navigation} />;
 
   _keyExtractor = item => item.id;
 
   render() {
-    let results =
-      this.props.query && whiskyDatabase.filter(i => i.name.indexOf(this.props.query) !== -1);
     return (
       <View>
         {this.props.query ? (
           <FlatList
-            data={results}
+            data={this.state.items}
             keyExtractor={this._keyExtractor}
             renderItem={this._renderItem}
           />
@@ -169,7 +246,7 @@ class SearchResults extends Component {
   }
 }
 
-export default class Home extends Component {
+class Home extends Component {
   static navigationOptions = {
     header: null,
   };
@@ -197,7 +274,7 @@ export default class Home extends Component {
         {this.state.searchActive || !!this.state.searchQuery ? (
           <SearchResults query={this.state.searchQuery} navigation={this.props.navigation} />
         ) : (
-          <RecentActivity navigation={this.props.navigation} />
+          <RecentActivity auth={this.props.auth} navigation={this.props.navigation} />
         )}
       </View>
     );
@@ -222,3 +299,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
 });
+
+export default connect(({ auth }) => ({ auth }))(Home);
