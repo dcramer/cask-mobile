@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, Image, View } from 'react-native';
+import { withNavigation } from 'react-navigation';
 
 import { colors, margins } from '../styles';
 import CustomPropTypes from '../propTypes';
 import Card from './Card';
 
-export default class Bottle extends Component {
+class Bottle extends Component {
   static propTypes = {
     bottle: CustomPropTypes.Bottle.isRequired,
     navigation: PropTypes.object.isRequired,
@@ -72,3 +73,5 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
 });
+
+export default withNavigation(Bottle);
