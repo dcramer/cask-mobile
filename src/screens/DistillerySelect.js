@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
-import { SearchBar } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
 import { Sentry } from 'react-native-sentry';
 
@@ -11,6 +10,7 @@ import AlertCard from '../components/AlertCard';
 import Card from '../components/Card';
 import ModalHeader from '../components/ModalHeader';
 import LoadingIndicator from '../components/LoadingIndicator';
+import SearchBar from '../components/SearchBar';
 
 class SearchResults extends Component {
   static propTypes = {
@@ -130,14 +130,7 @@ class DistillerySelect extends Component {
       <View style={styles.container}>
         <ModalHeader title={title} />
         <View style={styles.search}>
-          <SearchBar
-            lightTheme
-            autoCorrect={false}
-            onChangeText={text => this.setState({ query: text })}
-            onClearText={text => this.setState({ query: text })}
-            containerStyle={styles.searchContainer}
-            inputStyle={styles.searchInput}
-          />
+          <SearchBar onChangeValue={query => this.setState({ query })} />
         </View>
         <SearchResults
           onSelect={this.onSelect}
@@ -161,14 +154,6 @@ const styles = StyleSheet.create({
   },
   search: {
     backgroundColor: '#7b6be6',
-  },
-  searchContainer: {
-    backgroundColor: '#7b6be6',
-    borderTopWidth: 0,
-  },
-  searchInput: {
-    color: '#000',
-    backgroundColor: '#eee',
   },
 });
 

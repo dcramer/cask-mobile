@@ -2,21 +2,16 @@ import React, { Component } from 'react';
 import { Sentry } from 'react-native-sentry';
 import { StyleSheet, FlatList, Text, View } from 'react-native';
 
-import { db } from '../firebase';
-import { colors, layout } from '../styles';
 import CheckIn from '../components/CheckIn';
 import LoadingIndicator from '../components/LoadingIndicator';
 
 import { populateRelations } from '../utils/query';
 
 export default class Activity extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { loading: true, error: null, items: [] };
-  }
+  state = { loading: true, error: null, items: [] };
 
   async componentDidMount() {
-    this.unsubscribeCheckins = this.props.queryset.limit(25).onSnapshot(
+    this.unsubscribeFriends = this.props.queryset.limit(25).onSnapshot(
       snapshot => {
         let checkins = snapshot.docs.map(doc => ({
           id: doc.id,
@@ -50,7 +45,7 @@ export default class Activity extends Component {
           });
       },
       error => {
-        console.error(error);
+        this.setState({ error, loading: false });
         Sentry.captureException(error);
       }
     );
@@ -70,13 +65,13 @@ export default class Activity extends Component {
     }
     if (this.state.error) {
       return (
-        <View style={styles.activityContainer}>
+        <View style={styles.container}>
           <Text>Error: {this.state.error.message}</Text>
         </View>
       );
     }
     return (
-      <View style={styles.activityContainer}>
+      <View style={styles.container}>
         <FlatList
           data={this.state.items}
           keyExtractor={this._keyExtractor}
@@ -90,30 +85,6 @@ export default class Activity extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
-  },
-  resultsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flex: 1,
-  },
-  activityContainer: {
-    flex: 1,
     backgroundColor: '#f9f9f9',
-  },
-  searchContainer: {
-    flex: 1,
-  },
-  header: {
-    backgroundColor: colors.primary,
-    paddingTop: layout.statusBarHeight,
-  },
-  searchBarContainer: {
-    backgroundColor: colors.primary,
-    borderTopWidth: 0,
-  },
-  searchBarInput: {
-    color: colors.dark,
-    backgroundColor: '#eee',
   },
 });

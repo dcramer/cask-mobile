@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Alert, StyleSheet, View } from 'react-native';
 import { ButtonGroup } from 'react-native-elements';
@@ -7,11 +8,13 @@ import { logOut } from '../actions/auth';
 import { colors, margins } from '../styles';
 import { db } from '../firebase';
 import Activity from '../components/Activity';
+import FriendList from '../components/FriendList';
 import ModalHeader from '../components/ModalHeader';
 
-class Profile extends Component {
-  static navigationOptions = {
-    title: 'Profile',
+class MyProfile extends Component {
+  static propTypes = {
+    auth: PropTypes.object.isRequired,
+    logOut: PropTypes.func.isRequired,
   };
 
   state = {
@@ -19,21 +22,27 @@ class Profile extends Component {
   };
 
   renderButtonContent() {
+    let { user } = this.props.auth;
     let { selectedButton } = this.state;
     if (selectedButton === 0)
       return (
         <Activity
-          auth={this.props.auth}
-          navigation={this.props.navigation}
           queryset={db
             .collection('checkins')
-            .where('user', '==', this.props.auth.user.uid)
+            .where('user', '==', user.uid)
             .orderBy('createdAt', 'desc')}
         />
+      );
+    else if (selectedButton === 1)
+      return (
+        <View>
+          <FriendList userId={user.uid} />
+        </View>
       );
   }
 
   render() {
+    if (this.state.loading) return null;
     return (
       <View style={styles.container}>
         <ModalHeader
@@ -95,4 +104,4 @@ export default connect(
     auth,
   }),
   { logOut }
-)(Profile);
+)(MyProfile);

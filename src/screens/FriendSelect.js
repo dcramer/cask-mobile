@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Image, StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+
 import { withNavigation } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { colors, margins } from '../styles';
 import Card from '../components/Card';
 import ModalHeader from '../components/ModalHeader';
+import SearchBar from '../components/SearchBar';
 
 const friendDatabase = [
   {
@@ -122,14 +123,7 @@ class FriendSelect extends Component {
       <View style={styles.container}>
         <ModalHeader rightActionOnPress={this.onDone} title="Tag Friends" />
         <View style={styles.search}>
-          <SearchBar
-            lightTheme
-            onChangeText={text => this.setState({ query: text })}
-            onClearText={text => this.setState({ query: text })}
-            containerStyle={styles.searchContainer}
-            inputStyle={styles.searchInput}
-            placeholder="Search"
-          />
+          <SearchBar onChangeValue={query => this.setState({ query })} />
         </View>
         <FlatList data={results} keyExtractor={this._keyExtractor} renderItem={this._renderItem} />
       </View>
@@ -146,16 +140,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#7b6be6',
-  },
-  searchContainer: {
-    flex: 1,
-    backgroundColor: '#7b6be6',
-    borderTopWidth: 0,
-  },
-  searchInput: {
-    color: '#000',
-    fontSize: 14,
-    backgroundColor: '#eee',
   },
   cardContainer: {
     flexDirection: 'row',

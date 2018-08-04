@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, Image, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, Image, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import TimeAgo from 'react-native-timeago';
@@ -29,40 +29,53 @@ class CheckIn extends Component {
   static propTypes = {
     checkIn: CustomPropTypes.CheckIn.isRequired,
     navigation: PropTypes.object.isRequired,
+    canPress: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    canPress: true,
+  };
+
+  goToCheckIn = () => {
+    let { checkIn, navigation } = this.props;
+    navigation.navigate('CheckInDetails', { id: checkIn.id, checkIn });
+  };
+
+  goToProfile = () => {
+    let { checkIn, navigation } = this.props;
+    navigation.navigate('UserProfile', { id: checkIn.user.id, user: checkIn.user });
   };
 
   render() {
     let { checkIn } = this.props;
     let { bottle, location, user } = checkIn;
     return (
-      <Card style={styles.cardContainer}>
+      <Card style={styles.cardContainer} onPress={this.props.canPress ? this.goToCheckIn : null}>
         <View style={styles.header}>
-          {user.photoURL ? (
-            <Image
-              source={{
-                uri: user.photoURL,
-              }}
-              style={styles.thumbnail}
-              resizeMode="contain"
-            />
-          ) : (
-            <Icon name="user-circle" size={24} style={styles.thumbnail} />
-          )}
-          <View style={styles.rowText}>
-            <View style={styles.rowOne}>
-              <Text style={styles.user} numberOfLines={2} ellipsizeMode={'tail'}>
-                {user.displayName}
-              </Text>
-              <Text style={styles.timestamp}>
-                {!!checkIn.createdAt && <TimeAgo time={checkIn.createdAt.toDate()} />}
-              </Text>
-            </View>
-            {!!location && (
-              <Text style={styles.location} numberOfLines={1} ellipsizeMode={'tail'}>
-                {location.name}
-              </Text>
+          <TouchableOpacity onPress={this.goToProfile} style={styles.user}>
+            {user.photoURL ? (
+              <Image
+                source={{
+                  uri: user.photoURL,
+                }}
+                style={styles.userPhoto}
+                resizeMode="contain"
+              />
+            ) : (
+              <Icon name="user-circle" size={24} style={styles.userPhoto} />
             )}
-          </View>
+            <Text style={styles.userName} numberOfLines={2} ellipsizeMode={'tail'}>
+              {user.displayName}
+            </Text>
+          </TouchableOpacity>
+          <Text style={styles.timestamp}>
+            {!!checkIn.createdAt && <TimeAgo time={checkIn.createdAt.toDate()} />}
+          </Text>
+          {!!location && (
+            <Text style={styles.location} numberOfLines={1} ellipsizeMode={'tail'}>
+              {location.name}
+            </Text>
+          )}
         </View>
         <Bottle bottle={bottle} style={styles.bottleCard} />
         {!!checkIn.rating && (
@@ -93,16 +106,27 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   header: {
+    flex: 1,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
     marginBottom: margins.half,
   },
   user: {
-    flex: 1,
-    paddingLeft: 10,
+    flex: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  userName: {
     fontSize: 14,
     fontWeight: 'bold',
     color: colors.default,
+  },
+  userPhoto: {
+    height: 24,
+    width: 24,
+    marginRight: margins.half,
+    borderRadius: 12,
   },
   location: {
     paddingLeft: 10,
@@ -110,24 +134,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.default,
   },
-  thumbnail: {
-    height: 24,
-    width: 24,
-    borderRadius: 12,
-  },
-  rowText: {
-    flex: 1,
-    flexDirection: 'row',
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  rowOne: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
   timestamp: {
+    textAlign: 'right',
     color: colors.light,
     fontSize: 12,
   },

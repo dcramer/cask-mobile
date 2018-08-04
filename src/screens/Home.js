@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Sentry } from 'react-native-sentry';
 import { StyleSheet, FlatList, Text, View } from 'react-native';
-import { SearchBar } from 'react-native-elements';
 
 import { db } from '../firebase';
 import { colors, layout } from '../styles';
@@ -10,6 +9,7 @@ import Activity from '../components/Activity';
 import AlertCard from '../components/AlertCard';
 import Bottle from '../components/Bottle';
 import LoadingIndicator from '../components/LoadingIndicator';
+import SearchBar from '../components/SearchBar';
 
 import { populateRelations } from '../utils/query';
 
@@ -129,15 +129,10 @@ class Home extends Component {
       <View style={styles.container}>
         <View style={styles.header}>
           <SearchBar
-            autoCorrect={false}
-            placeholder="bottle, distillery, style"
-            lightTheme
             onFocus={() => this.setState({ searchActive: true })}
             onBlur={() => this.setState({ searchActive: false })}
-            onChangeText={text => this.setState({ searchQuery: text })}
-            onClearText={text => this.setState({ searchQuery: text })}
-            containerStyle={styles.searchBarContainer}
-            inputStyle={styles.searchBarInput}
+            onChangeValue={searchQuery => this.setState({ searchQuery })}
+            style={styles.searchBarContainer}
           />
         </View>
         <View style={styles.resultsContainer}>
@@ -179,14 +174,6 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: colors.primary,
     paddingTop: layout.statusBarHeight,
-  },
-  searchBarContainer: {
-    backgroundColor: colors.primary,
-    borderTopWidth: 0,
-  },
-  searchBarInput: {
-    color: colors.dark,
-    backgroundColor: '#eee',
   },
 });
 

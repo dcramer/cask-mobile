@@ -6,7 +6,7 @@ import { loginSuccess } from './actions/auth';
 import { RootNavigator, UnauthenticatedNavigator } from './router';
 import Loading from './screens/Loading';
 
-const navigationPersistenceKey = __DEV__ ? 'NavigationStateDEV' : null;
+// const navigationPersistenceKey = __DEV__ ? 'NavigationStateDEV' : null;
 
 class App extends Component {
   state = { loaded: false };
@@ -28,7 +28,7 @@ class App extends Component {
     if (!this.props.auth.user) {
       return <UnauthenticatedNavigator {...this.props} />;
     }
-    return <RootNavigator persistenceKey={navigationPersistenceKey} {...this.props} />;
+    return <RootNavigator {...this.props} />;
   }
 }
 

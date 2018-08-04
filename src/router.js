@@ -8,14 +8,16 @@ import Activity from './screens/Activity';
 import AddBottle from './screens/AddBottle';
 import AddDistillery from './screens/AddDistillery';
 import CheckIn from './screens/CheckIn';
+import CheckInDetails from './screens/CheckInDetails';
 import DistillerySelect from './screens/DistillerySelect';
 import FriendSelect from './screens/FriendSelect';
 import LocationSelect from './screens/LocationSelect';
 import Notifications from './screens/Notifications';
 import Home from './screens/Home';
-import Profile from './screens/Profile';
+import MyProfile from './screens/MyProfile';
 import BottleDetails from './screens/BottleDetails';
 import TagSelect from './screens/TagSelect';
+import UserProfile from './screens/UserProfile';
 import Welcome from './screens/Welcome';
 
 import { colors } from './styles';
@@ -37,9 +39,11 @@ const HomeStack = createStackNavigator(
   {
     Home,
     BottleDetails,
+    CheckInDetails,
     CheckIn,
     AddBottle,
     AddDistillery,
+    UserProfile,
   },
   {
     navigationOptions: { ...commonOptions },
@@ -51,7 +55,7 @@ const MainStack = createBottomTabNavigator(
     HomeStack,
     Activity,
     Notifications,
-    Profile,
+    MyProfile,
   },
   {
     initialRouteName: 'HomeStack',
@@ -65,7 +69,7 @@ const MainStack = createBottomTabNavigator(
           iconName = `map`;
         } else if (routeName === 'Notifications') {
           iconName = `bell`;
-        } else if (routeName === 'Profile') {
+        } else if (routeName === 'MyProfile') {
           iconName = `user`;
         }
         return <Icon name={iconName} size={24} color={tintColor} solid={focused} />;
@@ -110,27 +114,30 @@ export const RootNavigator = createStackNavigator(
     // XXX(dcramer):
     navigationOptions: ({ navigation }) => {
       let focusedRouteName = idx(navigation, _ => _.state.routes[_.state.index].routeName);
+      let { routeName } = navigation.state;
       let header,
         title = null;
       switch (focusedRouteName) {
-        case 'HomeStack':
-          header = null;
-          break;
         case 'Activity':
           title = 'Activity';
           break;
         case 'Notifications':
           title = 'Notifications';
           break;
-        case 'Profile':
+        case 'HomeStack':
+        case 'MyProfile':
+        case 'UserProfile':
           header = null;
           break;
+      }
+      if (routeName == 'UserProfile') {
+        header = null;
       }
 
       return {
         ...commonOptions,
-        header: header,
-        title: title,
+        header,
+        title,
         tabBarVisible: navigation.state.index === 0,
       };
     },

@@ -1,7 +1,11 @@
 import { db } from '../firebase';
 
-export const getAll = docs => {
-  return Promise.all(docs.map(doc => doc.get()));
+export const getAll = docIds => {
+  return Promise.all(docIds.map(docId => db.doc(docId).get()));
+};
+
+export const getAllFromCollection = (collection, ids) => {
+  return getAll(ids.map(id => `${collection}/${id}`));
 };
 
 export const populateRelations = (items, relations) => {
@@ -18,31 +22,29 @@ export const populateRelations = (items, relations) => {
     return new Promise((resolve, reject) => {
       let { name, collection } = relation;
       try {
-        getAll(items.filter(d => !!d[name]).map(d => db.doc(`${collection}/${d[name]}`))).then(
-          snapshot => {
-            let results = {};
-            snapshot.forEach(doc => {
-              results[doc.id] = {
-                id: doc.id,
-                ...doc.data(),
-              };
-            });
-            if (relation.relations) {
-              populateRelations(Object.values(results), relation.relations)
-                .then(finalResults => {
-                  finalResults.forEach(fr => {
-                    results[fr.id] = fr;
-                  });
-                  resolve({ name, results });
-                })
-                .catch(error => {
-                  reject(error);
+        getAll(items.filter(d => !!d[name]).map(d => `${collection}/${d[name]}`)).then(snapshot => {
+          let results = {};
+          snapshot.forEach(doc => {
+            results[doc.id] = {
+              id: doc.id,
+              ...doc.data(),
+            };
+          });
+          if (relation.relations) {
+            populateRelations(Object.values(results), relation.relations)
+              .then(finalResults => {
+                finalResults.forEach(fr => {
+                  results[fr.id] = fr;
                 });
-            } else {
-              resolve({ name, results });
-            }
+                resolve({ name, results });
+              })
+              .catch(error => {
+                reject(error);
+              });
+          } else {
+            resolve({ name, results });
           }
-        );
+        });
       } catch (err) {
         reject(err);
       }

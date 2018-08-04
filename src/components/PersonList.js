@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Image, View, ViewPropTypes } from 'react-native';
 
-import { colors, margins } from '../styles';
+import { margins } from '../styles';
 
 class PersonItem extends Component {
   static propTypes = {
