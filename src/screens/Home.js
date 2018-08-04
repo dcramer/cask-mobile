@@ -4,7 +4,7 @@ import { Sentry } from 'react-native-sentry';
 import { StyleSheet, FlatList, Text, View } from 'react-native';
 
 import { db } from '../firebase';
-import { colors, layout } from '../styles';
+import { colors, layout, margins } from '../styles';
 import Activity from '../components/Activity';
 import AlertCard from '../components/AlertCard';
 import Bottle from '../components/Bottle';
@@ -157,16 +157,12 @@ class Home extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   resultsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     flex: 1,
-  },
-  activityContainer: {
-    flex: 1,
-    backgroundColor: '#f9f9f9',
+    paddingTop: margins.half,
   },
   searchContainer: {
     flex: 1,

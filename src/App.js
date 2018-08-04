@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { StyleSheet, View } from 'react-native';
 
 import firebase from './firebase';
 import { loginSuccess } from './actions/auth';
@@ -22,6 +23,10 @@ class App extends Component {
   }
 
   render() {
+    return <View style={styles.container}>{this.renderBody()}</View>;
+  }
+
+  renderBody() {
     if (!this.state.loaded) {
       return <Loading />;
     }
@@ -31,6 +36,12 @@ class App extends Component {
     return <RootNavigator {...this.props} />;
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default connect(
   ({ auth }) => ({

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Sentry } from 'react-native-sentry';
-import { StyleSheet, FlatList, Text, View } from 'react-native';
+import { FlatList, Text } from 'react-native';
 
 import CheckIn from '../components/CheckIn';
 import LoadingIndicator from '../components/LoadingIndicator';
@@ -64,27 +64,14 @@ export default class Activity extends Component {
       return <LoadingIndicator />;
     }
     if (this.state.error) {
-      return (
-        <View style={styles.container}>
-          <Text>Error: {this.state.error.message}</Text>
-        </View>
-      );
+      return <Text>Error: {this.state.error.message}</Text>;
     }
     return (
-      <View style={styles.container}>
-        <FlatList
-          data={this.state.items}
-          keyExtractor={this._keyExtractor}
-          renderItem={this._renderItem}
-        />
-      </View>
+      <FlatList
+        data={this.state.items}
+        keyExtractor={this._keyExtractor}
+        renderItem={this._renderItem}
+      />
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f9f9f9',
-  },
-});

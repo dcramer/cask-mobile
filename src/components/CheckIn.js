@@ -95,7 +95,7 @@ class CheckIn extends Component {
 const styles = StyleSheet.create({
   cardContainer: {
     padding: margins.half,
-    marginBottom: margins.full,
+    marginBottom: margins.half,
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: colors.trim,

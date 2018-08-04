@@ -75,7 +75,6 @@ class MyProfile extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
   },
   buttonGroup: {
     backgroundColor: '#fff',
