@@ -6,6 +6,7 @@ import { Sentry } from 'react-native-sentry';
 
 import { db } from '../firebase';
 import { colors } from '../styles';
+import { buildSuccessorKey } from '../utils/query';
 import AlertCard from '../components/AlertCard';
 import Card from '../components/Card';
 import ModalHeader from '../components/ModalHeader';
@@ -37,8 +38,11 @@ class SearchResults extends Component {
   fetchData = () => {
     let { query } = this.props;
     this.setState({ loading: true });
-    db.collection('distilleries')
-      .where('name', '>=', query || '')
+    let queryset = db.collection('distilleries');
+    if (query) {
+      queryset = queryset.where('name', '>=', query).where('name', '<', buildSuccessorKey(query));
+    }
+    queryset
       .orderBy('name')
       .limit(25)
       .get()

@@ -11,7 +11,7 @@ import Bottle from '../components/Bottle';
 import LoadingIndicator from '../components/LoadingIndicator';
 import SearchBar from '../components/SearchBar';
 
-import { populateRelations } from '../utils/query';
+import { buildSuccessorKey, populateRelations } from '../utils/query';
 
 class SearchResults extends Component {
   _renderItem = ({ item }) => <Bottle bottle={item} />;
@@ -66,14 +66,6 @@ class SearchResults extends Component {
     return <Text>Type something!</Text>;
   }
 }
-
-const buildSuccessorKey = query => {
-  let len = query.length;
-  let startChunk = query.slice(0, len - 1);
-  let endChar = query.slice(len - 1, len.length);
-
-  return startChunk + String.fromCharCode(endChar.charCodeAt(0) + 1);
-};
 
 class Home extends Component {
   static navigationOptions = {
