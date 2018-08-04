@@ -67,6 +67,14 @@ class SearchResults extends Component {
   }
 }
 
+const buildSuccessorKey = query => {
+  let len = query.length;
+  let startChunk = query.slice(0, len - 1);
+  let endChar = query.slice(len - 1, len.length);
+
+  return startChunk + String.fromCharCode(endChar.charCodeAt(0) + 1);
+};
+
 class Home extends Component {
   static navigationOptions = {
     header: null,
@@ -84,9 +92,9 @@ class Home extends Component {
 
   onSearch = query => {
     this.setState({ searchQuery: query, searchLoading: true });
-    // this doesn't behave as expected and seems to break on various characters (like space)
     db.collection('bottles')
       .where('name', '>=', query)
+      .where('name', '<', buildSuccessorKey(query))
       .orderBy('name')
       .limit(25)
       .get()
