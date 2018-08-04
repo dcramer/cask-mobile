@@ -14,54 +14,6 @@ import SearchBar from '../components/SearchBar';
 import { populateRelations } from '../utils/query';
 
 class SearchResults extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { loading: false, error: null, items: [] };
-  }
-
-  async componentDidMount() {
-    this.fetchData();
-  }
-
-  async componentDidUpdate(prevProps) {
-    if (prevProps.query !== this.props.query) {
-      this.fetchData();
-    }
-  }
-
-  fetchData = () => {
-    let { query } = this.props;
-    if (!query) return;
-    this.setState({ loading: true });
-    // this doesn't behave as expected and seems to break on various characters (like space)
-    db.collection('bottles')
-      .where('name', '>=', query)
-      .orderBy('name')
-      .limit(25)
-      .get()
-      .then(snapshot => {
-        let items = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        populateRelations(items, [
-          {
-            name: 'distillery',
-            collection: 'distilleries',
-          },
-        ]).then(items => {
-          this.setState({
-            loading: false,
-            items,
-          });
-        });
-      })
-      .catch(error => {
-        this.setState({ error, loading: false });
-        Sentry.captureException(error);
-      });
-  };
-
   _renderItem = ({ item }) => <Bottle bottle={item} />;
 
   _keyExtractor = item => item.id;
@@ -71,31 +23,32 @@ class SearchResults extends Component {
   }
 
   renderChild() {
-    if (this.state.error) {
-      return <Text>{this.state.error.message}</Text>;
+    let { query, error, loading, results } = this.props;
+    if (error) {
+      return <Text>{error.message}</Text>;
     }
 
-    if (this.props.query && !this.state.loading && !this.state.items.length) {
+    if (query && !loading && !results.length) {
       return (
         <AlertCard
           onPress={() => {
             this.props.navigation.navigate('AddBottle');
           }}
           heading="Can't find a bottle?"
-          subheading={`Tap here to add ${this.props.query}.`}
+          subheading={`Tap here to add ${query}.`}
         />
       );
     }
 
-    if (this.state.loading && !this.state.items.length) {
+    if (loading && !results.length) {
       return <LoadingIndicator />;
     }
 
-    if (this.props.query) {
+    if (query) {
       return (
         <View>
           <FlatList
-            data={this.state.items}
+            data={results}
             keyExtractor={this._keyExtractor}
             renderItem={this._renderItem}
           />
@@ -121,9 +74,44 @@ class Home extends Component {
 
   constructor(...args) {
     super(...args);
-    this.state = { searchActive: false, searchQuery: null };
+    this.state = {
+      searchActive: false,
+      searchQuery: null,
+      searchResults: [],
+      searchLoading: false,
+    };
   }
 
+  onSearch = query => {
+    this.setState({ searchQuery: query, searchLoading: true });
+    // this doesn't behave as expected and seems to break on various characters (like space)
+    db.collection('bottles')
+      .where('name', '>=', query)
+      .orderBy('name')
+      .limit(25)
+      .get()
+      .then(snapshot => {
+        let items = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        populateRelations(items, [
+          {
+            name: 'distillery',
+            collection: 'distilleries',
+          },
+        ]).then(items => {
+          this.setState({
+            searchLoading: false,
+            searchResults: items,
+          });
+        });
+      })
+      .catch(error => {
+        this.setState({ searchError: error, searchLoading: false });
+        Sentry.captureException(error);
+      });
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -131,13 +119,20 @@ class Home extends Component {
           <SearchBar
             onFocus={() => this.setState({ searchActive: true })}
             onBlur={() => this.setState({ searchActive: false })}
-            onChangeValue={searchQuery => this.setState({ searchQuery })}
+            onChangeValue={this.onSearch}
             style={styles.searchBarContainer}
+            loading={this.state.searchLoading}
           />
         </View>
         <View style={styles.resultsContainer}>
           {this.state.searchActive || !!this.state.searchQuery ? (
-            <SearchResults query={this.state.searchQuery} navigation={this.props.navigation} />
+            <SearchResults
+              query={this.state.searchQuery}
+              loading={this.state.searchLoading}
+              error={this.state.searchError}
+              navigation={this.props.navigation}
+              results={this.state.searchResults}
+            />
           ) : (
             <Activity
               auth={this.props.auth}

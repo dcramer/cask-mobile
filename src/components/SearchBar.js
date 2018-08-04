@@ -11,6 +11,7 @@ export default class SearchBar extends Component {
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
     style: ViewPropTypes.style,
+    loading: PropTypes.bool,
   };
 
   render() {
@@ -23,6 +24,7 @@ export default class SearchBar extends Component {
         onChangeText={this.props.onChangeValue}
         onClearText={this.props.onChangeValue}
         containerStyle={styles.container}
+        showLoadingIcon={this.props.loading}
         inputStyle={styles.input}
         placeholder="Search"
       />
