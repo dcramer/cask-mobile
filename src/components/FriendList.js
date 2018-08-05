@@ -18,18 +18,21 @@ export default class FriendList extends Component {
   async componentDidMount() {
     this.unsubscribeFriends = db
       .collection('users')
-      .child(this.props.userId)
+      .doc(this.props.userId)
       .collection('friends')
       .orderBy('createdAt', 'desc')
       .limit(25)
       .onSnapshot(
         snapshot => {
           getAllFromCollection('users', snapshot.docs.map(doc => doc.id))
-            .then(items => {
+            .then(snapshot => {
               this.setState({
                 loading: false,
                 error: null,
-                items,
+                items: snapshot.map(doc => ({
+                  id: doc.id,
+                  ...doc.data(),
+                })),
               });
             })
             .catch(error => {

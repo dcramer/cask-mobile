@@ -20,7 +20,7 @@ export const Bottle = PropTypes.shape({
   id: PropTypes.string,
   name: PropTypes.string.isRequired,
   distillery: Distillery.isRequired,
-  category: PropTypes.string.isRequired,
+  category: PropTypes.string,
   abv: PropTypes.number,
   statedAge: PropTypes.number,
   vintageYear: PropTypes.number,
@@ -32,7 +32,7 @@ export const Bottle = PropTypes.shape({
 export const CheckIn = PropTypes.shape({
   id: PropTypes.string,
   bottle: Bottle.isRequired,
-  location: PropTypes.string,
+  location: Location,
   notes: PropTypes.string,
   flavorProfile: PropTypes.arrayOf(PropTypes.string),
   friends: PropTypes.arrayOf(User),

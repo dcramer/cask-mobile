@@ -1,20 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { StyleSheet, View } from 'react-native';
 
-import { addFriend, removeFriend } from '../actions/friends';
 import { db } from '../firebase';
 import Activity from '../components/Activity';
 import ModalHeader from '../components/ModalHeader';
+import FriendAction from '../components/FriendAction';
 
 class UserProfile extends Component {
-  static propTypes = {
-    addFriend: PropTypes.func.isRequired,
-    removeFriend: PropTypes.func.isRequired,
-  };
-
   state = {
     selectedButton: 0,
     loading: true,
@@ -25,32 +18,32 @@ class UserProfile extends Component {
   // TOOD(dcramer): turn this into AsyncComponent
   async componentWillMount() {
     let user = this.props.navigation.getParam('user');
-    let userId = this.props.navigation.getParam('userId');
+    let userId = this.props.navigation.getParam('id');
     if (user) {
       this.setState({
         loading: false,
         user,
-        userId,
+        userId: userId || user.uid,
       });
     } else {
-      this.fetchUser(this.props.navigation.getParam('userId'));
+      this.fetchUser(this.props.navigation.getParam('id'));
     }
   }
 
   async componentWillReceiveProps(nextProps) {
-    if (nextProps.navigation.getParam('userId') !== this.state.userId) {
-      this.fetchUser(nextProps.navigation.getParam('userId'));
+    if (nextProps.navigation.getParam('id') !== this.state.userId) {
+      this.fetchUser(nextProps.navigation.getParam('id'));
     }
   }
 
   async fetchUser(userId) {
     db.collection('users')
-      .child(userId)
+      .doc(userId)
       .get()
       .then(doc => {
         this.setState({
           loading: false,
-          userId,
+          userId: doc.id,
           user: {
             id: doc.id,
             ...doc.data(),
@@ -65,14 +58,6 @@ class UserProfile extends Component {
       });
   }
 
-  toggleFriend() {
-    if (this.state.isFriend) {
-      this.removeFriend(this.props.auth.user.uid, this.state.userId);
-    } else {
-      this.addFriend(this.props.auth.user.uid, this.state.userId);
-    }
-  }
-
   render() {
     if (this.state.loading) return null;
     return (
@@ -82,16 +67,11 @@ class UserProfile extends Component {
           leftActionOnPress={null}
           rightActionOnPress={null}
         />
-        <TouchableOpacity onPress={this.toggleFriend}>
-          <View style={styles.friendAction}>
-            <Icon name="user-plus" size={18} />
-            <Text>Add to Friends</Text>
-          </View>
-        </TouchableOpacity>
+        <FriendAction userId={this.state.userId} />
         <Activity
           queryset={db
             .collection('checkins')
-            .where('user', '==', this.state.user.id)
+            .where('user', '==', this.state.userId)
             .orderBy('createdAt', 'desc')}
         />
       </View>
@@ -109,5 +89,5 @@ const styles = StyleSheet.create({
 
 export default connect(
   () => ({}),
-  { addFriend, removeFriend }
+  {}
 )(UserProfile);

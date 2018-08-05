@@ -66,9 +66,9 @@ function isLocation(database, resource) {
 }
 
 function isFriend(database, resource) {
-  return resource.data.keys().hasAll(['mutual'])
+  return resource.data.keys().hasAll(['createdAt'])
     && resource.data.size() == 1
-    && resource.data.mutual is bool
+    // && resource.data.mutual is bool
 }
 
 function isCheckin(database, resource) {
@@ -100,18 +100,15 @@ service cloud.firestore {
                     && request.resource.data.createdAt == resource.data.createdAt;
     }
     match /users/{userId}/friends/{friendId} {
-      allow read: if request.auth.uid == userId;
+      allow read: if request.auth.uid == userId || request.auth.uid == friendId;
       allow create: if (request.auth.uid == userId || request.auth.uid == friendId)
-                    && request.resource == false
                     && isFriend(database, request.resource)
                     && exists(/databases/$(database)/documents/users/$(friendId))
                     && request.resource.data.createdAt <= request.time;
-      allow update: if (request.auth.uid == userId || request.auth.uid == friendId)
-                    && (
-                      request.resource.mutual == resource.mutual
-                      || request.auth.uid == friendId
-                    )
+      allow update: if request.auth.uid == userId
+                    && request.resource.data.createdAt == resource.data.createdAt
                     && exists(/databases/$(database)/documents/users/$(friendId));
+      allow delete: if request.auth.uid == userId;
     }
     match /bottles/{bottleId} {
       allow read: if request.auth.uid != null

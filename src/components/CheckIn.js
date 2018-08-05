@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     marginBottom: margins.half,
   },
   user: {
-    flex: 3,
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   location: {
-    paddingLeft: 10,
+    flex: 1,
     marginTop: 5,
     fontSize: 14,
     color: colors.default,
