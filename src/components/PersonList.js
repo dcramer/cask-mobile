@@ -1,26 +1,32 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Image, View, ViewPropTypes } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
+import CustomPropTypes from '../propTypes';
 import { margins } from '../styles';
 
 class PersonItem extends Component {
   static propTypes = {
-    person: PropTypes.shape({
-      avatarUrl: PropTypes.string.isRequired,
-    }).isRequired,
+    user: CustomPropTypes.User.isRequired,
     style: ViewPropTypes.style,
   };
 
   render() {
-    let props = this.props;
+    let { user, style } = this.props;
     return (
-      <View style={[styles.listItem, props.style]}>
-        <Image
-          source={{ uri: props.person.avatarUrl }}
-          style={styles.avatar}
-          resizeMode="contain"
-        />
+      <View style={[styles.listItem, style]}>
+        {user.photoURL ? (
+          <Image
+            source={{
+              uri: user.photoURL,
+            }}
+            style={styles.userPhoto}
+            resizeMode="contain"
+          />
+        ) : (
+          <Icon name="user-circle" size={22} style={styles.userPhoto} />
+        )}
       </View>
     );
   }
@@ -28,19 +34,15 @@ class PersonItem extends Component {
 
 export default class PersonList extends Component {
   static propTypes = {
-    personList: PropTypes.arrayOf(
-      PropTypes.shape({
-        avatarUrl: PropTypes.string.isRequired,
-      })
-    ).isRequired,
+    personList: PropTypes.arrayOf(CustomPropTypes.User.isRequired).isRequired,
     style: ViewPropTypes.style,
   };
 
   render() {
     return (
       <View style={[styles.listContainer, this.props.style]}>
-        {this.props.personList.map(person => (
-          <PersonItem person={person} key={person.id} />
+        {this.props.personList.map(user => (
+          <PersonItem user={user} key={user.id} />
         ))}
       </View>
     );
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
   listItem: {
     marginRight: margins.quarter,
   },
-  avatar: {
+  userPhoto: {
     height: 22,
     width: 22,
     borderRadius: 11,

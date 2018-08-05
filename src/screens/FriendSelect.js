@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Sentry } from 'react-native-sentry';
 import PropTypes from 'prop-types';
 import { Image, StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
@@ -11,6 +12,7 @@ import { db } from '../firebase';
 import { getAllFromCollection } from '../utils/query';
 import AlertCard from '../components/AlertCard';
 import Card from '../components/Card';
+import LoadingIndicator from '../components/LoadingIndicator';
 import ModalHeader from '../components/ModalHeader';
 import SearchBar from '../components/SearchBar';
 
@@ -44,6 +46,7 @@ class UserEntry extends Component {
             size={24}
             solid={selected}
             color={selected ? colors.primary : colors.default}
+            style={styles.action}
           />
         </Card>
       </TouchableOpacity>
@@ -53,6 +56,7 @@ class UserEntry extends Component {
 
 class FriendSelect extends Component {
   static propTypes = {
+    auth: PropTypes.object.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 
@@ -67,6 +71,7 @@ class FriendSelect extends Component {
     this.state = {
       query: '',
       items: [],
+      loading: true,
       selected: currentValue ? currentValue.map(i => i.id) : [],
     };
   }
@@ -77,7 +82,8 @@ class FriendSelect extends Component {
       .collection('friends')
       .orderBy('createdAt', 'desc')
       .limit(25)
-      .get(
+      .get()
+      .then(
         snapshot => {
           getAllFromCollection('users', snapshot.docs.map(doc => doc.id))
             .then(snapshot => {
@@ -134,6 +140,17 @@ class FriendSelect extends Component {
   };
 
   render() {
+    if (this.state.loading) {
+      return <LoadingIndicator />;
+    }
+    if (this.state.error) {
+      return (
+        <View style={styles.activityContainer}>
+          <Text>Error: {this.state.error.message}</Text>
+        </View>
+      );
+    }
+
     let results = this.state.items.filter(i => i.displayName.indexOf(this.state.query) !== -1);
     return (
       <View style={styles.container}>
@@ -163,17 +180,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardContainer: {
+    flex: 3,
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     paddingTop: margins.full,
     paddingBottom: margins.full,
   },
-  user: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   userName: {
+    flex: 1,
     fontSize: 14,
     fontWeight: 'bold',
     color: colors.default,
@@ -184,11 +199,7 @@ const styles = StyleSheet.create({
     marginRight: margins.half,
     borderRadius: 12,
   },
-  rowText: {
-    paddingLeft: 10,
-    flex: 4,
-    flexDirection: 'column',
-  },
+  action: {},
 });
 
-export default withNavigation(FriendSelect);
+export default connect(({ auth }) => ({ auth }))(withNavigation(FriendSelect));

@@ -18,7 +18,6 @@ export default class FriendList extends Component {
   state = { loading: true, error: null, items: [], query: '' };
 
   async componentDidMount() {
-    console.log(this.props.userId);
     this.unsubscribeFriends = db
       .collection('users')
       .doc(this.props.userId)
