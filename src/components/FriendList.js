@@ -5,17 +5,20 @@ import { StyleSheet, FlatList, Text, View } from 'react-native';
 
 import { getAllFromCollection } from '../utils/query';
 import { db } from '../firebase';
+import AlertCard from '../components/AlertCard';
 import LoadingIndicator from '../components/LoadingIndicator';
 import Friend from '../components/Friend';
+import SearchBar from '../components/SearchBar';
 
 export default class FriendList extends Component {
   static propTypes = {
     userId: PropTypes.string.isRequired,
   };
 
-  state = { loading: true, error: null, items: [] };
+  state = { loading: true, error: null, items: [], query: '' };
 
   async componentDidMount() {
+    console.log(this.props.userId);
     this.unsubscribeFriends = db
       .collection('users')
       .doc(this.props.userId)
@@ -68,13 +71,25 @@ export default class FriendList extends Component {
         </View>
       );
     }
+
+    let results = this.state.items.filter(i => i.displayName.indexOf(this.state.query) !== -1);
     return (
       <View style={styles.activityContainer}>
-        <FlatList
-          data={this.state.items}
-          keyExtractor={this._keyExtractor}
-          renderItem={this._renderItem}
-        />
+        {this.state.items.length === 0 ? (
+          <AlertCard
+            heading="It's lonely in here"
+            subheading="You don't seem to have any friends on Peated."
+          />
+        ) : (
+          [
+            <SearchBar onChangeValue={query => this.setState({ query })} />,
+            <FlatList
+              data={results}
+              keyExtractor={this._keyExtractor}
+              renderItem={this._renderItem}
+            />,
+          ]
+        )}
       </View>
     );
   }

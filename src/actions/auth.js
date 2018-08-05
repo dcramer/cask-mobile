@@ -95,19 +95,25 @@ export function accessTokenFailure(error) {
 
 export function updateUser(user) {
   return dispatch => {
-    db.collection('users')
-      .doc(user.uid)
-      .set({
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-      })
-      .then(() => {
-        dispatch(updateUserSuccess(user));
-      })
-      .catch(error => {
-        dispatch(updateUserFailure(user, error));
-      });
+    let userRef = db.collection('users').doc(user.uid);
+    db.runTransaction(async transaction => {
+      let userDoc = await transaction.get(userRef);
+      if (userDoc.exists) {
+        await transaction.update(userRef, {
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        });
+      } else {
+        await transaction.set(userRef, {
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        });
+      }
+      dispatch(updateUserSuccess(user));
+    }).catch(error => {
+      dispatch(updateUserFailure(user, error));
+    });
   };
 }
 export function updateUserSuccess(user) {

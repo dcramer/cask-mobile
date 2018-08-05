@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { colors, margins } from '../styles';
 import { db } from '../firebase';
 import { getAllFromCollection } from '../utils/query';
+import AlertCard from '../components/AlertCard';
 import Card from '../components/Card';
 import ModalHeader from '../components/ModalHeader';
 import SearchBar from '../components/SearchBar';
@@ -65,7 +66,7 @@ class FriendSelect extends Component {
     let { currentValue } = navigation.state.params;
     this.state = {
       query: '',
-      results: [],
+      items: [],
       selected: currentValue ? currentValue.map(i => i.id) : [],
     };
   }
@@ -133,14 +134,25 @@ class FriendSelect extends Component {
   };
 
   render() {
-    let results = this.state.items.filter(i => i.name.indexOf(this.state.query) !== -1);
+    let results = this.state.items.filter(i => i.displayName.indexOf(this.state.query) !== -1);
     return (
       <View style={styles.container}>
         <ModalHeader rightActionOnPress={this.onDone} title="Tag Friends" />
-        <View style={styles.search}>
-          <SearchBar onChangeValue={query => this.setState({ query })} />
-        </View>
-        <FlatList data={results} keyExtractor={this._keyExtractor} renderItem={this._renderItem} />
+        {this.state.items.length === 0 ? (
+          <AlertCard
+            heading="It's lonely in here"
+            subheading="You don't seem to have any friends on Peated."
+          />
+        ) : (
+          [
+            <SearchBar onChangeValue={query => this.setState({ query })} />,
+            <FlatList
+              data={results}
+              keyExtractor={this._keyExtractor}
+              renderItem={this._renderItem}
+            />,
+          ]
+        )}
       </View>
     );
   }
@@ -149,12 +161,6 @@ class FriendSelect extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
-  },
-  search: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#7b6be6',
   },
   cardContainer: {
     flexDirection: 'row',

@@ -125,8 +125,7 @@ service cloud.firestore {
 
       match /friends/{friendId} {
         allow read: if request.auth.uid == userId || request.auth.uid == friendId;
-        allow create: if (request.auth.uid == userId || request.auth.uid == friendId)
-                      && userId != friendId
+        allow create: if userId != friendId
                       && isFriend()
                       && isUserRef(friendId)
                       // TODO(dcramer): disabled until simulator works as testing matters more
@@ -135,8 +134,7 @@ service cloud.firestore {
                         (request.auth.uid == friendId && !request.writeFields.hasAny(["following"]) && "follower" in request.writeFields)
                         || (request.auth.uid == userId && !request.writeFields.hasAny(["follower"]) && "following" in request.writeFields)
                       );
-        allow update: if request.auth.uid == userId
-                      && request.resource.data.createdAt == resource.data.createdAt
+        allow update: if request.resource.data.createdAt == resource.data.createdAt
                       && (
                         (request.auth.uid == friendId && !request.writeFields.hasAny(["following"]) && "follower" in request.writeFields)
                         || (request.auth.uid == userId && !request.writeFields.hasAny(["follower"]) && "following" in request.writeFields)

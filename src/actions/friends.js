@@ -12,71 +12,83 @@ import firebase, { db } from '../firebase';
 export function addFriend(fromUserId, toUserId) {
   return dispatch => {
     return new Promise(async (resolve, reject) => {
-      try {
-        let fromRef = db
-          .collection('users')
-          .doc(fromUserId)
-          .collection('friends')
-          .doc(toUserId);
-        let toRef = db
-          .collection('users')
-          .doc(toUserId)
-          .collection('friends')
-          .doc(fromUserId);
-        db.runTransaction(async transaction => {
-          let fromDoc = await transaction.get(fromRef);
-          let toDoc = await transaction.get(toRef);
-          if (fromDoc.exists) {
-            await transaction.update(fromRef, {
-              following: true,
-            });
-          } else {
-            await transaction.set(fromRef, {
-              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-              following: true,
-            });
-          }
+      let fromRef = db
+        .collection('users')
+        .doc(fromUserId)
+        .collection('friends')
+        .doc(toUserId);
+      let toRef = db
+        .collection('users')
+        .doc(toUserId)
+        .collection('friends')
+        .doc(fromUserId);
+      db.runTransaction(async transaction => {
+        let fromDoc = await transaction.get(fromRef);
+        let toDoc = await transaction.get(toRef);
+        if (fromDoc.exists) {
+          await transaction.update(fromRef, {
+            following: true,
+          });
+        } else {
+          await transaction.set(fromRef, {
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            following: true,
+          });
+        }
 
-          if (toDoc.exists) {
-            await transaction.update(toRef, {
-              follower: true,
-            });
-          } else {
-            await transaction.set(toRef, {
-              follower: true,
-              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            });
-          }
+        if (toDoc.exists) {
+          await transaction.update(toRef, {
+            follower: true,
+          });
+        } else {
+          await transaction.set(toRef, {
+            follower: true,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+        }
 
-          resolve(fromUserId, toUserId);
-          return dispatch(addFriendSuccess(fromUserId, toUserId));
-        }).catch(error => {
-          reject(error);
-          return dispatch(addFriendFailure(error));
-        });
-      } catch (ex) {
-        console.error(ex);
-      }
+        resolve(fromUserId, toUserId);
+        return dispatch(addFriendSuccess(fromUserId, toUserId));
+      }).catch(error => {
+        reject(error);
+        return dispatch(addFriendFailure(error));
+      });
     });
   };
 }
 
 export function removeFriend(fromUserId, toUserId) {
   return dispatch => {
-    return new Promise((resolve, reject) => {
-      db.collection('users')
+    return new Promise(async (resolve, reject) => {
+      let fromRef = db
+        .collection('users')
         .doc(fromUserId)
         .collection('friends')
+        .doc(toUserId);
+      let toRef = db
+        .collection('users')
         .doc(toUserId)
-        .delete()
-        .then(doc => {
-          resolve(fromUserId, toUserId);
-          return dispatch(removeFriendSuccess(fromUserId, toUserId));
-        })
-        .catch(error => {
-          reject(error);
-          return dispatch(removeFriendFailure(error));
-        });
+        .collection('friends')
+        .doc(fromUserId);
+      db.runTransaction(async transaction => {
+        let fromDoc = await transaction.get(fromRef);
+        let toDoc = await transaction.get(toRef);
+        if (fromDoc.exists) {
+          await transaction.update(fromRef, {
+            following: false,
+          });
+        }
+        if (toDoc.exists) {
+          await transaction.update(toRef, {
+            follower: false,
+          });
+        }
+        resolve(fromUserId, toUserId);
+        return dispatch(removeFriendSuccess(fromUserId, toUserId));
+      }).catch(error => {
+        reject(error);
+        return dispatch(removeFriendFailure(error));
+      });
     });
   };
 }
