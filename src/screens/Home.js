@@ -139,7 +139,7 @@ class Home extends Component {
               navigation={this.props.navigation}
               queryset={db
                 .collection('checkins')
-                .where('user', '==', this.props.auth.user.uid)
+                // .where('user', '==', this.props.auth.user.uid)
                 .orderBy('createdAt', 'desc')}
             />
           )}

@@ -27,9 +27,9 @@ function isUserRef(database, value) {
 }
 
 function isUser(database, resource) {
-  return resource.data.keys().hasAll(['email', 'displayName', 'photoURL', 'createdAt'])
-    && resource.data.email is string
-    && resource.data.email.size() < 200
+  return resource.data.keys().hasAll(['displayName', 'photoURL', 'createdAt'])
+    // && resource.data.email is string
+    // && resource.data.email.size() < 200
     && resource.data.displayName is string
     && resource.data.displayName.size() < 200
     && resource.data.photoURL is string
@@ -91,7 +91,7 @@ function isCheckin(database, resource) {
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId} {
-      allow read: if request.auth.uid == userId;
+      allow read: if request.auth != null;
       allow create: if request.auth.uid == userId
                     && isUser(database, request.resource)
                     && request.resource.data.createdAt <= request.time;
@@ -102,6 +102,7 @@ service cloud.firestore {
     match /users/{userId}/friends/{friendId} {
       allow read: if request.auth.uid == userId || request.auth.uid == friendId;
       allow create: if (request.auth.uid == userId || request.auth.uid == friendId)
+                    && userId != friendId
                     && isFriend(database, request.resource)
                     && exists(/databases/$(database)/documents/users/$(friendId))
                     && request.resource.data.createdAt <= request.time;
@@ -133,7 +134,8 @@ service cloud.firestore {
                     && request.resource.data.createdAt <= request.time;
     }
     match /checkins/{checkinId} {
-      allow read, delete: if request.auth.uid == resource.data.user;
+      allow read: if request.auth != null;
+      allow delete: if request.auth.uid == resource.data.user;
       allow create: if request.auth.uid == request.resource.data.user
                     && isCheckin(database, request.resource)
                     && request.resource.data.createdAt <= request.time;
