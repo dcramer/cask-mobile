@@ -2,16 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Sentry } from 'react-native-sentry';
 import { StyleSheet, FlatList, Text, View } from 'react-native';
-import { withNavigation } from 'react-navigation';
 
 import { getAllFromCollection } from '../utils/query';
 import { db } from '../firebase';
-import Card from '../components/Card';
 import LoadingIndicator from '../components/LoadingIndicator';
+import Friend from '../components/Friend';
 
-class FriendList extends Component {
+export default class FriendList extends Component {
   static propTypes = {
-    navigation: PropTypes.object.tisRequired,
     userId: PropTypes.string.isRequired,
   };
 
@@ -53,19 +51,8 @@ class FriendList extends Component {
     this.unsubscribeFriends && this.unsubscribeFriends();
   }
 
-  goToProfile(user) {
-    this.props.navigation.navigate('UserProfile', {
-      id: user.id,
-      user,
-    });
-  }
-
   _renderItem = ({ item }) => {
-    return (
-      <Card onPress={() => this.goToProfile(item)}>
-        <Text>{item.displayName}</Text>
-      </Card>
-    );
+    return <Friend user={item} />;
   };
 
   _keyExtractor = item => item.id;
@@ -99,5 +86,3 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
 });
-
-export default withNavigation(FriendList);

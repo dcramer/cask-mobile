@@ -112,6 +112,7 @@ class Home extends Component {
         Sentry.captureException(error);
       });
   };
+
   render() {
     return (
       <View style={styles.container}>
@@ -122,6 +123,7 @@ class Home extends Component {
             onChangeValue={this.onSearch}
             style={styles.searchBarContainer}
             loading={this.state.searchLoading}
+            header
           />
         </View>
         <View style={styles.resultsContainer}>
@@ -139,7 +141,7 @@ class Home extends Component {
               navigation={this.props.navigation}
               queryset={db
                 .collection('checkins')
-                // .where('user', '==', this.props.auth.user.uid)
+                // .where('userAdded', '==', this.props.auth.user.uid)
                 .orderBy('createdAt', 'desc')}
             />
           )}

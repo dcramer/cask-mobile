@@ -11,6 +11,7 @@ import CheckIn from './screens/CheckIn';
 import CheckInDetails from './screens/CheckInDetails';
 import DistillerySelect from './screens/DistillerySelect';
 import FriendSelect from './screens/FriendSelect';
+import FindFriends from './screens/FindFriends';
 import LocationSelect from './screens/LocationSelect';
 import Notifications from './screens/Notifications';
 import Home from './screens/Home';
@@ -43,6 +44,7 @@ const HomeStack = createStackNavigator(
     CheckIn,
     AddBottle,
     AddDistillery,
+    FindFriends,
     UserProfile,
   },
   {

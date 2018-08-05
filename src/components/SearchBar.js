@@ -12,6 +12,7 @@ export default class SearchBar extends Component {
     onBlur: PropTypes.func,
     style: ViewPropTypes.style,
     loading: PropTypes.bool,
+    header: PropTypes.bool,
   };
 
   render() {
@@ -23,9 +24,9 @@ export default class SearchBar extends Component {
         onFocus={this.props.onFocus}
         onChangeText={this.props.onChangeValue}
         onClearText={this.props.onChangeValue}
-        containerStyle={styles.container}
+        inputStyle={[styles.input, this.props.header && styles.headerInput]}
+        containerStyle={[styles.container, this.props.header && styles.headerContainer]}
         showLoadingIcon={this.props.loading}
-        inputStyle={styles.input}
         placeholder="Search"
       />
     );
@@ -34,12 +35,16 @@ export default class SearchBar extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.primary,
     borderTopWidth: 0,
   },
+  headerContainer: {
+    backgroundColor: colors.primary,
+  },
   input: {
-    color: colors.dark,
     fontSize: 14,
+  },
+  headerInput: {
+    color: colors.dark,
     backgroundColor: '#eee',
   },
 });

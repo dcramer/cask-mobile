@@ -17,15 +17,19 @@ class ModalHeader extends Component {
 
   static defaultProps = {
     leftActionText: 'Cancel',
-    leftActionOnPress: () => this.props.navigation.goBack(),
+    leftActionOnPress: undefined,
     rightActionText: 'Save',
   };
 
   render() {
+    let { leftActionOnPress } = this.props;
+    if (leftActionOnPress === undefined) {
+      leftActionOnPress = () => this.props.navigation.goBack();
+    }
     return (
       <View style={styles.container}>
-        {this.props.leftActionOnPress ? (
-          <TouchableOpacity onPress={this.props.leftActionOnPress}>
+        {leftActionOnPress ? (
+          <TouchableOpacity onPress={leftActionOnPress}>
             <Text style={[styles.action, styles.leftAction]}>{this.props.leftActionText}</Text>
           </TouchableOpacity>
         ) : (

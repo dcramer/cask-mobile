@@ -12,7 +12,7 @@ sentry.properties
 .expo/
 
 # dependencies
-/node_modules
+node_modules/
 
 # misc
 .env.local
@@ -27,8 +27,10 @@ firebase-debug.log*
 
 ## Build generated
 build/
+lib/
 DerivedData
 Index/
+.jest/
 
 ## Various settings
 *.pbxuser

@@ -13,6 +13,7 @@ const CREDENTIAL = JSON.parse(fs.readFileSync(path.join(__dirname, '../credentia
 
 // NOTE(dcramer): There's a bug in expect-firestore that requires all data to have a
 // subcollection defined even if its empty
+// NOTE(dcramer): We're currently broken because the firestore simulator does not define request.time (sigh)
 const db = new firestore.Database({
   // Credentials from firebase console
   credential: CREDENTIAL,
@@ -23,17 +24,38 @@ const db = new firestore.Database({
         key: 'userA',
         fields: {
           name: 'John Doe',
-          email: 'john@example.com',
           photoURL: '',
+          createdAt: serverTimestamp(),
         },
-        collections: {},
+        collections: {
+          feed: [
+            {
+              key: 'checkInA',
+              fields: {
+                createdAt: serverTimestamp(),
+              },
+              collections: {},
+            },
+          ],
+          friends: [
+            {
+              key: 'userB',
+              fields: {
+                following: true,
+                follower: false,
+                createdAt: serverTimestamp(),
+              },
+              collections: {},
+            },
+          ],
+        },
       },
       {
         key: 'userB',
         fields: {
           name: 'Jane Doe',
-          email: 'jane@example.com',
           photoURL: '',
+          createdAt: serverTimestamp(),
         },
         collections: {},
       },
@@ -45,6 +67,7 @@ const db = new firestore.Database({
           name: 'Macallan',
           country: 'Scotland',
           region: 'Speyside',
+          createdAt: serverTimestamp(),
         },
         collections: {},
       },
@@ -56,6 +79,7 @@ const db = new firestore.Database({
           name: 'Macallan 15',
           distillery: 'distA',
           stagedAge: 15,
+          createdAt: serverTimestamp(),
         },
         collections: {},
       },
@@ -65,7 +89,25 @@ const db = new firestore.Database({
         key: 'checkinA',
         fields: {
           bottle: 'bottleA',
-          user: 'userA',
+          userAdded: 'userA',
+          rating: 0,
+          notes: '',
+          location: null,
+          flavorProfile: [],
+          createdAt: serverTimestamp(),
+        },
+        collections: {},
+      },
+      {
+        key: 'checkinB',
+        fields: {
+          bottle: 'bottleA',
+          userAdded: 'userB',
+          rating: 0,
+          notes: '',
+          location: null,
+          flavorProfile: [],
+          createdAt: serverTimestamp(),
         },
         collections: {},
       },
@@ -73,7 +115,7 @@ const db = new firestore.Database({
   },
 });
 
-describe('users', () => {
+describe('/users/{userId}', () => {
   beforeAll(async () => {
     await db.authorize();
   });
@@ -84,8 +126,8 @@ describe('users', () => {
       firestore.assert(result);
     });
 
-    it('should not allow other user', async () => {
-      const result = await db.cannotGet({ uid: 'userA' }, 'users/userB');
+    it('should allow other user', async () => {
+      const result = await db.canGet({ uid: 'userA' }, 'users/userB');
       firestore.assert(result);
     });
 
@@ -126,9 +168,102 @@ describe('users', () => {
       firestore.assert(result);
     });
   });
+
+  describe('/feed', () => {
+    describe('read', () => {
+      it('should allow self', async () => {
+        const result = await db.canGet({ uid: 'userA' }, 'users/userA/feed/checkInA');
+        firestore.assert(result);
+      });
+
+      it('should not allow other user', async () => {
+        const result = await db.cannotGet({ uid: 'userB' }, 'users/userA/feed/checkInA');
+        firestore.assert(result);
+      });
+
+      it('should not allow anonymous', async () => {
+        const result = await db.cannotGet({}, 'users/userA/feed/checkInA');
+        firestore.assert(result);
+      });
+    });
+
+    describe('set', () => {
+      it('should allow adding items to self if self', async () => {
+        const result = await db.canSet({ uid: 'userA' }, 'users/userA/feed/checkInA', {
+          createdAt: serverTimestamp(),
+        });
+        firestore.assert(result);
+      });
+
+      it('should allow adding items to self if following user', async () => {
+        const result = await db.canSet({ uid: 'userA' }, 'users/userA/feed/checkInB', {
+          createdAt: serverTimestamp(),
+        });
+        firestore.assert(result);
+      });
+    });
+  });
+
+  describe('/friends', () => {
+    describe('read', () => {
+      it('should allow self', async () => {
+        const result = await db.canGet({ uid: 'userA' }, 'users/userA/friends/userB');
+        firestore.assert(result);
+      });
+
+      it('should allow associated user', async () => {
+        const result = await db.canGet({ uid: 'userB' }, 'users/userA/friends/userB');
+        firestore.assert(result);
+      });
+
+      it('should not allow stranger', async () => {
+        const result = await db.cannotGet({ uid: 'userC' }, 'users/userA/friends/userB');
+        firestore.assert(result);
+      });
+
+      it('should not allow anonymous', async () => {
+        const result = await db.cannotGet({}, 'users/userA/friends/userB');
+        firestore.assert(result);
+      });
+    });
+
+    describe('set', () => {
+      it('should allow self to set following user', async () => {
+        const result = await db.canSet({ uid: 'userA' }, 'users/userA/friends/userB', {
+          createdAt: serverTimestamp(),
+          following: true,
+        });
+        firestore.assert(result);
+      });
+
+      it('should not allow self set follower user', async () => {
+        const result = await db.cannotSet({ uid: 'userA' }, 'users/userA/friends/userB', {
+          createdAt: serverTimestamp(),
+          follower: true,
+        });
+        firestore.assert(result);
+      });
+
+      it('should allow user to set follower self', async () => {
+        const result = await db.canSet({ uid: 'userB' }, 'users/userA/friends/userB', {
+          createdAt: serverTimestamp(),
+          follower: true,
+        });
+        firestore.assert(result);
+      });
+
+      it('should not allow user to set following self', async () => {
+        const result = await db.cannotSet({ uid: 'userA' }, 'users/userA/friends/userB', {
+          createdAt: serverTimestamp(),
+          following: true,
+        });
+        firestore.assert(result);
+      });
+    });
+  });
 });
 
-describe('distilleries', () => {
+describe('/distilleries/{distilleryId}', () => {
   beforeAll(async () => {
     await db.authorize();
   });
@@ -170,7 +305,7 @@ describe('distilleries', () => {
   });
 });
 
-describe('bottles', () => {
+describe('/bottles/{bottleId}', () => {
   beforeAll(async () => {
     await db.authorize();
   });
@@ -190,34 +325,37 @@ describe('bottles', () => {
   describe('set', () => {
     it('should allow authenticated', async () => {
       const result = await db.canSet({ uid: 'userA' }, 'bottles/bottleB', {
+        name: 'Test',
         userAdded: 'userA',
         createdAt: serverTimestamp(),
-        bottle: 'bottleA',
+        distillery: 'distA',
       });
       firestore.assert(result);
     });
 
     it('requires current user as userAdded', async () => {
       const result = await db.cannotSet({ uid: 'userA' }, 'bottles/bottleB', {
+        name: 'Test',
         userAdded: 'userB',
         createdAt: serverTimestamp(),
-        bottle: 'bottleA',
+        distillery: 'distA',
       });
       firestore.assert(result);
     });
 
     it('requires valid bottle', async () => {
       const result = await db.cannotSet({ uid: 'userA' }, 'bottles/bottleB', {
+        name: 'Test',
         userAdded: 'userA',
         createdAt: serverTimestamp(),
-        bottle: 'bottleB',
+        distillery: 'distZ',
       });
       firestore.assert(result);
     });
   });
 });
 
-describe('checkins', () => {
+describe('/checkins/{checkIn}', () => {
   beforeAll(async () => {
     await db.authorize();
   });
@@ -228,8 +366,8 @@ describe('checkins', () => {
       firestore.assert(result);
     });
 
-    it('should not allow other user', async () => {
-      const result = await db.cannotGet({ uid: 'userB' }, 'checkins/checkinA');
+    it('should allow other user', async () => {
+      const result = await db.canGet({ uid: 'userB' }, 'checkins/checkinA');
       firestore.assert(result);
     });
 
@@ -241,28 +379,40 @@ describe('checkins', () => {
 
   describe('set', () => {
     it('should allow authenticated', async () => {
-      const result = await db.canSet({ uid: 'userA' }, 'checkins/checkinB', {
+      const result = await db.canSet({ uid: 'userA' }, 'checkins/checkInZ', {
         createdAt: serverTimestamp(),
-        user: 'userA',
-        distillery: 'distA',
+        userAdded: 'userA',
+        bottle: 'bottleA',
+        notes: '',
+        rating: 0,
+        location: null,
+        flavorProfile: [],
       });
       firestore.assert(result);
     });
 
     it('requires current user as user', async () => {
-      const result = await db.cannotSet({ uid: 'userA' }, 'checkins/checkinB', {
+      const result = await db.cannotSet({ uid: 'userB' }, 'checkins/checkInZ', {
         createdAt: serverTimestamp(),
-        user: 'userA',
-        distillery: 'distB',
+        userAdded: 'userA',
+        bottle: 'bottleA',
+        notes: '',
+        rating: 0,
+        location: null,
+        flavorProfile: [],
       });
       firestore.assert(result);
     });
 
-    it('requires valid distillary', async () => {
-      const result = await db.cannotSet({ uid: 'userA' }, 'checkins/checkinB', {
+    it('requires valid bottle', async () => {
+      const result = await db.cannotSet({ uid: 'userA' }, 'checkins/checkInZ', {
         createdAt: serverTimestamp(),
-        user: 'userA',
-        distillery: 'distB',
+        userAdded: 'userA',
+        bottle: 'bottleB',
+        notes: '',
+        rating: 0,
+        location: null,
+        flavorProfile: [],
       });
       firestore.assert(result);
     });

@@ -153,7 +153,7 @@ class CheckIn extends Component {
     this.setState({ submitting: true });
     this.props
       .checkIn({
-        user: auth.user.uid,
+        userAdded: auth.user.uid,
         bottle: bottle.id,
         notes: state.notes,
         rating: state.rating,

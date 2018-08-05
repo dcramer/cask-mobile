@@ -10,6 +10,7 @@
         "PeterJausovec.vscode-docker",
         "DavidAnson.vscode-markdownlint",
         "toba.vsfire",
-        "smkamranqadri.vscode-bolt-language"
+        "smkamranqadri.vscode-bolt-language",
+        "eg2.tslint"
     ]
 }

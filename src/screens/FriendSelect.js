@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Sentry } from 'react-native-sentry';
 import PropTypes from 'prop-types';
 import { Image, StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
 
@@ -6,59 +7,37 @@ import { withNavigation } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { colors, margins } from '../styles';
+import { db } from '../firebase';
+import { getAllFromCollection } from '../utils/query';
 import Card from '../components/Card';
 import ModalHeader from '../components/ModalHeader';
 import SearchBar from '../components/SearchBar';
 
-const friendDatabase = [
-  {
-    id: '1',
-    name: 'George Clooney',
-    username: 'georgeboy',
-    avatarUrl: 'https://pbs.twimg.com/profile_images/939142405994954752/R8cf4OM-_400x400.jpg',
-  },
-  {
-    id: '2',
-    name: 'Voltron',
-    username: 'voltron76',
-    avatarUrl: 'https://pbs.twimg.com/profile_images/865686039192416257/94eEB9RO_400x400.jpg',
-  },
-  {
-    id: '3',
-    name: 'Jane Doe',
-    username: 'jane_doe',
-    avatarUrl: 'https://pbs.twimg.com/profile_images/964223499857547264/6V5MaYjo_400x400.jpg',
-  },
-  {
-    id: '4',
-    name: 'David Cramer',
-    username: 'zeeg',
-    avatarUrl: 'https://pbs.twimg.com/profile_images/812188242229403648/M9G7BbXy_400x400.jpg',
-  },
-];
-
-class PersonEntry extends Component {
+class UserEntry extends Component {
   static propTypes = {
-    person: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired,
     navigation: PropTypes.object.isRequired,
     selected: PropTypes.bool,
     onPress: PropTypes.func,
   };
 
   render() {
-    let { person, onPress, selected } = this.props;
+    let { user, onPress, selected } = this.props;
     return (
       <TouchableOpacity onPress={onPress} activeOpacity={1}>
         <Card style={styles.cardContainer}>
-          <Image source={{ uri: person.avatarUrl }} style={styles.avatar} resizeMode="contain" />
-          <View style={styles.rowText}>
-            <Text style={styles.name} ellipsizeMode={'tail'}>
-              {person.name}
-            </Text>
-            <Text style={styles.username} ellipsizeMode={'tail'}>
-              {person.username}
-            </Text>
-          </View>
+          {user.photoURL ? (
+            <Image
+              source={{
+                uri: user.photoURL,
+              }}
+              style={styles.userPhoto}
+              resizeMode="contain"
+            />
+          ) : (
+            <Icon name="user-circle" size={24} style={styles.userPhoto} />
+          )}
+          <Text style={styles.userName}>{user.displayName}</Text>
           <Icon
             name={selected ? 'check-square' : 'square'}
             size={24}
@@ -72,6 +51,10 @@ class PersonEntry extends Component {
 }
 
 class FriendSelect extends Component {
+  static propTypes = {
+    navigation: PropTypes.object.isRequired,
+  };
+
   static navigationOptions = {
     header: null,
   };
@@ -82,21 +65,53 @@ class FriendSelect extends Component {
     let { currentValue } = navigation.state.params;
     this.state = {
       query: '',
+      results: [],
       selected: currentValue ? currentValue.map(i => i.id) : [],
     };
   }
+
+  async componentWillMount() {
+    db.collection('users')
+      .doc(this.props.auth.user.uid)
+      .collection('friends')
+      .orderBy('createdAt', 'desc')
+      .limit(25)
+      .get(
+        snapshot => {
+          getAllFromCollection('users', snapshot.docs.map(doc => doc.id))
+            .then(snapshot => {
+              this.setState({
+                loading: false,
+                error: null,
+                items: snapshot.map(doc => ({
+                  id: doc.id,
+                  ...doc.data(),
+                })),
+              });
+            })
+            .catch(error => {
+              this.setState({ error, loading: false });
+              Sentry.captureException(error);
+            });
+        },
+        error => {
+          this.setState({ error, loading: false });
+          Sentry.captureException(error);
+        }
+      );
+  }
   _renderItem = ({ item }) => (
-    <PersonEntry
-      person={item}
+    <UserEntry
+      user={item}
       navigation={this.props.navigation}
       selected={this.state.selected.indexOf(item.id) !== -1}
-      onPress={() => this.onPressPerson(item.id)}
+      onPress={() => this.onPressUser(item.id)}
     />
   );
 
   _keyExtractor = item => item.id;
 
-  onPressPerson = value => {
+  onPressUser = value => {
     let selected = this.state.selected;
     if (selected.indexOf(value) !== -1) {
       selected = selected.filter(v => v !== value);
@@ -111,14 +126,14 @@ class FriendSelect extends Component {
     let { selected } = this.state;
     navigation.state.params.onChangeValue(
       selected.map(personId => {
-        return friendDatabase.find(p => p.id === personId);
+        return this.state.items.find(p => p.id === personId);
       })
     );
     navigation.goBack();
   };
 
   render() {
-    let results = friendDatabase.filter(i => i.name.indexOf(this.state.query) !== -1);
+    let results = this.state.items.filter(i => i.name.indexOf(this.state.query) !== -1);
     return (
       <View style={styles.container}>
         <ModalHeader rightActionOnPress={this.onDone} title="Tag Friends" />
@@ -147,21 +162,21 @@ const styles = StyleSheet.create({
     paddingTop: margins.full,
     paddingBottom: margins.full,
   },
-  name: {
+  user: {
     flex: 1,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#777',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  username: {
-    flex: 1,
+  userName: {
     fontSize: 14,
+    fontWeight: 'bold',
     color: colors.default,
   },
-  avatar: {
-    height: 36,
-    width: 36,
-    borderRadius: 18,
+  userPhoto: {
+    height: 24,
+    width: 24,
+    marginRight: margins.half,
+    borderRadius: 12,
   },
   rowText: {
     paddingLeft: 10,

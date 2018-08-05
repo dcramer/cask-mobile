@@ -3,7 +3,7 @@
     {
       "collectionId": "checkins",
       "fields": [
-        { "fieldPath": "user", "mode": "ASCENDING" },
+        { "fieldPath": "userAdded", "mode": "ASCENDING" },
         { "fieldPath": "createdAt", "mode": "DESCENDING" }
       ]
     }

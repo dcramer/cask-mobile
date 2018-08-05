@@ -40,5 +40,12 @@
         "editor.detectIndentation": false,
         "editor.tabSize": 2,
         "editor.formatOnSave": true
-    }
+    },
+
+    "[typescript]": {
+        "editor.detectIndentation": false,
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true
+    },
+
 }

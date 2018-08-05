@@ -15,10 +15,15 @@ class MyProfile extends Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
     logOut: PropTypes.func.isRequired,
+    navigation: PropTypes.object.isRequired,
   };
 
   state = {
     selectedButton: 0,
+  };
+
+  goToFriends = () => {
+    this.props.navigation.navigate('FindFriends');
   };
 
   renderButtonContent() {
@@ -29,7 +34,7 @@ class MyProfile extends Component {
         <Activity
           queryset={db
             .collection('checkins')
-            .where('user', '==', user.uid)
+            .where('userAdded', '==', user.uid)
             .orderBy('createdAt', 'desc')}
         />
       );
@@ -47,7 +52,8 @@ class MyProfile extends Component {
       <View style={styles.container}>
         <ModalHeader
           title="Profile"
-          leftActionOnPress={null}
+          leftActionText="Friends"
+          leftActionOnPress={this.goToFriends}
           rightActionOnPress={() =>
             Alert.alert('Confirm', 'Do you want to log out of this application?', [
               { text: 'Cancel', style: 'cancel' },

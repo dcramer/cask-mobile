@@ -12,37 +12,31 @@ export default class Activity extends Component {
 
   async componentDidMount() {
     this.unsubscribeFriends = this.props.queryset.limit(25).onSnapshot(
-      snapshot => {
+      async snapshot => {
         let checkins = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
         }));
-        populateRelations(checkins, [
+        let items = await populateRelations(checkins, [
           {
             name: 'bottle',
             collection: 'bottles',
             relations: [{ name: 'distillery', collection: 'distilleries' }],
           },
           {
-            name: 'user',
+            name: 'userAdded',
             collection: 'users',
           },
           {
             name: 'location',
             collection: 'locations',
           },
-        ])
-          .then(items => {
-            this.setState({
-              loading: false,
-              error: null,
-              items,
-            });
-          })
-          .catch(error => {
-            this.setState({ error, loading: false });
-            Sentry.captureException(error);
-          });
+        ]);
+        this.setState({
+          loading: false,
+          error: null,
+          items,
+        });
       },
       error => {
         this.setState({ error, loading: false });
