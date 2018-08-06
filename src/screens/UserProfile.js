@@ -71,7 +71,7 @@ class UserProfile extends Component {
         <Activity
           queryset={db
             .collection('checkins')
-            .where('user', '==', this.state.userId)
+            .where('userAdded', '==', this.state.userId)
             .orderBy('createdAt', 'desc')}
         />
       </View>
