@@ -232,6 +232,7 @@ describe('/users/{userId}', () => {
         const result = await db.canSet({ uid: 'userA' }, 'users/userA/friends/userB', {
           createdAt: serverTimestamp(),
           following: true,
+          follower: false,
         });
         firestore.assert(result);
       });
@@ -239,6 +240,7 @@ describe('/users/{userId}', () => {
       it('should not allow self set follower user', async () => {
         const result = await db.cannotSet({ uid: 'userA' }, 'users/userA/friends/userB', {
           createdAt: serverTimestamp(),
+          following: true,
           follower: true,
         });
         firestore.assert(result);
@@ -247,15 +249,17 @@ describe('/users/{userId}', () => {
       it('should allow user to set follower self', async () => {
         const result = await db.canSet({ uid: 'userB' }, 'users/userA/friends/userB', {
           createdAt: serverTimestamp(),
+          following: false,
           follower: true,
         });
         firestore.assert(result);
       });
 
       it('should not allow user to set following self', async () => {
-        const result = await db.cannotSet({ uid: 'userA' }, 'users/userA/friends/userB', {
+        const result = await db.cannotSet({ uid: 'userB' }, 'users/userA/friends/userB', {
           createdAt: serverTimestamp(),
           following: true,
+          follower: true,
         });
         firestore.assert(result);
       });
@@ -386,6 +390,7 @@ describe('/checkins/{checkIn}', () => {
         notes: '',
         rating: 0,
         location: null,
+        friends: [],
         flavorProfile: [],
       });
       firestore.assert(result);
@@ -399,6 +404,7 @@ describe('/checkins/{checkIn}', () => {
         notes: '',
         rating: 0,
         location: null,
+        friends: [],
         flavorProfile: [],
       });
       firestore.assert(result);
@@ -412,6 +418,7 @@ describe('/checkins/{checkIn}', () => {
         notes: '',
         rating: 0,
         location: null,
+        friends: [],
         flavorProfile: [],
       });
       firestore.assert(result);

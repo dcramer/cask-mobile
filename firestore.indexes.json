@@ -6,6 +6,13 @@
         { "fieldPath": "userAdded", "mode": "ASCENDING" },
         { "fieldPath": "createdAt", "mode": "DESCENDING" }
       ]
+    },
+    {
+      "collectionId": "friends",
+      "fields": [
+        { "fieldPath": "following", "mode": "ASCENDING" },
+        { "fieldPath": "createdAt", "mode": "DESCENDING" }
+      ]
     }
   ]
 }

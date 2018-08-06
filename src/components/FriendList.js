@@ -22,6 +22,7 @@ export default class FriendList extends Component {
       .collection('users')
       .doc(this.props.userId)
       .collection('friends')
+      .where('following', '==', true)
       .orderBy('createdAt', 'desc')
       .limit(25)
       .onSnapshot(

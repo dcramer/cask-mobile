@@ -22,37 +22,46 @@ export function addFriend(fromUserId, toUserId) {
         .doc(toUserId)
         .collection('friends')
         .doc(fromUserId);
-      db.runTransaction(async transaction => {
-        let fromDoc = await transaction.get(fromRef);
-        let toDoc = await transaction.get(toRef);
-        if (fromDoc.exists) {
-          await transaction.update(fromRef, {
-            following: true,
-          });
-        } else {
-          await transaction.set(fromRef, {
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            following: true,
-          });
-        }
 
-        if (toDoc.exists) {
-          await transaction.update(toRef, {
-            follower: true,
-          });
-        } else {
-          await transaction.set(toRef, {
-            follower: true,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          });
-        }
+      let fromDoc = await fromRef.get();
+      let toDoc = await toRef.get();
 
-        resolve(fromUserId, toUserId);
-        return dispatch(addFriendSuccess(fromUserId, toUserId));
-      }).catch(error => {
-        reject(error);
-        return dispatch(addFriendFailure(error));
-      });
+      let batch = db.batch();
+      if (fromDoc.exists) {
+        batch.update(fromRef, {
+          following: true,
+        });
+      } else {
+        batch.set(fromRef, {
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          following: true,
+          follower: false,
+        });
+      }
+
+      if (toDoc.exists) {
+        batch.update(toRef, {
+          follower: true,
+        });
+      } else {
+        batch.set(toRef, {
+          follower: true,
+          following: false,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+      }
+
+      batch
+        .commit()
+        .then(() => {
+          resolve(fromUserId, toUserId);
+          dispatch(addFriendSuccess(fromUserId, toUserId));
+        })
+        .catch(error => {
+          console.error(error);
+          reject(error);
+          dispatch(addFriendFailure(error));
+        });
     });
   };
 }
@@ -70,25 +79,29 @@ export function removeFriend(fromUserId, toUserId) {
         .doc(toUserId)
         .collection('friends')
         .doc(fromUserId);
-      db.runTransaction(async transaction => {
-        let fromDoc = await transaction.get(fromRef);
-        let toDoc = await transaction.get(toRef);
-        if (fromDoc.exists) {
-          await transaction.update(fromRef, {
-            following: false,
-          });
-        }
-        if (toDoc.exists) {
-          await transaction.update(toRef, {
-            follower: false,
-          });
-        }
-        resolve(fromUserId, toUserId);
-        return dispatch(removeFriendSuccess(fromUserId, toUserId));
-      }).catch(error => {
-        reject(error);
-        return dispatch(removeFriendFailure(error));
-      });
+      let fromDoc = await fromRef.get();
+      let toDoc = await toRef.get();
+      let batch = db.batch();
+      if (fromDoc.exists) {
+        batch.update(fromRef, {
+          following: false,
+        });
+      }
+      if (toDoc.exists) {
+        batch.update(toRef, {
+          follower: false,
+        });
+      }
+      batch
+        .commit()
+        .then(() => {
+          resolve(fromUserId, toUserId);
+          dispatch(removeFriendSuccess(fromUserId, toUserId));
+        })
+        .catch(error => {
+          reject(error);
+          dispatch(removeFriendFailure(error));
+        });
     });
   };
 }

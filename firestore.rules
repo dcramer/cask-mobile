@@ -86,7 +86,7 @@ service cloud.firestore {
     }
 
     function isCheckin() {
-      return request.resource.data.keys().hasAll(['createdAt', 'bottle', 'notes', 'userAdded', 'rating', 'location', 'flavorProfile'])
+      return request.resource.data.keys().hasAll(['createdAt', 'bottle', 'notes', 'userAdded', 'rating', 'location', 'flavorProfile', 'friends'])
         && isUserRef(request.resource.data.userAdded)
         && isBottleRef(request.resource.data.bottle)
         && (
@@ -99,6 +99,7 @@ service cloud.firestore {
         )
         && isRatingValue(request.resource.data.rating)
         && request.resource.data.flavorProfile is list
+        && request.resource.data.friends is list
     }
 
     match /users/{userId} {
@@ -127,19 +128,18 @@ service cloud.firestore {
         allow read: if request.auth.uid == userId || request.auth.uid == friendId;
         allow create: if userId != friendId
                       && isFriend()
-                      && isUserRef(friendId)
                       // TODO(dcramer): disabled until simulator works as testing matters more
                       // && request.resource.data.createdAt <= request.time
                       && (
-                        (request.auth.uid == friendId && !request.writeFields.hasAny(["following"]) && "follower" in request.writeFields)
-                        || (request.auth.uid == userId && !request.writeFields.hasAny(["follower"]) && "following" in request.writeFields)
+                        (request.auth.uid == friendId && request.resource.data.following != true)
+                        || (request.auth.uid == userId && request.resource.data.follower != true && isUserRef(friendId))
                       );
         allow update: if request.resource.data.createdAt == resource.data.createdAt
+                      && isFriend()
                       && (
-                        (request.auth.uid == friendId && !request.writeFields.hasAny(["following"]) && "follower" in request.writeFields)
-                        || (request.auth.uid == userId && !request.writeFields.hasAny(["follower"]) && "following" in request.writeFields)
+                        (request.auth.uid == friendId && resource.data.following == request.resource.data.following)
+                        || (request.auth.uid == userId && resource.data.follower == request.resource.data.follower)
                       )
-                      && isUserRef(friendId);
         allow delete: if request.auth.uid == userId;
       }
     }

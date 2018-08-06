@@ -80,6 +80,7 @@ class FriendSelect extends Component {
     db.collection('users')
       .doc(this.props.auth.user.uid)
       .collection('friends')
+      .where('following', '==', true)
       .orderBy('createdAt', 'desc')
       .limit(25)
       .get()

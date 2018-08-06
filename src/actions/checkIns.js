@@ -7,32 +7,26 @@ import firebase, { db } from '../firebase';
 export function checkIn(data) {
   return dispatch => {
     return new Promise(async (resolve, reject) => {
-      let checkInRef = db.collection('checkins').doc();
-      db.runTransaction(async transaction => {
-        let checkInDoc = await transaction.get(checkInRef);
-        if (checkInDoc.exists) {
-          throw new Error('CheckIn already exists.');
-        }
-        await transaction.set(checkInRef, {
+      let batch = db.batch();
+      let checkInRef = db
+        .collection('checkins')
+        .doc()
+        .set(checkInRef, {
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           ...data,
+        })
+        .then(() => {
+          let item = {
+            id: checkInRef.id,
+            ...data,
+          };
+          resolve(item);
+          dispatch(checkInSuccess(item));
+        })
+        .catch(error => {
+          reject(error);
+          dispatch(checkInFailure(error));
         });
-        await (data.friends || []).forEach(async friendId => {
-          let friendRef = checkInRef.collection('friends').doc(friendId);
-          await transaction.set(friendRef, {
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          });
-        });
-        let item = {
-          id: checkInDoc.id,
-          ...data,
-        };
-        resolve(item);
-        return dispatch(checkInSuccess(item));
-      }).catch(error => {
-        reject(error);
-        return dispatch(checkInFailure(error));
-      });
     });
   };
 }
