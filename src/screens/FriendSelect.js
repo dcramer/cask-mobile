@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Sentry } from 'react-native-sentry';
 import PropTypes from 'prop-types';
@@ -161,14 +161,14 @@ class FriendSelect extends Component {
             subheading="You don't seem to have any friends on Peated."
           />
         ) : (
-          [
-            <SearchBar onChangeValue={query => this.setState({ query })} />,
+          <Fragment>
+            <SearchBar onChangeValue={query => this.setState({ query })} />
             <FlatList
               data={results}
               keyExtractor={this._keyExtractor}
               renderItem={this._renderItem}
-            />,
-          ]
+            />
+          </Fragment>
         )}
       </View>
     );

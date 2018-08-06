@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Sentry } from 'react-native-sentry';
 import { StyleSheet, FlatList, Text, View } from 'react-native';
@@ -80,14 +80,14 @@ export default class FriendList extends Component {
             subheading="You don't seem to have any friends on Peated."
           />
         ) : (
-          [
-            <SearchBar onChangeValue={query => this.setState({ query })} />,
+          <Fragment>
+            <SearchBar onChangeValue={query => this.setState({ query })} />
             <FlatList
               data={results}
               keyExtractor={this._keyExtractor}
               renderItem={this._renderItem}
-            />,
-          ]
+            />
+          </Fragment>
         )}
       </View>
     );
