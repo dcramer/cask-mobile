@@ -37,12 +37,6 @@ class AddDistillery extends Component {
     let state = this.state;
     let { auth, navigation } = this.props;
     this.setState({ error: null, submitting: true });
-    console.warn({
-      userAdded: auth.user.uid,
-      name: state.name,
-      region: state.region,
-      country: state.country,
-    });
     this.props
       .addDistillery({
         userAdded: auth.user.uid,
