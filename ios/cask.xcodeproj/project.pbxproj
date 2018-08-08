@@ -13,7 +13,6 @@
 		00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
-		00E356F31AD99517003FC87E /* caskTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* caskTests.m */; };
 		09BB93F5247044E298B25D11 /* Rubik-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 942B92BCDE1A48F2A139A925 /* Rubik-BoldItalic.ttf */; };
 		09FD51A00C2744A38DA131F4 /* Rubik-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3483BA513722459DA6ACD364 /* Rubik-Black.ttf */; };
 		0C1A174A7ED24B0AB40CB5B5 /* Rubik-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3923A241EA3E4633AADF30EF /* Rubik-LightItalic.ttf */; };
@@ -24,7 +23,6 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1FB8A153C1BC46F48C362E84 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC481D3B83794D5DBF9C5B2A /* SimpleLineIcons.ttf */; };
 		200CC540B16C43359C66919D /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7C9BFF7902C4FD69612A69F /* Foundation.ttf */; };
@@ -43,17 +41,14 @@
 		A03B9C14EB684DC88E54A0AF /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA31C3AA612548E2B45837A4 /* Entypo.ttf */; };
 		A19E2C15A1B34265A8BEE626 /* Rubik-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 20D35FEF09014FFE9CE7D63B /* Rubik-Bold.ttf */; };
 		A64E976BF3784B9D9F0D429A /* Rubik-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 948B88C37D1641D7B7D25C15 /* Rubik-Light.ttf */; };
-		ABCA2FAA617B22F38597A2FB /* libPods-peated.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B273CFCFC5F923C676B052E4 /* libPods-peated.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		CBAFF6F6DA8347B5A05F4445 /* Rubik-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C49828B2DEAA43EB875BF468 /* Rubik-MediumItalic.ttf */; };
-		D665625249261EB568A3E25B /* libPods-peatedTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB5FEB22569E4AF33CE709D /* libPods-peatedTests.a */; };
 		D84B44D78CA74FBEB403DD1A /* Rubik-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 837489DB801F4849A1E1C714 /* Rubik-Regular.ttf */; };
 		E34BC08917BE4E31BF19CB84 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FCDF704AE0774EF3BE4C4F0F /* FontAwesome5_Solid.ttf */; };
 		E4A709226883CEF847712A02 /* libPods-cask.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ADE0A7353906776900B7F1C /* libPods-cask.a */; };
 		EA10EADF740B4B07A1870AF6 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A31B322CE544C4C86035DEF /* FontAwesome.ttf */; };
 		EE346F9B6BC64567A6D5DA30 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 59A5CFBCC6044C679392B5CC /* Zocial.ttf */; };
 		F293BF3B7E3C4DF3883BAD58 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B6246BB292B4492A1D912D4 /* libz.tbd */; };
-		FD12C263065B3E7A0756D9C8 /* libPods-caskTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D0651D317A835439C112050B /* libPods-caskTests.a */; };
 		FEE51F545D824D0995765930 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A400E9B20BD44D36A75835B4 /* MaterialCommunityIcons.ttf */; };
 /* End PBXBuildFile section */
 
@@ -92,13 +87,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 832C81801AAF6DEF007FA2F7;
 			remoteInfo = RCTVibration;
-		};
-		00E356F41AD99517003FC87E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = peated;
 		};
 		139105C01AF99BAD00B5F7CC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -340,9 +328,8 @@
 		00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTImage.xcodeproj; path = "../node_modules/react-native/Libraries/Image/RCTImage.xcodeproj"; sourceTree = "<group>"; };
 		00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTNetwork.xcodeproj; path = "../node_modules/react-native/Libraries/Network/RCTNetwork.xcodeproj"; sourceTree = "<group>"; };
 		00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTVibration.xcodeproj; path = "../node_modules/react-native/Libraries/Vibration/RCTVibration.xcodeproj"; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* caskTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = caskTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* caskTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = caskTests.m; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* caskTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = caskTests.m; path = ../caskTests/caskTests.m; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* cask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cask.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -374,7 +361,6 @@
 		82D4D64C203A450BB5BAFA33 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		837489DB801F4849A1E1C714 /* Rubik-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Regular.ttf"; path = "../src/assets/fonts/Rubik/Rubik-Regular.ttf"; sourceTree = "<group>"; };
-		918395847B89CDA3B0FB7701 /* Pods-peatedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-peatedTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-peatedTests/Pods-peatedTests.debug.xcconfig"; sourceTree = "<group>"; };
 		942B92BCDE1A48F2A139A925 /* Rubik-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-BoldItalic.ttf"; path = "../src/assets/fonts/Rubik/Rubik-BoldItalic.ttf"; sourceTree = "<group>"; };
 		948B88C37D1641D7B7D25C15 /* Rubik-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Light.ttf"; path = "../src/assets/fonts/Rubik/Rubik-Light.ttf"; sourceTree = "<group>"; };
 		9585940E61FF496CE24EF63E /* Pods-caskTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-caskTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-caskTests/Pods-caskTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -382,16 +368,11 @@
 		A07FE3A8EDC8436B9209EAEA /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		A400E9B20BD44D36A75835B4 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
-		AE3875F604B9AECC689327C2 /* Pods-peated.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-peated.release.xcconfig"; path = "Pods/Target Support Files/Pods-peated/Pods-peated.release.xcconfig"; sourceTree = "<group>"; };
 		B081DAD40AD048D5A5D3C592 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		B0F5197BEA8E4DD58910A98C /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
-		B273CFCFC5F923C676B052E4 /* libPods-peated.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-peated.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B711D4A9FD61A6780D3E13D2 /* Pods-peatedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-peatedTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-peatedTests/Pods-peatedTests.release.xcconfig"; sourceTree = "<group>"; };
-		BEB5FEB22569E4AF33CE709D /* libPods-peatedTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-peatedTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C49828B2DEAA43EB875BF468 /* Rubik-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-MediumItalic.ttf"; path = "../src/assets/fonts/Rubik/Rubik-MediumItalic.ttf"; sourceTree = "<group>"; };
 		CC5517A9AA1BD1F36912DC34 /* Pods-cask.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cask.debug.xcconfig"; path = "Pods/Target Support Files/Pods-cask/Pods-cask.debug.xcconfig"; sourceTree = "<group>"; };
 		D0651D317A835439C112050B /* libPods-caskTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-caskTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DAA9DE10ED09EDFBDE4F521C /* Pods-peated.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-peated.debug.xcconfig"; path = "Pods/Target Support Files/Pods-peated/Pods-peated.debug.xcconfig"; sourceTree = "<group>"; };
 		DC481D3B83794D5DBF9C5B2A /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		EA31C3AA612548E2B45837A4 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		F20A9D0A064940E497896516 /* Rubik-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-BlackItalic.ttf"; path = "../src/assets/fonts/Rubik/Rubik-BlackItalic.ttf"; sourceTree = "<group>"; };
@@ -400,16 +381,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		00E356EB1AD99517003FC87E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */,
-				D665625249261EB568A3E25B /* libPods-peatedTests.a in Frameworks */,
-				FD12C263065B3E7A0756D9C8 /* libPods-caskTests.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -426,7 +397,6 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
-				ABCA2FAA617B22F38597A2FB /* libPods-peated.a in Frameworks */,
 				F293BF3B7E3C4DF3883BAD58 /* libz.tbd in Frameworks */,
 				99FF7C72068C4678A41B5ED2 /* libRCTFBSDK.a in Frameworks */,
 				E4A709226883CEF847712A02 /* libPods-cask.a in Frameworks */,
@@ -556,8 +526,6 @@
 			isa = PBXGroup;
 			children = (
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
-				B273CFCFC5F923C676B052E4 /* libPods-peated.a */,
-				BEB5FEB22569E4AF33CE709D /* libPods-peatedTests.a */,
 				2B6246BB292B4492A1D912D4 /* libz.tbd */,
 				9ADE0A7353906776900B7F1C /* libPods-cask.a */,
 				D0651D317A835439C112050B /* libPods-caskTests.a */,
@@ -568,10 +536,6 @@
 		318899F76464AAA039278918 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				DAA9DE10ED09EDFBDE4F521C /* Pods-peated.debug.xcconfig */,
-				AE3875F604B9AECC689327C2 /* Pods-peated.release.xcconfig */,
-				918395847B89CDA3B0FB7701 /* Pods-peatedTests.debug.xcconfig */,
-				B711D4A9FD61A6780D3E13D2 /* Pods-peatedTests.release.xcconfig */,
 				CC5517A9AA1BD1F36912DC34 /* Pods-cask.debug.xcconfig */,
 				75C0F9F11609792C15C46941 /* Pods-cask.release.xcconfig */,
 				9585940E61FF496CE24EF63E /* Pods-caskTests.debug.xcconfig */,
@@ -648,7 +612,6 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* cask.app */,
-				00E356EE1AD99517003FC87E /* caskTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -712,25 +675,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* caskTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "caskTests" */;
-			buildPhases = (
-				A08D4D69C55941CE0323F2F7 /* [CP] Check Pods Manifest.lock */,
-				00E356EA1AD99517003FC87E /* Sources */,
-				00E356EB1AD99517003FC87E /* Frameworks */,
-				00E356EC1AD99517003FC87E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				00E356F51AD99517003FC87E /* PBXTargetDependency */,
-			);
-			name = caskTests;
-			productName = peatedTests;
-			productReference = 00E356EE1AD99517003FC87E /* caskTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		13B07F861A680F5B00A75B9A /* cask */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "cask" */;
@@ -760,12 +704,6 @@
 			attributes = {
 				LastUpgradeCheck = 940;
 				ORGANIZATIONNAME = Facebook;
-				TargetAttributes = {
-					00E356ED1AD99517003FC87E = {
-						CreatedOnToolsVersion = 6.2;
-						TestTargetID = 13B07F861A680F5B00A75B9A;
-					};
-				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "cask" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -835,7 +773,6 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* cask */,
-				00E356ED1AD99517003FC87E /* caskTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1110,13 +1047,6 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
-		00E356EC1AD99517003FC87E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		13B07F8E1A680F5B00A75B9A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1245,35 +1175,9 @@
 			shellPath = /bin/sh;
 			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/@sentry/cli/bin/sentry-cli upload-dsym";
 		};
-		A08D4D69C55941CE0323F2F7 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-caskTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		00E356EA1AD99517003FC87E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00E356F31AD99517003FC87E /* caskTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		13B07F871A680F5B00A75B9A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1284,14 +1188,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* cask */;
-			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		13B07FB11A68108700A75B9A /* LaunchScreen.xib */ = {
@@ -1305,63 +1201,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		00E356F61AD99517003FC87E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9585940E61FF496CE24EF63E /* Pods-caskTests.debug.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
-				);
-				INFOPLIST_FILE = caskTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/cask.app/cask";
-			};
-			name = Debug;
-		};
-		00E356F71AD99517003FC87E /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F07CDCB9C3C63242CF4F7FE /* Pods-caskTests.release.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COPY_PHASE_STRIP = NO;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
-				);
-				INFOPLIST_FILE = caskTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/cask.app/cask";
-			};
-			name = Release;
-		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CC5517A9AA1BD1F36912DC34 /* Pods-cask.debug.xcconfig */;
@@ -1381,7 +1220,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.getpeaded;
+				PRODUCT_BUNDLE_IDENTIFIER = com.getcask;
 				PRODUCT_NAME = cask;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1405,7 +1244,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.getpeaded;
+				PRODUCT_BUNDLE_IDENTIFIER = com.getcask;
 				PRODUCT_NAME = cask;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1514,15 +1353,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "caskTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				00E356F61AD99517003FC87E /* Debug */,
-				00E356F71AD99517003FC87E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "cask" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
