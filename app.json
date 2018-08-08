@@ -1,9 +1,4 @@
 {
-  "expo": {
-    "name": "Peated",
-    "slug": "peated",
-    "sdkVersion": "27.0.0"
-  },
   "firebase": {
     "apiKey": "AIzaSyB_Mow_oIpRlvXGo_G6VTDEQpn1jcTaCRw",
     "authDomain": "peated-1ff7b.firebaseapp.com",
@@ -12,6 +7,6 @@
     "storageBucket": "peated-1ff7b.appspot.com",
     "messagingSenderId": "534028188457"
   },
-  "name": "peated",
-  "displayName": "Peated"
+  "name": "cask",
+  "displayName": "Cask"
 }

@@ -159,7 +159,7 @@ class FriendSelect extends Component {
         {this.state.items.length === 0 ? (
           <AlertCard
             heading="It's lonely in here"
-            subheading="You don't seem to have any friends on Peated."
+            subheading="You don't seem to have any friends on Cask."
           />
         ) : (
           <Fragment>

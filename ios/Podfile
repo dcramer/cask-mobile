@@ -1,6 +1,6 @@
 platform :ios, '10.0'
 
-target 'peated' do
+target 'cask' do
   # use_frameworks!
 
   pod 'React', :path => '../node_modules/react-native', :subspecs => [
@@ -29,7 +29,7 @@ target 'peated' do
 
   pod 'SentryReactNative', :path => '../node_modules/react-native-sentry'
 
-  target 'peatedTests' do
+  target 'caskTests' do
     inherit! :search_paths
   end
 

@@ -15,7 +15,7 @@ class Welcome extends Component {
     return (
       <View style={styles.container}>
         <Icon style={styles.icon} name="glass-martini" size={160} color="white" />
-        <Text style={styles.label}>Peated</Text>
+        <Text style={styles.label}>Cask</Text>
         <View style={styles.loginContainer}>
           <Button onPress={this.props.loginFacebook} title="Continue with Facebook" color="#fff" />
         </View>

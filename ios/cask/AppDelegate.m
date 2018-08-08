@@ -23,7 +23,7 @@
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-                                                      moduleName:@"peated"
+                                                      moduleName:@"cask"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
 [RNSentry installWithRootView:rootView];

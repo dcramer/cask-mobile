@@ -21,7 +21,7 @@ You can also split up Metro (aka webpack) and simulator:
 glhf its firestore
 
 ```
-peated
+cask
 ├── /locations
 ├── /distilleries
 ├── /bottles

@@ -31,4 +31,4 @@ class RootApp extends Component {
     );
   }
 }
-AppRegistry.registerComponent('peated', () => RootApp);
+AppRegistry.registerComponent('cask', () => RootApp);

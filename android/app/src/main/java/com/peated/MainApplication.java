@@ -1,4 +1,4 @@
-package com.peated;
+package com.cask;
 
 import android.app.Application;
 

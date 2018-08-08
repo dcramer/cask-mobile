@@ -1,6 +1,6 @@
-# Peated
+# Cask
 
-Peated is a way to collect tasting notes from liquor, specifically focusing on Whiskey-based bottles.
+Cask is a way to collect tasting notes from liquor, specifically focusing on Whiskey-based bottles.
 
 ## Data
 
