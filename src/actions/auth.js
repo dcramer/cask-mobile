@@ -1,8 +1,8 @@
 import { Alert } from 'react-native';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import { Sentry } from 'react-native-sentry';
+import gql from 'graphql-tag';
 
-import { gql } from 'react-apollo';
 import api from '../api';
 
 import {
