@@ -27,12 +27,10 @@ const GQL_LOGIN = gql`
 
 const GQL_GET_VIEWER = gql`
   query ViewerQuery {
-    viewer {
-      user {
-        id
-        email
-        name
-      }
+    me {
+      id
+      email
+      name
     }
   }
 `;
