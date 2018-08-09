@@ -5,13 +5,7 @@ import gql from 'graphql-tag';
 
 import api from '../api';
 
-import {
-  ACCESS_TOKEN_FAILURE,
-  LOGIN,
-  LOGIN_SUCCESS,
-  LOGIN_FAILURE,
-  LOGOUT,
-} from '../reducers/auth';
+import { LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT } from '../reducers/auth';
 
 const GQL_LOGIN = gql`
   mutation LoginMutation($facebookToken: String!) {
@@ -96,7 +90,7 @@ export function refreshSession() {
             });
         })
         .catch(error => {
-          dispatch(accessTokenFailure(error.message));
+          dispatch(loginFailure(error.message));
           reject(error);
         });
     });
@@ -154,16 +148,6 @@ export function loginFailure(error) {
 
     return dispatch({
       type: LOGIN_FAILURE,
-      error,
-    });
-  };
-}
-
-export function accessTokenFailure(error) {
-  return async dispatch => {
-    await AsyncStorage.removeItem('@cask:auth');
-    return dispatch({
-      type: ACCESS_TOKEN_FAILURE,
       error,
     });
   };

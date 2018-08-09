@@ -1,4 +1,3 @@
-export const ACCESS_TOKEN_FAILURE = 'ACCESS_TOKEN_FAILURE';
 export const CHECK_AUTH = 'CHECK_AUTH';
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
@@ -16,14 +15,6 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case ACCESS_TOKEN_FAILURE: {
-      return {
-        ...initialState,
-        ...state,
-        validToken: false,
-        isAuthenticating: false,
-      };
-    }
     case LOGIN:
       return {
         ...state,

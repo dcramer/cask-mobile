@@ -21,7 +21,7 @@ class App extends Component {
     if (this.props.auth.validToken === null) {
       return <Loading />;
     }
-    if (!this.props.auth.user) {
+    if (!this.props.auth.validToken) {
       return <UnauthenticatedNavigator {...this.props} />;
     }
     return <RootNavigator {...this.props} />;

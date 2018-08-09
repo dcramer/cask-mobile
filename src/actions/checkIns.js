@@ -7,7 +7,7 @@ import api from '../api';
 import firebase, { db } from '../firebase';
 
 const GQL_LIST_CHECKINS = gql`
-  query CheckInsQuery($createdBy: String, $scope: String) {
+  query CheckInsQuery($createdBy: UUID, $scope: String) {
     checkins(createdBy: $createdBy, scope: $scope) {
       id
     }
