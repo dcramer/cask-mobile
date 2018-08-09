@@ -1,52 +1,30 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Sentry } from 'react-native-sentry';
 import { FlatList, Text } from 'react-native';
 
 import CheckIn from '../components/CheckIn';
 import LoadingIndicator from '../components/LoadingIndicator';
 
-import { populateRelations } from '../utils/query';
+import { getCheckIns } from '../actions/checkIns';
 
-export default class Activity extends Component {
+class Activity extends Component {
   state = { loading: true, error: null, items: [] };
 
   async componentDidMount() {
-    this.unsubscribeFriends = this.props.queryset.limit(25).onSnapshot(
-      async snapshot => {
-        let checkins = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        let items = await populateRelations(checkins, [
-          {
-            name: 'bottle',
-            collection: 'bottles',
-            relations: [{ name: 'distillery', collection: 'distilleries' }],
-          },
-          {
-            name: 'userAdded',
-            collection: 'users',
-          },
-          {
-            name: 'location',
-            collection: 'locations',
-          },
-        ]);
+    this.props
+      .getCheckIns()
+      .then(items => {
         this.setState({
           loading: false,
           error: null,
           items,
         });
-      },
-      error => {
+      })
+      .catch(error => {
         this.setState({ error, loading: false });
         Sentry.captureException(error);
-      }
-    );
-  }
-
-  async componentWillUnmount() {
-    this.unsubscribeCheckins && this.unsubscribeCheckins();
+      });
   }
 
   _renderItem = ({ item }) => <CheckIn checkIn={item} />;
@@ -69,3 +47,8 @@ export default class Activity extends Component {
     );
   }
 }
+
+export default connect(
+  null,
+  { getCheckIns }
+)(Activity);

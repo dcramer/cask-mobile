@@ -136,14 +136,7 @@ class Home extends Component {
               results={this.state.searchResults}
             />
           ) : (
-            <Activity
-              auth={this.props.auth}
-              navigation={this.props.navigation}
-              queryset={db
-                .collection('checkins')
-                // .where('userAdded', '==', this.props.auth.user.id)
-                .orderBy('createdAt', 'desc')}
-            />
+            <Activity auth={this.props.auth} scope="public" />
           )}
         </View>
       </View>

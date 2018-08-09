@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { Alert, AsyncStorage } from 'react-native';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import { Sentry } from 'react-native-sentry';
 import gql from 'graphql-tag';
@@ -11,11 +11,7 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
   LOGOUT,
-  UPDATE_USER_SUCCESS,
-  UPDATE_USER_FAILURE,
 } from '../reducers/auth';
-
-import firebase, { db } from '../firebase';
 
 const GQL_LOGIN = gql`
   mutation LoginMutation($facebookToken: String!) {
@@ -29,15 +25,47 @@ const GQL_LOGIN = gql`
   }
 `;
 
+const GQL_GET_VIEWER = gql`
+  query ViewerQuery {
+    viewer {
+      user {
+        id
+        email
+        name
+      }
+    }
+  }
+`;
+
+export const fetchSession = async () => {
+  try {
+    let session = await AsyncStorage.getItem('@cask:auth');
+    return await JSON.parse(session);
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};
+
+export const storeSession = async session => {
+  try {
+    await AsyncStorage.setItem(`@cask:auth`, JSON.stringify(session));
+  } catch (e) {}
+};
+
+export const clearSession = async () => {
+  try {
+    await AsyncStorage.removeItem(`@cask:auth`);
+  } catch (e) {}
+};
+
 export const loginFacebook = () => {
   return dispatch => {
     dispatch(login());
     LoginManager.logInWithReadPermissions(['public_profile', 'user_friends', 'email']).then(
       result => {
-        if (result.isCancelled) {
-          Alert.alert('Whoops!', 'You cancelled the sign in.');
-        } else {
-          dispatch(fetchAccessToken(true));
+        if (!result.isCancelled) {
+          dispatch(refreshSession());
         }
       },
       error => {
@@ -47,38 +75,47 @@ export const loginFacebook = () => {
   };
 };
 
-export function fetchAccessToken(update = false) {
+export function refreshSession() {
   return dispatch => {
-    AccessToken.getCurrentAccessToken()
-      .then(data => {
-        api
-          .mutate({
-            mutation: GQL_LOGIN,
-            variables: { facebookToken: data.accessToken },
-          })
-          .then(resp => {
-            dispatch(updateUser(resp.data.login.user));
-          })
-          .catch(error => {
-            dispatch(loginFailure(error.message));
-          });
-        // api.resetStore();
-        // const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
-        // firebase
-        //   .auth()
-        //   .signInAndRetrieveDataWithCredential(credential)
-        //   .then(({ user }) => {
-        //     if (updateUser) {
-        //       dispatch(updateUser(user));
-        //     }
-        //     dispatch(loginSuccess(user));
-        //   })
-        //   .catch(error => {
-        //     dispatch(loginFailure(error.message));
-        //   });
+    return new Promise((resolve, reject) => {
+      AccessToken.getCurrentAccessToken()
+        .then(data => {
+          api
+            .mutate({
+              mutation: GQL_LOGIN,
+              variables: { facebookToken: data.accessToken },
+            })
+            .then(resp => {
+              const session = {
+                token: resp.data.login.token,
+              };
+              dispatch(loginSuccess(resp.data.login.user, session));
+              resolve();
+            })
+            .catch(error => {
+              dispatch(loginFailure(error.message));
+              reject(error);
+            });
+        })
+        .catch(error => {
+          dispatch(accessTokenFailure(error.message));
+          reject(error);
+        });
+    });
+  };
+}
+
+export function getUserInfo() {
+  return dispatch => {
+    api
+      .query({
+        query: GQL_GET_VIEWER,
+      })
+      .then(resp => {
+        dispatch(loginSuccess(resp.data.viewer));
       })
       .catch(error => {
-        dispatch(accessTokenFailure(error.message));
+        dispatch(loginFailure(error.message));
       });
   };
 }
@@ -91,79 +128,45 @@ export function login() {
 
 export function logOut() {
   return dispatch => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        api.resetStore();
-      });
-
+    clearSession();
+    api.resetStore();
     dispatch({
       type: LOGOUT,
     });
   };
 }
 
-export function loginSuccess(user) {
-  return {
-    type: LOGIN_SUCCESS,
-    user,
+export function loginSuccess(user, session) {
+  return async dispatch => {
+    await storeSession(session);
+
+    return dispatch({
+      type: LOGIN_SUCCESS,
+      user,
+    });
   };
 }
 
 export function loginFailure(error) {
-  Sentry.captureException(error);
-  Alert.alert('Sign in error', error);
+  return async dispatch => {
+    Sentry.captureException(error);
+    Alert.alert('Sign in error', error);
 
-  return {
-    type: LOGIN_FAILURE,
-    error,
+    await AsyncStorage.removeItem('@cask:auth');
+
+    return dispatch({
+      type: LOGIN_FAILURE,
+      error,
+    });
   };
 }
 
 export function accessTokenFailure(error) {
-  return {
-    type: ACCESS_TOKEN_FAILURE,
-    error,
-  };
-}
-
-export function updateUser(user) {
-  return dispatch => {
-    let userRef = db.collection('users').doc(user.id);
-    db.runTransaction(async transaction => {
-      let userDoc = await transaction.get(userRef);
-      if (userDoc.exists) {
-        await transaction.update(userRef, {
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-        });
-      } else {
-        await transaction.set(userRef, {
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-        });
-      }
-      dispatch(updateUserSuccess(user));
-    }).catch(error => {
-      dispatch(updateUserFailure(user, error));
+  return async dispatch => {
+    await AsyncStorage.removeItem('@cask:auth');
+    return dispatch({
+      type: ACCESS_TOKEN_FAILURE,
+      error,
     });
-  };
-}
-export function updateUserSuccess(user) {
-  return {
-    type: UPDATE_USER_SUCCESS,
-    user,
-  };
-}
-
-export function updateUserFailure(user, error) {
-  Sentry.captureException(error);
-
-  return {
-    type: UPDATE_USER_FAILURE,
-    user,
-    error,
   };
 }
