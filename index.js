@@ -5,7 +5,9 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
 import { Sentry } from 'react-native-sentry';
+import { ApolloProvider } from 'react-apollo';
 
+import api from './src/api';
 import App from './src/App';
 import rootReducer from './src/reducers';
 
@@ -25,9 +27,11 @@ const store = createStoreWithMiddleware(rootReducer, initialState);
 class RootApp extends Component {
   render() {
     return (
-      <Provider store={store}>
-        <App />
-      </Provider>
+      <ApolloProvider client={api}>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </ApolloProvider>
     );
   }
 }

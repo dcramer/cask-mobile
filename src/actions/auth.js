@@ -14,6 +14,18 @@ import {
   UPDATE_USER_FAILURE,
 } from '../reducers/auth';
 
+const GQL_LOGIN = gql`
+  mutation LoginMutation($facebookToken: String!) {
+    login(facebookToken: $facebookToken) {
+      user {
+        id
+        email
+        name
+      }
+    }
+  }
+`;
+
 import firebase, { db } from '../firebase';
 
 export const loginFacebook = () => {
@@ -38,20 +50,32 @@ export function fetchAccessToken(update = false) {
   return dispatch => {
     AccessToken.getCurrentAccessToken()
       .then(data => {
-        const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
-        // api.resetStore();
-        firebase
-          .auth()
-          .signInAndRetrieveDataWithCredential(credential)
-          .then(({ user }) => {
-            if (updateUser) {
-              dispatch(updateUser(user));
-            }
-            dispatch(loginSuccess(user));
+        api
+          .mutate({
+            mutation: GQL_LOGIN,
+            variables: { facebookToken: data.accessToken },
+          })
+          .then(resp => {
+            dispatch(updateUser(resp.data.user));
+            console.warn(resp.data);
           })
           .catch(error => {
             dispatch(loginFailure(error.message));
           });
+        // api.resetStore();
+        // const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+        // firebase
+        //   .auth()
+        //   .signInAndRetrieveDataWithCredential(credential)
+        //   .then(({ user }) => {
+        //     if (updateUser) {
+        //       dispatch(updateUser(user));
+        //     }
+        //     dispatch(loginSuccess(user));
+        //   })
+        //   .catch(error => {
+        //     dispatch(loginFailure(error.message));
+        //   });
       })
       .catch(error => {
         dispatch(accessTokenFailure(error.message));
