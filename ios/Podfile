@@ -29,10 +29,6 @@ target 'cask' do
 
   pod 'SentryReactNative', :path => '../node_modules/react-native-sentry'
 
-  target 'caskTests' do
-    inherit! :search_paths
-  end
-
   # https://github.com/invertase/react-native-firebase/issues/414#issuecomment-331128610
   post_install do |installer|
     installer.pods_project.targets.each do |target|
