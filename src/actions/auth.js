@@ -2,6 +2,7 @@ import { Alert } from 'react-native';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import { Sentry } from 'react-native-sentry';
 
+import { gql } from 'react-apollo';
 import api from '../api';
 
 import {
@@ -14,6 +15,8 @@ import {
   UPDATE_USER_FAILURE,
 } from '../reducers/auth';
 
+import firebase, { db } from '../firebase';
+
 const GQL_LOGIN = gql`
   mutation LoginMutation($facebookToken: String!) {
     login(facebookToken: $facebookToken) {
@@ -25,8 +28,6 @@ const GQL_LOGIN = gql`
     }
   }
 `;
-
-import firebase, { db } from '../firebase';
 
 export const loginFacebook = () => {
   return dispatch => {
