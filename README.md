@@ -5,6 +5,7 @@ Probably the setup instructions:
 - Install Xcode
 - Install iOS Simulator (Xcode -> Preferences -> Components)
 - Install Cocoapods (``brew install cocoapods``)
+- Install Watchman (``brew install watchman``)
 - ``cd ios && pod install``
 - ``yarn install``
 - ``yarn run ios``
