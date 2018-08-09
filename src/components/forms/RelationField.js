@@ -9,11 +9,12 @@ import { colors, margins } from '../../styles';
 import Card from '../Card';
 import FormLabel from '../FormLabel';
 
-class DistilleryField extends Component {
+class RelationField extends Component {
   static propTypes = {
     onChangeValue: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
     value: PropTypes.shape(CustomPropTypes.Location),
+    onQuery: PropTypes.func.isRequired,
   };
 
   constructor(...args) {
@@ -33,9 +34,10 @@ class DistilleryField extends Component {
       <Card style={styles.container}>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate('DistillerySelect', {
+            navigation.navigate('RelationSelect', {
               currentValue: value,
               onChangeValue: this.setValue,
+              onQuery: this.props.onQuery,
               title: this.props.name,
             })
           }>
@@ -74,4 +76,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withNavigation(DistilleryField);
+export default withNavigation(RelationField);

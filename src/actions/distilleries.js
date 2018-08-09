@@ -22,8 +22,10 @@ const GQL_LIST_DISTILLERIES = gql`
 `;
 
 const GQL_ADD_DISTILLERY = gql`
-  mutation AddDistillery($name: String!, $region: ID!) {
+  mutation AddDistillery($name: String!, $region: UUID!) {
     addDistillery(name: $name, region: $region) {
+      ok
+      errors
       distillery {
         id
         name

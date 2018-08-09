@@ -20,8 +20,10 @@ const GQL_LIST_BOTTLES = gql`
 `;
 
 const GQL_ADD_BOTTLE = gql`
-  mutation AddBottle($name: String!, $distillery: String!, $brand: String!) {
+  mutation AddBottle($name: String!, $distillery: UUID!, $brand: UUID!) {
     addBottle(name: $name, distillery: $distillery, brand: $brand) {
+      ok
+      errors
       bottle {
         id
         name
@@ -63,8 +65,13 @@ export function addBottle(data) {
           variables: data,
         })
         .then(resp => {
-          resolve(resp.data.bottle);
-          return dispatch(addBottleSuccess(resp.data.bottle));
+          if (resp.data.ok) {
+            resolve(resp.data.bottle);
+            return dispatch(addBottleSuccess(resp.data.bottle));
+          } else {
+            reject(resp.data.errors);
+            return dispatch(addBottleFailure(resp.data.errors));
+          }
         })
         .catch(error => {
           reject(error);

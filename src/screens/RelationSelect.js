@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { Sentry } from 'react-native-sentry';
@@ -16,7 +15,7 @@ import SearchBar from '../components/SearchBar';
 class SearchResults extends Component {
   static propTypes = {
     navigation: PropTypes.object.isRequired,
-    getDistilleries: PropTypes.func.isRequired,
+    onQuery: PropTypes.func.isRequired,
     onSelect: PropTypes.func,
     query: PropTypes.string,
   };
@@ -40,7 +39,7 @@ class SearchResults extends Component {
     let { query } = this.props;
     this.setState({ loading: true });
     this.props
-      .getDistilleries({ query })
+      .onQuery({ query })
       .then(items => {
         this.setState({
           loading: false,
@@ -97,7 +96,7 @@ class SearchResults extends Component {
   }
 }
 
-class DistillerySelect extends Component {
+class RelationSelect extends Component {
   static navigationOptions = {
     header: null,
   };
@@ -121,7 +120,7 @@ class DistillerySelect extends Component {
 
   render() {
     let { navigation } = this.props;
-    let { title } = navigation.state.params;
+    let { onQuery, title } = navigation.state.params;
     return (
       <View style={styles.container}>
         <ModalHeader title={title} />
@@ -132,7 +131,7 @@ class DistillerySelect extends Component {
           onSelect={this.onSelect}
           query={this.state.query}
           navigation={this.props.navigation}
-          getDistilleries={this.props.getDistilleries}
+          onQuery={onQuery}
         />
       </View>
     );
@@ -154,7 +153,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(
-  null,
-  { getDistilleries }
-)(withNavigation(DistillerySelect));
+export default withNavigation(RelationSelect);

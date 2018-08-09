@@ -9,7 +9,7 @@ import AddBottle from './screens/AddBottle';
 import AddDistillery from './screens/AddDistillery';
 import CheckIn from './screens/CheckIn';
 import CheckInDetails from './screens/CheckInDetails';
-import DistillerySelect from './screens/DistillerySelect';
+import RelationSelect from './screens/RelationSelect';
 import FriendSelect from './screens/FriendSelect';
 import FindFriends from './screens/FindFriends';
 import LocationSelect from './screens/LocationSelect';
@@ -105,7 +105,7 @@ export const RootNavigator = createStackNavigator(
     Main: {
       screen: MainStack,
     },
-    DistillerySelect,
+    RelationSelect,
     LocationSelect,
     FriendSelect,
     TagSelect,

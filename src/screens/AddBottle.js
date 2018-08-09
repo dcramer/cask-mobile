@@ -5,8 +5,10 @@ import { Button } from 'react-native-elements';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 
 import { addBottle } from '../actions/bottles';
+import { getBrands } from '../actions/brands';
+import { getDistilleries } from '../actions/distilleries';
 import { colors, margins } from '../styles';
-import DistilleryField from '../components/forms/DistilleryField';
+import RelationField from '../components/forms/RelationField';
 import TagField from '../components/forms/TagField';
 import TextField from '../components/forms/TextField';
 
@@ -25,6 +27,7 @@ class AddBottle extends Component {
     this.state = {
       name: '',
       distillery: null,
+      brand: null,
       category: '',
       abv: null,
       statedAge: null,
@@ -52,9 +55,10 @@ class AddBottle extends Component {
         userAdded: auth.user.id,
         name: state.name,
         distillery: state.distillery ? state.distillery.id : null,
+        brand: state.brand ? state.brand.id : null,
         category: state.category.length ? state.category[0] : null,
         series: state.series,
-        statedAge: state.statedAge ? parseInt(state.statedAge, 10) : null,
+        age: state.age ? parseInt(state.age, 10) : null,
         vintageYear: state.vintageYear ? parseInt(state.vintageYear, 10) : null,
         bottleYear: state.bottleYear ? parseInt(state.bottleYear, 10) : null,
         caskType: state.caskType,
@@ -83,7 +87,7 @@ class AddBottle extends Component {
 
     //if (!state.category) return false;
 
-    if (state.statedAge && !(parseInt(state.statedAge, 10) > 0)) return false;
+    if (state.age && !(parseInt(state.age, 10) > 0)) return false;
 
     return true;
   };
@@ -97,12 +101,18 @@ class AddBottle extends Component {
           name="Name"
           placeholder="e.g. Bowmore 1965"
         />
-        <DistilleryField
+        <RelationField
+          onChangeValue={v => this.onChangeValue('brand', v)}
+          onQuery={this.props.getBrands}
+          name="Brand"
+        />
+        <RelationField
           onChangeValue={v => this.onChangeValue('distillery', v)}
+          onQuery={this.props.getDistilleries}
           name="Distillery"
         />
         <TextField
-          onChangeValue={v => this.onChangeValue('statedAge', v)}
+          onChangeValue={v => this.onChangeValue('age', v)}
           name="Stated Age (in years)"
           placeholder="e.g. 21"
           keyboardType="number-pad"
@@ -150,5 +160,5 @@ export default connect(
   ({ auth }) => ({
     auth,
   }),
-  { addBottle }
+  { addBottle, getBrands, getDistilleries }
 )(AddBottle);

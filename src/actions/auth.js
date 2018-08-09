@@ -10,6 +10,9 @@ import { LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT } from '../reducers/auth';
 const GQL_LOGIN = gql`
   mutation LoginMutation($facebookToken: String!) {
     login(facebookToken: $facebookToken) {
+      ok
+      errors
+      token
       user {
         id
         email
@@ -32,17 +35,16 @@ const GQL_GET_VIEWER = gql`
 export const fetchSession = async () => {
   try {
     let session = await AsyncStorage.getItem('@cask:auth');
+    if (!session) return {};
     return await JSON.parse(session);
   } catch (e) {
     console.log(e);
-    return null;
+    return {};
   }
 };
 
 export const storeSession = async session => {
-  try {
-    await AsyncStorage.setItem(`@cask:auth`, JSON.stringify(session));
-  } catch (e) {}
+  await AsyncStorage.setItem(`@cask:auth`, JSON.stringify(session));
 };
 
 export const clearSession = async () => {
@@ -77,12 +79,18 @@ export function refreshSession() {
               mutation: GQL_LOGIN,
               variables: { facebookToken: data.accessToken },
             })
-            .then(resp => {
-              const session = {
-                token: resp.data.login.token,
-              };
-              dispatch(loginSuccess(resp.data.login.user, session));
-              resolve();
+            .then(async resp => {
+              let { login } = resp.data;
+              if (login.ok) {
+                await storeSession({
+                  token: login.token,
+                });
+                dispatch(loginSuccess(login.user));
+                resolve();
+              } else {
+                dispatch(loginFailure(login.errors));
+                reject(login.errors);
+              }
             })
             .catch(error => {
               dispatch(loginFailure(error.message));
@@ -128,10 +136,8 @@ export function logOut() {
   };
 }
 
-export function loginSuccess(user, session) {
+export function loginSuccess(user) {
   return async dispatch => {
-    await storeSession(session);
-
     return dispatch({
       type: LOGIN_SUCCESS,
       user,
@@ -142,7 +148,6 @@ export function loginSuccess(user, session) {
 export function loginFailure(error) {
   return async dispatch => {
     Sentry.captureException(error);
-    Alert.alert('Sign in error', error);
 
     await AsyncStorage.removeItem('@cask:auth');
 
