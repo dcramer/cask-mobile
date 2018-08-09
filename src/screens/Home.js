@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Sentry } from 'react-native-sentry';
 import { StyleSheet, FlatList, Text, View } from 'react-native';
 
-import { db } from '../firebase';
 import { colors, layout, margins } from '../styles';
+import { getBottles } from '../actions/bottles';
 import Activity from '../components/Activity';
 import AlertCard from '../components/AlertCard';
 import Bottle from '../components/Bottle';
 import LoadingIndicator from '../components/LoadingIndicator';
 import SearchBar from '../components/SearchBar';
-
-import { buildSuccessorKey, populateRelations } from '../utils/query';
 
 class SearchResults extends Component {
   _renderItem = ({ item }) => <Bottle bottle={item} />;
@@ -72,6 +71,10 @@ class Home extends Component {
     header: null,
   };
 
+  static propTypes = {
+    getBottles: PropTypes.func.isRequired,
+  };
+
   constructor(...args) {
     super(...args);
     this.state = {
@@ -84,27 +87,12 @@ class Home extends Component {
 
   onSearch = query => {
     this.setState({ searchQuery: query, searchLoading: true });
-    db.collection('bottles')
-      .where('name', '>=', query)
-      .where('name', '<', buildSuccessorKey(query))
-      .orderBy('name')
-      .limit(25)
-      .get()
-      .then(snapshot => {
-        let items = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        populateRelations(items, [
-          {
-            name: 'distillery',
-            collection: 'distilleries',
-          },
-        ]).then(items => {
-          this.setState({
-            searchLoading: false,
-            searchResults: items,
-          });
+    this.props
+      .getBottles({ query, first: 25 })
+      .then(items => {
+        this.setState({
+          searchLoading: false,
+          searchResults: items,
         });
       })
       .catch(error => {
@@ -163,4 +151,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(({ auth }) => ({ auth }))(Home);
+export default connect(
+  ({ auth }) => ({ auth }),
+  { getBottles }
+)(Home);

@@ -7,13 +7,9 @@ import api from '../api';
 import firebase, { db } from '../firebase';
 
 const GQL_LIST_CHECKINS = gql`
-  query CheckInsQuery($createdBy: ID, $scope: String) {
+  query CheckInsQuery($createdBy: String, $scope: String) {
     checkins(createdBy: $createdBy, scope: $scope) {
-      edges {
-        node {
-          id
-        }
-      }
+      id
     }
   }
 `;
@@ -27,7 +23,7 @@ export function getCheckIns(params) {
           variables: params,
         })
         .then(resp => {
-          resolve(resp.data.checkins.edges);
+          resolve(resp.data.checkins);
         })
         .catch(error => {
           reject(error);

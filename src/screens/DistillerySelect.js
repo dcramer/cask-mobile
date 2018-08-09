@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { Sentry } from 'react-native-sentry';
 
-import { db } from '../firebase';
 import { colors } from '../styles';
-import { buildSuccessorKey } from '../utils/query';
+import { getDistilleries } from '../actions/distilleries';
 import AlertCard from '../components/AlertCard';
 import Card from '../components/Card';
 import ModalHeader from '../components/ModalHeader';
@@ -16,6 +16,7 @@ import SearchBar from '../components/SearchBar';
 class SearchResults extends Component {
   static propTypes = {
     navigation: PropTypes.object.isRequired,
+    getDistilleries: PropTypes.func.isRequired,
     onSelect: PropTypes.func,
     query: PropTypes.string,
   };
@@ -38,21 +39,12 @@ class SearchResults extends Component {
   fetchData = () => {
     let { query } = this.props;
     this.setState({ loading: true });
-    let queryset = db.collection('distilleries');
-    if (query) {
-      queryset = queryset.where('name', '>=', query).where('name', '<', buildSuccessorKey(query));
-    }
-    queryset
-      .orderBy('name')
-      .limit(25)
-      .get()
-      .then(snapshot => {
+    this.props
+      .getDistilleries({ query })
+      .then(items => {
         this.setState({
           loading: false,
-          items: snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          })),
+          items,
         });
       })
       .catch(error => {
@@ -140,6 +132,7 @@ class DistillerySelect extends Component {
           onSelect={this.onSelect}
           query={this.state.query}
           navigation={this.props.navigation}
+          getDistilleries={this.props.getDistilleries}
         />
       </View>
     );
@@ -161,4 +154,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withNavigation(DistillerySelect);
+export default connect(
+  null,
+  { getDistilleries }
+)(withNavigation(DistillerySelect));

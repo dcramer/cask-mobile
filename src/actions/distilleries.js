@@ -1,24 +1,74 @@
 import { Sentry } from 'react-native-sentry';
+import gql from 'graphql-tag';
 
 import { ADD_DISTILLERY_SUCCESS, ADD_DISTILLERY_FAILURE } from '../reducers/distilleries';
+import api from '../api';
 
-import firebase, { db } from '../firebase';
+const GQL_LIST_DISTILLERIES = gql`
+  query DistilleriesQuery($query: String) {
+    distilleries(query: $query) {
+      id
+      name
+      region {
+        id
+        name
+        country {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
+const GQL_ADD_DISTILLERY = gql`
+  mutation AddDistillery($name: String!, $region: ID!) {
+    addDistillery(name: $name, region: $region) {
+      distillery {
+        id
+        name
+        region {
+          id
+          name
+          country {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+`;
+
+export function getDistilleries(params) {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      api
+        .query({
+          query: GQL_LIST_DISTILLERIES,
+          variables: params,
+        })
+        .then(resp => {
+          resolve(resp.data.distilleries);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  };
+}
 
 export function addDistillery(data) {
   return dispatch => {
     return new Promise((resolve, reject) => {
-      db.collection('distilleries')
-        .add({
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          ...data,
+      api
+        .mutate({
+          mutation: GQL_ADD_DISTILLERY,
+          variables: data,
         })
-        .then(docRef => {
-          let item = {
-            id: docRef.id,
-            ...data,
-          };
-          resolve(item);
-          return dispatch(addDistillerySuccess(item));
+        .then(resp => {
+          resolve(resp.data.distillery);
+          return dispatch(addDistillerySuccess(resp.data.distillery));
         })
         .catch(error => {
           reject(error);
@@ -27,6 +77,7 @@ export function addDistillery(data) {
     });
   };
 }
+
 export function addDistillerySuccess(distillery) {
   return {
     type: ADD_DISTILLERY_SUCCESS,
