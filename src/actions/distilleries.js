@@ -4,21 +4,28 @@ import gql from 'graphql-tag';
 import { ADD_DISTILLERY_SUCCESS, ADD_DISTILLERY_FAILURE } from '../reducers/distilleries';
 import api from '../api';
 
-const GQL_LIST_DISTILLERIES = gql`
-  query DistilleriesQuery($query: String) {
-    distilleries(query: $query) {
+const GQL_DISTILLERY_FRAGMENT = gql`
+  fragment DistilleryFragment on Distillery {
+    id
+    name
+    region {
       id
       name
-      region {
+      country {
         id
         name
-        country {
-          id
-          name
-        }
       }
     }
   }
+`;
+
+const GQL_LIST_DISTILLERIES = gql`
+  query Distilleries($query: String) {
+    distilleries(query: $query) {
+      ...DistilleryFragment
+    }
+  }
+  ${GQL_DISTILLERY_FRAGMENT}
 `;
 
 const GQL_ADD_DISTILLERY = gql`
@@ -27,19 +34,11 @@ const GQL_ADD_DISTILLERY = gql`
       ok
       errors
       distillery {
-        id
-        name
-        region {
-          id
-          name
-          country {
-            id
-            name
-          }
-        }
+        ...DistilleryFragment
       }
     }
   }
+  ${GQL_DISTILLERY_FRAGMENT}
 `;
 
 export function getDistilleries(params) {
@@ -69,8 +68,14 @@ export function addDistillery(data) {
           variables: data,
         })
         .then(resp => {
-          resolve(resp.data.distillery);
-          return dispatch(addDistillerySuccess(resp.data.distillery));
+          let { addDistillery } = resp.data;
+          if (addDistillery.ok) {
+            resolve(addDistillery.distillery);
+            return dispatch(addDistillerySuccess(addDistillery.distillery));
+          } else {
+            reject(addDistillery.errors);
+            return dispatch(addDistilleryFailure(addDistillery.errors));
+          }
         })
         .catch(error => {
           reject(error);

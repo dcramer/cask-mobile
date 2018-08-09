@@ -4,26 +4,33 @@ import gql from 'graphql-tag';
 import { ADD_BRAND_SUCCESS, ADD_BRAND_FAILURE } from '../reducers/brands';
 import api from '../api';
 
-const GQL_LIST_BRANDS = gql`
-  query BrandsQuery($query: String) {
-    brands(query: $query) {
-      id
-      name
-    }
+const GQL_BRAND_FRAGMENT = gql`
+  fragment BrandFragment on Brand {
+    id
+    name
   }
 `;
 
+const GQL_LIST_BRANDS = gql`
+  query Brands($query: String) {
+    brands(query: $query) {
+      ...BrandFragment
+    }
+  }
+  ${GQL_BRAND_FRAGMENT}
+`;
+
 const GQL_ADD_BRAND = gql`
-  mutation AddBrand($name: String!) {
-    addBrand(name: $name) {
+  mutation AddBrand($name: String!, $region: UUID!) {
+    addBrand(name: $name, region: $region) {
       ok
       errors
       brand {
-        id
-        name
+        ...BrandFragment
       }
     }
   }
+  ${GQL_BRAND_FRAGMENT}
 `;
 
 export function getBrands(params) {
@@ -53,8 +60,14 @@ export function addBrand(data) {
           variables: data,
         })
         .then(resp => {
-          resolve(resp.data.brand);
-          return dispatch(addBrandSuccess(resp.data.brand));
+          let { addBrand } = resp.data;
+          if (addBrand.ok) {
+            resolve(addBrand.brand);
+            return dispatch(addBrandSuccess(addBrand.brand));
+          } else {
+            reject(addBrand.errors);
+            return dispatch(addBrandFailure(addBrand.errors));
+          }
         })
         .catch(error => {
           reject(error);

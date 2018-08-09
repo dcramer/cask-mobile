@@ -7,6 +7,7 @@ import { ScrollView, StyleSheet, Text } from 'react-native';
 import { addBottle } from '../actions/bottles';
 import { getBrands } from '../actions/brands';
 import { getDistilleries } from '../actions/distilleries';
+import { getSpiritTypes } from '../actions/spiritTypes';
 import { colors, margins } from '../styles';
 import RelationField from '../components/forms/RelationField';
 import TagField from '../components/forms/TagField';
@@ -28,7 +29,7 @@ class AddBottle extends Component {
       name: '',
       distillery: null,
       brand: null,
-      category: '',
+      spiritType: '',
       abv: null,
       statedAge: null,
       vintageYear: null,
@@ -56,21 +57,17 @@ class AddBottle extends Component {
         name: state.name,
         distillery: state.distillery ? state.distillery.id : null,
         brand: state.brand ? state.brand.id : null,
-        category: state.category.length ? state.category[0] : null,
+        spiritType: state.spiritType ? state.spiritType.id : null,
         series: state.series,
         age: state.age ? parseInt(state.age, 10) : null,
         vintageYear: state.vintageYear ? parseInt(state.vintageYear, 10) : null,
         bottleYear: state.bottleYear ? parseInt(state.bottleYear, 10) : null,
-        caskType: state.caskType,
         abv: state.abv ? parseInt(state.abv * 100, 10) / 100 : null,
       })
       .then(bottle => {
         navigation.navigate('BottleDetails', {
           id: bottle.id,
-          bottle: {
-            ...bottle,
-            distillery: state.distillery,
-          },
+          bottle,
         });
       })
       .catch(error => {
@@ -117,11 +114,10 @@ class AddBottle extends Component {
           placeholder="e.g. 21"
           keyboardType="number-pad"
         />
-        <TagField
-          onChangeValue={v => this.onChangeValue('category', v)}
-          name="Category"
-          maxValues={1}
-          tagList={['Single Malt', 'Scotch', 'Rye', 'Bourbon']}
+        <RelationField
+          onChangeValue={v => this.onChangeValue('spiritType', v)}
+          onQuery={this.props.getSpiritTypes}
+          name="Spirit Type"
         />
         <TextField
           onChangeValue={v => this.onChangeValue('series', v)}
@@ -160,5 +156,5 @@ export default connect(
   ({ auth }) => ({
     auth,
   }),
-  { addBottle, getBrands, getDistilleries }
+  { addBottle, getBrands, getDistilleries, getSpiritTypes }
 )(AddBottle);
