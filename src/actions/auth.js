@@ -2,6 +2,8 @@ import { Alert } from 'react-native';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import { Sentry } from 'react-native-sentry';
 
+import api from '../api';
+
 import {
   ACCESS_TOKEN_FAILURE,
   LOGIN,
@@ -37,6 +39,7 @@ export function fetchAccessToken(update = false) {
     AccessToken.getCurrentAccessToken()
       .then(data => {
         const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+        // api.resetStore();
         firebase
           .auth()
           .signInAndRetrieveDataWithCredential(credential)
@@ -63,9 +66,17 @@ export function login() {
 }
 
 export function logOut() {
-  firebase.auth().signOut();
-  return {
-    type: LOGOUT,
+  return dispatch => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        api.resetStore();
+      });
+
+    dispatch({
+      type: LOGOUT,
+    });
   };
 }
 

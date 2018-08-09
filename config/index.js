@@ -1,3 +1,7 @@
+export const server = {
+  apiURL: 'http://localhost:8000/graphql/',
+};
+
 export const firebase = {
   apiKey: 'AIzaSyB_Mow_oIpRlvXGo_G6VTDEQpn1jcTaCRw',
   authDomain: 'peated-1ff7b.firebaseapp.com',
