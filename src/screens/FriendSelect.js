@@ -78,7 +78,7 @@ class FriendSelect extends Component {
 
   async componentWillMount() {
     db.collection('users')
-      .doc(this.props.auth.user.uid)
+      .doc(this.props.auth.user.id)
       .collection('friends')
       .where('following', '==', true)
       .orderBy('createdAt', 'desc')

@@ -23,7 +23,7 @@ class UserProfile extends Component {
       this.setState({
         loading: false,
         user,
-        userId: userId || user.uid,
+        userId: userId || user.id,
       });
     } else {
       this.fetchUser(this.props.navigation.getParam('id'));

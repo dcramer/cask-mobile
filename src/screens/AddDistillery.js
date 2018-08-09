@@ -39,7 +39,7 @@ class AddDistillery extends Component {
     this.setState({ error: null, submitting: true });
     this.props
       .addDistillery({
-        userAdded: auth.user.uid,
+        userAdded: auth.user.id,
         name: state.name,
         region: state.region,
         country: state.country,

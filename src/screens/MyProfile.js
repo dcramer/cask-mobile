@@ -34,14 +34,14 @@ class MyProfile extends Component {
         <Activity
           queryset={db
             .collection('checkins')
-            .where('userAdded', '==', user.uid)
+            .where('userAdded', '==', user.id)
             .orderBy('createdAt', 'desc')}
         />
       );
     else if (selectedButton === 1)
       return (
         <View>
-          <FriendList userId={user.uid} />
+          <FriendList userId={user.id} />
         </View>
       );
   }

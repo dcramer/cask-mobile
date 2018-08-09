@@ -135,7 +135,7 @@ class CheckIn extends Component {
   async componentDidMount() {
     let { auth, navigation } = this.props;
     let { bottle } = navigation.state.params;
-    if (!bottle || auth.user.uid) {
+    if (!bottle || auth.user.id) {
       navigation.navigate('Main');
     }
   }
@@ -153,7 +153,7 @@ class CheckIn extends Component {
     this.setState({ submitting: true });
     this.props
       .checkIn({
-        userAdded: auth.user.uid,
+        userAdded: auth.user.id,
         bottle: bottle.id,
         notes: state.notes,
         rating: state.rating,

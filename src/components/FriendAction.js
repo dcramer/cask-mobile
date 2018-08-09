@@ -31,7 +31,7 @@ class FriendAction extends Component {
   async fetchStatus() {
     let { user } = this.props.auth;
     db.collection('users')
-      .doc(user.uid)
+      .doc(user.id)
       .collection('friends')
       .doc(this.props.userId)
       .get()
@@ -53,7 +53,7 @@ class FriendAction extends Component {
     this.setState({ loading: true });
     if (this.state.isFriend) {
       this.props
-        .removeFriend(this.props.auth.user.uid, this.props.userId)
+        .removeFriend(this.props.auth.user.id, this.props.userId)
         .then(() => {
           this.setState({ isFriend: false, loading: false });
         })
@@ -62,7 +62,7 @@ class FriendAction extends Component {
         });
     } else {
       this.props
-        .addFriend(this.props.auth.user.uid, this.props.userId)
+        .addFriend(this.props.auth.user.id, this.props.userId)
         .then(() => {
           this.setState({ isFriend: true, loading: false });
         })

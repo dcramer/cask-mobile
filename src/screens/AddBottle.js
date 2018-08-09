@@ -49,7 +49,7 @@ class AddBottle extends Component {
     this.setState({ error: null, submitting: true });
     this.props
       .addBottle({
-        userAdded: auth.user.uid,
+        userAdded: auth.user.id,
         name: state.name,
         distillery: state.distillery ? state.distillery.id : null,
         category: state.category.length ? state.category[0] : null,

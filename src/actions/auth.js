@@ -57,8 +57,7 @@ export function fetchAccessToken(update = false) {
             variables: { facebookToken: data.accessToken },
           })
           .then(resp => {
-            dispatch(updateUser(resp.data.user));
-            console.warn(resp.data);
+            dispatch(updateUser(resp.data.login.user));
           })
           .catch(error => {
             dispatch(loginFailure(error.message));
@@ -131,7 +130,7 @@ export function accessTokenFailure(error) {
 
 export function updateUser(user) {
   return dispatch => {
-    let userRef = db.collection('users').doc(user.uid);
+    let userRef = db.collection('users').doc(user.id);
     db.runTransaction(async transaction => {
       let userDoc = await transaction.get(userRef);
       if (userDoc.exists) {
