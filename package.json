@@ -8,7 +8,6 @@
     "eslint": "^5.2.0",
     "eslint-config-universe": "^1.0.7",
     "eslint-plugin-react-native": "^3.2.1",
-    "expect-firestore": "^1.0.1",
     "jest": "^23.4.2",
     "jest-react-native": "^18.0.0",
     "prettier": "^1.14.0",
@@ -23,12 +22,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "test": "jest",
-    "lint": "eslint src/**/*.js",
-    "fblogin": "firebase login",
-    "predeploy": "npm run lint",
-    "deploy": "firebase deploy",
-    "deploy:db": "firebase deploy --only firestore",
-    "deploy:funcs": "firebase deploy --only functions"
+    "lint": "eslint src/**/*.js"
   },
   "jest": {
     "preset": "react-native",
@@ -56,9 +50,6 @@
     "apollo-link-context": "^1.0.8",
     "babel-core": "7.0.0-bridge.0",
     "babel-preset-react-native": "^5.0.2",
-    "firebase": "^5.3.0",
-    "firebase-admin": "^5.13.1",
-    "firebase-functions": "^2.0.2",
     "graphql": "^0.13.2",
     "idx": "^2.4.0",
     "moment": "^2.22.2",
