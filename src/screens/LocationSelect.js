@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { Sentry } from 'react-native-sentry';
 
-import { db } from '../firebase';
 import { colors } from '../styles';
+import { getLocations } from '../actions/locations';
 import Card from '../components/Card';
 import ModalHeader from '../components/ModalHeader';
 import LoadingIndicator from '../components/LoadingIndicator';
@@ -14,6 +15,7 @@ import SearchBar from '../components/SearchBar';
 class SearchResults extends Component {
   static propTypes = {
     navigation: PropTypes.object.isRequired,
+    getLocations: PropTypes.func.isRequired,
     onSelect: PropTypes.func,
     query: PropTypes.string,
   };
@@ -36,18 +38,12 @@ class SearchResults extends Component {
   fetchData = () => {
     let { query } = this.props;
     this.setState({ loading: true });
-    db.collection('locations')
-      .where('name', '>=', query || '')
-      .orderBy('name')
-      .limit(25)
-      .get()
-      .then(snapshot => {
+    this.props
+      .getLocations({ query })
+      .then(items => {
         this.setState({
           loading: false,
-          items: snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          })),
+          items,
         });
       })
       .catch(error => {
@@ -147,4 +143,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withNavigation(LocationSelect);
+export default connect(
+  null,
+  { getLocations }
+)(withNavigation(LocationSelect));
