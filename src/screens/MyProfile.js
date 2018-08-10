@@ -6,7 +6,6 @@ import { ButtonGroup } from 'react-native-elements';
 
 import { logOut } from '../actions/auth';
 import { colors, margins } from '../styles';
-import { db } from '../firebase';
 import Activity from '../components/Activity';
 import FriendList from '../components/FriendList';
 import ModalHeader from '../components/ModalHeader';
@@ -29,15 +28,7 @@ class MyProfile extends Component {
   renderButtonContent() {
     let { user } = this.props.auth;
     let { selectedButton } = this.state;
-    if (selectedButton === 0)
-      return (
-        <Activity
-          queryset={db
-            .collection('checkins')
-            .where('userAdded', '==', user.id)
-            .orderBy('createdAt', 'desc')}
-        />
-      );
+    if (selectedButton === 0) return <Activity queryParams={{ user: user.id }} />;
     else if (selectedButton === 1)
       return (
         <View>

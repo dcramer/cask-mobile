@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Sentry } from 'react-native-sentry';
 import { StyleSheet, FlatList, Text, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
-import { db } from '../firebase';
-import { buildSuccessorKey } from '../utils/query';
+import { getUsers } from '../actions/users';
 import Friend from '../components/Friend';
 import SearchBar from '../components/SearchBar';
 
 class FindFriends extends Component {
   static propTypes = {
+    getUsers: PropTypes.func.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 
@@ -30,17 +30,9 @@ class FindFriends extends Component {
 
   onSearch = searchQuery => {
     this.setState({ searchQuery, searchLoading: true });
-    db.collection('users')
-      .where('displayName', '>=', searchQuery)
-      .where('displayName', '<', buildSuccessorKey(searchQuery))
-      .orderBy('displayName')
-      .limit(25)
-      .get()
-      .then(snapshot => {
-        let items = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+    this.props
+      .getUsers({ query: searchQuery })
+      .then(items => {
         this.setState({
           searchLoading: false,
           searchResults: items,
@@ -48,7 +40,6 @@ class FindFriends extends Component {
       })
       .catch(error => {
         this.setState({ searchError: error, searchLoading: false });
-        Sentry.captureException(error);
       });
   };
 
@@ -77,4 +68,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withNavigation(FindFriends);
+export default connect(
+  null,
+  { getUsers }
+)(withNavigation(FindFriends));

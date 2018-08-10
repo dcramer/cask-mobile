@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Sentry } from 'react-native-sentry';
 import PropTypes from 'prop-types';
 import { Image, StyleSheet, TouchableOpacity, FlatList, Text, View } from 'react-native';
 
@@ -8,8 +7,7 @@ import { withNavigation } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { colors, margins } from '../styles';
-import { db } from '../firebase';
-import { getAllFromCollection } from '../utils/query';
+import { getUsers } from '../actions/users';
 import AlertCard from '../components/AlertCard';
 import Card from '../components/Card';
 import LoadingIndicator from '../components/LoadingIndicator';
@@ -56,7 +54,7 @@ class UserEntry extends Component {
 
 class FriendSelect extends Component {
   static propTypes = {
-    auth: PropTypes.object.isRequired,
+    getUsers: PropTypes.func.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 
@@ -77,36 +75,18 @@ class FriendSelect extends Component {
   }
 
   async componentWillMount() {
-    db.collection('users')
-      .doc(this.props.auth.user.id)
-      .collection('friends')
-      .where('following', '==', true)
-      .orderBy('createdAt', 'desc')
-      .limit(25)
-      .get()
-      .then(
-        snapshot => {
-          getAllFromCollection('users', snapshot.docs.map(doc => doc.id))
-            .then(snapshot => {
-              this.setState({
-                loading: false,
-                error: null,
-                items: snapshot.map(doc => ({
-                  id: doc.id,
-                  ...doc.data(),
-                })),
-              });
-            })
-            .catch(error => {
-              this.setState({ error, loading: false });
-              Sentry.captureException(error);
-            });
-        },
-        error => {
-          this.setState({ error, loading: false });
-          Sentry.captureException(error);
-        }
-      );
+    this.props
+      .getUsers({ scope: 'following' })
+      .then(items => {
+        this.setState({
+          loading: false,
+          error: null,
+          items,
+        });
+      })
+      .catch(error => {
+        this.setState({ error, loading: false });
+      });
   }
   _renderItem = ({ item }) => (
     <UserEntry
@@ -203,4 +183,7 @@ const styles = StyleSheet.create({
   action: {},
 });
 
-export default connect(({ auth }) => ({ auth }))(withNavigation(FriendSelect));
+export default connect(
+  null,
+  { getUsers }
+)(withNavigation(FriendSelect));

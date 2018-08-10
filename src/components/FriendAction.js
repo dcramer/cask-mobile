@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-import { addFriend, removeFriend } from '../actions/friends';
-import { db } from '../firebase';
+import { getUsers, follow, unfollow } from '../actions/users';
 
 class FriendAction extends Component {
   static propTypes = {
-    addFriend: PropTypes.func.isRequired,
-    removeFriend: PropTypes.func.isRequired,
+    getUsers: PropTypes.func.isRequired,
+    follow: PropTypes.func.isRequired,
+    unfollow: PropTypes.func.isRequired,
   };
 
   state = {
@@ -29,16 +29,12 @@ class FriendAction extends Component {
   }
 
   async fetchStatus() {
-    let { user } = this.props.auth;
-    db.collection('users')
-      .doc(user.id)
-      .collection('friends')
-      .doc(this.props.userId)
-      .get()
-      .then(doc => {
+    this.props
+      .getUsers({ id: this.props.userId, scope: 'following' })
+      .then(item => {
         this.setState({
           loading: false,
-          isFriend: doc.exists,
+          isFriend: item.length,
         });
       })
       .catch(error => {
@@ -51,9 +47,9 @@ class FriendAction extends Component {
 
   toggleFriend = () => {
     this.setState({ loading: true });
-    if (this.state.isFriend) {
+    if (this.state.isFollowing) {
       this.props
-        .removeFriend(this.props.auth.user.id, this.props.userId)
+        .follow(this.props.userId)
         .then(() => {
           this.setState({ isFriend: false, loading: false });
         })
@@ -62,7 +58,7 @@ class FriendAction extends Component {
         });
     } else {
       this.props
-        .addFriend(this.props.auth.user.id, this.props.userId)
+        .unfollow(this.props.userId)
         .then(() => {
           this.setState({ isFriend: true, loading: false });
         })
@@ -73,13 +69,13 @@ class FriendAction extends Component {
   };
 
   render() {
-    let { isFriend, loading } = this.state;
+    let { isFollowing, loading } = this.state;
     if (loading) return null;
     return (
       <TouchableOpacity onPress={this.toggleFriend}>
         <View style={styles.friendAction}>
-          <Icon name={isFriend ? 'user-minus' : 'user-plus'} size={18} />
-          <Text>{isFriend ? 'Remove from friends' : 'Add to Friends'}</Text>
+          <Icon name={isFollowing ? 'user-minus' : 'user-plus'} size={18} />
+          <Text>{isFollowing ? 'Remove from friends' : 'Add to Friends'}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -96,5 +92,5 @@ const styles = StyleSheet.create({
 
 export default connect(
   ({ auth }) => ({ auth }),
-  { addFriend, removeFriend }
+  { getUsers, follow, unfollow }
 )(FriendAction);

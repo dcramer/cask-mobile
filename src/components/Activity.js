@@ -13,7 +13,7 @@ class Activity extends Component {
 
   async componentDidMount() {
     this.props
-      .getCheckIns()
+      .getCheckIns(this.props.queryParams)
       .then(items => {
         this.setState({
           loading: false,

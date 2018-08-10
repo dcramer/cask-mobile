@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, View } from 'react-native';
 
-import { db } from '../firebase';
+import { getUsers } from '../actions/users';
 import Activity from '../components/Activity';
 import ModalHeader from '../components/ModalHeader';
 import FriendAction from '../components/FriendAction';
@@ -37,24 +37,17 @@ class UserProfile extends Component {
   }
 
   async fetchUser(userId) {
-    db.collection('users')
-      .doc(userId)
-      .get()
-      .then(doc => {
+    this.props
+      .getUsers({ id: 'userId' })
+      .then(items => {
         this.setState({
           loading: false,
-          userId: doc.id,
-          user: {
-            id: doc.id,
-            ...doc.data(),
-          },
+          error: null,
+          user: items[0],
         });
       })
       .catch(error => {
-        this.setState({
-          loading: false,
-          error,
-        });
+        this.setState({ error, loading: false });
       });
   }
 
@@ -68,12 +61,7 @@ class UserProfile extends Component {
           rightActionOnPress={null}
         />
         <FriendAction userId={this.state.userId} />
-        <Activity
-          queryset={db
-            .collection('checkins')
-            .where('userAdded', '==', this.state.userId)
-            .orderBy('createdAt', 'desc')}
-        />
+        <Activity queryParams={{ user: this.state.userId }} />
       </View>
     );
   }
@@ -88,6 +76,6 @@ const styles = StyleSheet.create({
 });
 
 export default connect(
-  () => ({}),
-  {}
+  null,
+  { getUsers }
 )(UserProfile);

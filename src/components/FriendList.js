@@ -1,16 +1,16 @@
 import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Sentry } from 'react-native-sentry';
 import { StyleSheet, FlatList, Text, View } from 'react-native';
 
-import { getAllFromCollection } from '../utils/query';
-import { db } from '../firebase';
+import { getUsers } from '../actions/users';
 import AlertCard from '../components/AlertCard';
 import LoadingIndicator from '../components/LoadingIndicator';
 import Friend from '../components/Friend';
 import SearchBar from '../components/SearchBar';
 
-export default class FriendList extends Component {
+class FriendList extends Component {
   static propTypes = {
     userId: PropTypes.string.isRequired,
   };
@@ -18,40 +18,19 @@ export default class FriendList extends Component {
   state = { loading: true, error: null, items: [], query: '' };
 
   async componentDidMount() {
-    this.unsubscribeFriends = db
-      .collection('users')
-      .doc(this.props.userId)
-      .collection('friends')
-      .where('following', '==', true)
-      .orderBy('createdAt', 'desc')
-      .limit(25)
-      .onSnapshot(
-        snapshot => {
-          getAllFromCollection('users', snapshot.docs.map(doc => doc.id))
-            .then(snapshot => {
-              this.setState({
-                loading: false,
-                error: null,
-                items: snapshot.map(doc => ({
-                  id: doc.id,
-                  ...doc.data(),
-                })),
-              });
-            })
-            .catch(error => {
-              this.setState({ error, loading: false });
-              Sentry.captureException(error);
-            });
-        },
-        error => {
-          this.setState({ error, loading: false });
-          Sentry.captureException(error);
-        }
-      );
-  }
-
-  async componentWillUnmount() {
-    this.unsubscribeFriends && this.unsubscribeFriends();
+    this.props
+      .getUsers({ scope: 'following' })
+      .then(items => {
+        this.setState({
+          loading: false,
+          error: null,
+          items,
+        });
+      })
+      .catch(error => {
+        this.setState({ error, loading: false });
+        Sentry.captureException(error);
+      });
   }
 
   _renderItem = ({ item }) => {
@@ -101,3 +80,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
 });
+
+export default connect(
+  null,
+  { getUsers }
+)(FriendList);

@@ -1,7 +1,7 @@
-export const ADD_FRIEND_SUCCESS = 'ADD_FRIEND_SUCCESS';
-export const ADD_FRIEND_FAILURE = 'ADD_FRIEND_FAILURE';
-export const REMOVE_FRIEND_SUCCESS = 'ADD_FRIEND_SUCCESS';
-export const REMOVE_FRIEND_FAILURE = 'ADD_FRIEND_FAILURE';
+export const FOLLOW_USER_SUCCESS = 'FOLLOW_USER_SUCCESS';
+export const FOLLOW_USER_FAILURE = 'FOLLOW_USER_FAILURE';
+export const UNFOLLOW_USER_SUCCESS = 'FOLLOW_USER_SUCCESS';
+export const UNFOLLOW_USER_FAILURE = 'FOLLOW_USER_FAILURE';
 
 const initialState = {
   addFriendError: false,
@@ -12,13 +12,13 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case ADD_FRIEND_FAILURE:
+    case FOLLOW_USER_FAILURE:
       return {
         ...state,
         addFriendError: true,
         addFriendErrorMessage: action.error.message,
       };
-    case REMOVE_FRIEND_FAILURE:
+    case UNFOLLOW_USER_FAILURE:
       return {
         ...state,
         removeFriendError: true,
