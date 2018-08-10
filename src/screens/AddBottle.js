@@ -10,12 +10,10 @@ import { getDistilleries } from '../actions/distilleries';
 import { getSpiritTypes } from '../actions/spiritTypes';
 import { colors, margins } from '../styles';
 import RelationField from '../components/forms/RelationField';
-import TagField from '../components/forms/TagField';
 import TextField from '../components/forms/TextField';
 
 class AddBottle extends Component {
   static propTypes = {
-    auth: PropTypes.object.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 
@@ -49,11 +47,10 @@ class AddBottle extends Component {
     if (!this.isValid()) return;
     if (this.state.submitting) return;
     let state = this.state;
-    let { auth, navigation } = this.props;
+    let { navigation } = this.props;
     this.setState({ error: null, submitting: true });
     this.props
       .addBottle({
-        userAdded: auth.user.id,
         name: state.name,
         distillery: state.distillery ? state.distillery.id : null,
         brand: state.brand ? state.brand.id : null,
@@ -153,8 +150,6 @@ const styles = StyleSheet.create({
 });
 
 export default connect(
-  ({ auth }) => ({
-    auth,
-  }),
+  null,
   { addBottle, getBrands, getDistilleries, getSpiritTypes }
 )(AddBottle);

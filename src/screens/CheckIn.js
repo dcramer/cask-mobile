@@ -5,7 +5,7 @@ import { Button, Slider } from 'react-native-elements';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-import { checkIn } from '../actions/checkIns';
+import { addCheckIn } from '../actions/checkIns';
 import { colors, margins } from '../styles';
 import Bottle from '../components/Bottle';
 import Card from '../components/Card';
@@ -116,7 +116,7 @@ class CheckInFriends extends Component {
 class CheckIn extends Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
-    checkIn: PropTypes.func.isRequired,
+    addCheckIn: PropTypes.func.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 
@@ -148,12 +148,11 @@ class CheckIn extends Component {
     if (!this.isValid()) return;
     if (this.state.submitting) return;
     let state = this.state;
-    let { auth, navigation } = this.props;
+    let { navigation } = this.props;
     let { bottle } = navigation.state.params;
     this.setState({ submitting: true });
     this.props
-      .checkIn({
-        userAdded: auth.user.id,
+      .addCheckIn({
         bottle: bottle.id,
         notes: state.notes,
         rating: state.rating,
@@ -269,5 +268,5 @@ export default connect(
   ({ auth }) => ({
     auth,
   }),
-  { checkIn }
+  { addCheckIn }
 )(CheckIn);

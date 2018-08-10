@@ -4,14 +4,52 @@ import gql from 'graphql-tag';
 import { CHECK_IN_SUCCESS, CHECK_IN_FAILURE } from '../reducers/checkIns';
 
 import api from '../api';
-import firebase, { db } from '../firebase';
+
+const GQL_CHECKIN_FRAGMENT = gql`
+  fragment CheckInFragment on CheckIn {
+    id
+    bottle {
+      id
+      name
+      distillery {
+        id
+        name
+      }
+    }
+    location {
+      id
+      name
+    }
+    rating
+    notes
+    createdBy {
+      id
+      name
+    }
+    createdAt
+  }
+`;
 
 const GQL_LIST_CHECKINS = gql`
   query CheckInsQuery($createdBy: UUID, $scope: String) {
     checkins(createdBy: $createdBy, scope: $scope) {
-      id
+      ...CheckInFragment
     }
   }
+  ${GQL_CHECKIN_FRAGMENT}
+`;
+
+const GQL_ADD_CHECKIN = gql`
+  mutation AddCheckIn($bottle: UUID!, $notes: String, $rating: Decimal, $location: UUID) {
+    addCheckIn(bottle: $bottle, notes: $notes, rating: $rating, location: $location) {
+      ok
+      errors
+      checkIn {
+        ...CheckInFragment
+      }
+    }
+  }
+  ${GQL_CHECKIN_FRAGMENT}
 `;
 
 export function getCheckIns(params) {
@@ -32,40 +70,40 @@ export function getCheckIns(params) {
   };
 }
 
-export function checkIn(data) {
+export function addCheckIn(data) {
   return dispatch => {
-    return new Promise(async (resolve, reject) => {
-      let checkInRef = db
-        .collection('checkins')
-        .doc()
-        .set(checkInRef, {
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          ...data,
+    return new Promise((resolve, reject) => {
+      api
+        .mutate({
+          mutation: GQL_ADD_CHECKIN,
+          variables: data,
         })
-        .then(() => {
-          let item = {
-            id: checkInRef.id,
-            ...data,
-          };
-          resolve(item);
-          dispatch(checkInSuccess(item));
+        .then(resp => {
+          let { addCheckIn } = resp.data;
+          if (addCheckIn.ok) {
+            resolve(addCheckIn.checkIn);
+            return dispatch(addCheckInSuccess(addCheckIn.checkIn));
+          } else {
+            reject(addCheckIn.errors);
+            return dispatch(addCheckInFailure(addCheckIn.errors));
+          }
         })
         .catch(error => {
           reject(error);
-          dispatch(checkInFailure(error));
+          return dispatch(addCheckInFailure(error));
         });
     });
   };
 }
 
-export function checkInSuccess(checkIn) {
+export function addCheckInSuccess(checkIn) {
   return {
     type: CHECK_IN_SUCCESS,
     checkIn,
   };
 }
 
-export function checkInFailure(error) {
+export function addCheckInFailure(error) {
   Sentry.captureException(error);
 
   return {

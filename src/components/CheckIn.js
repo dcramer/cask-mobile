@@ -43,20 +43,20 @@ class CheckIn extends Component {
 
   goToProfile = () => {
     let { checkIn, navigation } = this.props;
-    navigation.navigate('UserProfile', { id: checkIn.userAdded.id, user: checkIn.userAdded });
+    navigation.navigate('UserProfile', { id: checkIn.createdBy.id, user: checkIn.createdBy });
   };
 
   render() {
     let { checkIn } = this.props;
-    let { bottle, location, userAdded } = checkIn;
+    let { bottle, location, createdBy } = checkIn;
     return (
       <Card style={styles.cardContainer} onPress={this.props.canPress ? this.goToCheckIn : null}>
         <View style={styles.header}>
           <TouchableOpacity onPress={this.goToProfile} style={styles.user}>
-            {userAdded.photoURL ? (
+            {createdBy.photoURL ? (
               <Image
                 source={{
-                  uri: userAdded.photoURL,
+                  uri: createdBy.photoURL,
                 }}
                 style={styles.userPhoto}
                 resizeMode="contain"
@@ -65,11 +65,11 @@ class CheckIn extends Component {
               <Icon name="user-circle" size={24} style={styles.userPhoto} />
             )}
             <Text style={styles.userName} numberOfLines={2} ellipsizeMode={'tail'}>
-              {userAdded.displayName}
+              {createdBy.name}
             </Text>
           </TouchableOpacity>
           <Text style={styles.timestamp}>
-            {!!checkIn.createdAt && <TimeAgo time={checkIn.createdAt.toDate()} />}
+            {!!checkIn.createdAt && <TimeAgo time={checkIn.createdAt} />}
           </Text>
           {!!location && (
             <Text style={styles.location} numberOfLines={1} ellipsizeMode={'tail'}>

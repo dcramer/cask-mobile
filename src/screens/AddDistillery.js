@@ -10,7 +10,6 @@ import TextField from '../components/forms/TextField';
 
 class AddDistillery extends Component {
   static propTypes = {
-    auth: PropTypes.object.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 
@@ -23,7 +22,6 @@ class AddDistillery extends Component {
     this.state = {
       name: '',
       region: '',
-      country: '',
     };
   }
 
@@ -35,14 +33,12 @@ class AddDistillery extends Component {
     if (!this.isValid()) return;
     if (this.state.submitting) return;
     let state = this.state;
-    let { auth, navigation } = this.props;
+    let { navigation } = this.props;
     this.setState({ error: null, submitting: true });
     this.props
       .addDistillery({
-        userAdded: auth.user.id,
         name: state.name,
         region: state.region,
-        country: state.country,
       })
       .then(distillery => {
         navigation.goBack(null);
@@ -70,11 +66,6 @@ class AddDistillery extends Component {
           onChangeValue={v => this.onChangeValue('country', v)}
           name="Country"
           placeholder="e.g. Scotland"
-        />
-        <TextField
-          onChangeValue={v => this.onChangeValue('region', v)}
-          name="Region"
-          placeholder="e.g. Highlands"
         />
         <Button
           title="Add Distillery"
@@ -105,8 +96,6 @@ const styles = StyleSheet.create({
 });
 
 export default connect(
-  ({ auth }) => ({
-    auth,
-  }),
+  null,
   { addDistillery }
 )(AddDistillery);
