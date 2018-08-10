@@ -17,7 +17,7 @@ const GQL_USER_FRAGMENT = gql`
 `;
 
 const GQL_LIST_USERS = gql`
-  query Users($id: UUID, $query: String, $scope: Scope) {
+  query Users($id: UUID, $query: String, $scope: UserScope) {
     users(id: $id, query: $query, scope: $scope) {
       ...UserFragment
     }

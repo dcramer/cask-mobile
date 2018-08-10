@@ -31,7 +31,7 @@ const GQL_CHECKIN_FRAGMENT = gql`
 `;
 
 const GQL_LIST_CHECKINS = gql`
-  query CheckInsQuery($createdBy: UUID, $scope: String) {
+  query CheckInsQuery($createdBy: UUID, $scope: CheckInScope) {
     checkins(createdBy: $createdBy, scope: $scope) {
       ...CheckInFragment
     }
